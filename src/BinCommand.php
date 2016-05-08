@@ -41,4 +41,12 @@ class BinCommand extends BaseCommand
 
         return $this->getApplication()->run($input, $output);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isProxyCommand()
+    {
+        return true;
+    }
 }
