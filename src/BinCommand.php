@@ -26,20 +26,40 @@ class BinCommand extends BaseCommand
     {
         putenv('COMPOSER_BIN_DIR='.Factory::createConfig()->get('bin-dir'));
 
+        $binVendorRoot = 'vendor-bin';
         $binName = $input->getArgument('name');
-        $binRoot = 'vendor-bin/'.$binName;
-
-        if (!file_exists($binRoot)) {
-            mkdir($binRoot, 0777, true);
+        if ('all' === $binName) {
+            $binRoots = glob($binVendorRoot.'/*', GLOB_ONLYDIR);
+            $this->getApplication()->setAutoExit(false);
+            $originalWorkingDir = getcwd();
+        } else {
+            $binRoots = array($binVendorRoot.'/'.$binName);
+            if (!file_exists($binRoots[0])) {
+                mkdir($binRoots[0], 0777, true);
+            }
         }
-        chdir($binRoot);
-        $this->getIO()->writeError('<info>Changed current directory to '.$binRoot.'</info>');
 
-        $this->resetComposer();
+        $exitCode = 0;
+        foreach ($binRoots as $binRoot) {
+            chdir($binRoot);
 
-        $input = new StringInput(preg_replace('/bin\s+'.preg_quote($binName, '/').'/', '', $input->__toString(), 1));
+            $this->getIO()->writeError('<info>Changed current directory to ' . $binRoot . '</info>');
 
-        return $this->getApplication()->run($input, $output);
+            $this->resetComposer();
+
+            $input = new StringInput(preg_replace('/bin\s+' . preg_quote($binName, '/') . '/', '', $input->__toString(), 1));
+
+            $exitCode += $this->getApplication()->run($input, $output);
+
+            chdir($originalWorkingDir);
+            foreach ($this->getApplication()->all() as $command) {
+                if ($command instanceof BaseCommand) {
+                    $command->resetComposer();
+                }
+            }
+        }
+
+        return $exitCode;
     }
 
     /**
