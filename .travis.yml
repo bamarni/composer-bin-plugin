@@ -8,6 +8,7 @@ php:
   - '7.0'
 
 install:
+  - composer global require bamarni/composer-bin-plugin:0.*@dev
   - composer install
 
 script:
