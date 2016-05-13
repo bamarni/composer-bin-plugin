@@ -7,12 +7,20 @@
             "Bamarni\\Composer\\Bin\\": "src"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Bamarni\\Composer\\Bin\\Tests\\": "tests"
+        }
+    },
     "require": {
         "composer-plugin-api": "^1.0"
     },
     "require-dev": {
         "composer/composer": "dev-master",
         "symfony/console": "^2.5 || ^3.0"
+    },
+    "scripts": {
+        "post-install-cmd": ["@composer bin phpunit install"]
     },
     "extra": {
         "class": "Bamarni\\Composer\\Bin\\Plugin",

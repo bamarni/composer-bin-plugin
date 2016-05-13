@@ -1,4 +1,4 @@
-# composer-bin-plugin
+# composer-bin-plugin [![Build Status](https://travis-ci.org/bamarni/composer-bin-plugin.svg?branch=master)](https://travis-ci.org/bamarni/composer-bin-plugin)
 
 Isolated vendor for your bin dependencies.
 
@@ -23,48 +23,73 @@ This is done by registering a `bin` command, which can be used to run Composer c
 
     composer bin [namespace] [composer_command]
 
-As an example, let's install Behat and PHPSpec inside a `bdd` namespace :
+### Example
+
+Let's install Behat and PHPSpec inside a `bdd` namespace :
 
     composer bin bdd require behat/behat:^3.0 phpspec/phpspec:^2.0
 
 This command creates the following directory structure :
 
-````
-├── composer.json
-├── composer.lock
-├── vendor
-│   └── bin
-│       ├── behat -> ../../vendor-bin/bdd/vendor/behat/behat/bin/behat
-│       └── phpspec -> ../../vendor-bin/bdd/vendor/phpspec/phpspec/bin/phpspec
-└── vendor-bin
-    └── bdd
-        ├── composer.json
-        ├── composer.lock
-        └── vendor
-```
+    ├── composer.json
+    ├── composer.lock
+    ├── vendor
+    │   └── bin
+    │       ├── behat -> ../../vendor-bin/bdd/vendor/behat/behat/bin/behat
+    │       └── phpspec -> ../../vendor-bin/bdd/vendor/phpspec/phpspec/bin/phpspec
+    └── vendor-bin
+        └── bdd
+            ├── composer.json
+            ├── composer.lock
+            └── vendor
+
 
 You can continue to run `./vendor/bin/phpspec` and `./vendor/bin/phpspec`,
 but they'll use an isolated set of dependencies.
 
-### Tips
+### The "all" namespace
 
-#### .gitignore
+The "all" namespace has a special meaning. It runs a command for
+all existing namespaces.
+
+For instance, the following command would update all your bins :
+
+    > composer bin all update
+    Changed current directory to vendor-bin/phpspec
+    Loading composer repositories with package information
+    Updating dependencies (including require-dev)
+    Nothing to install or update
+    Generating autoload files
+    Changed current directory to vendor-bin/phpunit
+    Loading composer repositories with package information
+    Updating dependencies (including require-dev)
+    Nothing to install or update
+    Generating autoload files
+
+## Tips
+
+### .gitignore
 
 Make sure to add the following line in your `.gitignore` :
 
     vendor-bin/*/vendor
 
-#### "all"
+### Auto-installation
 
-The "all" namespace has a special meaning, it runs a command for all
-existing namespaces.
+For convenience, you can add the following script in your `composer.json` :
 
-For instance, the following command would update all your tools :
+```json
+    {
+        "scripts": {
+            "post-install-cmd": ["@composer bin all install"]
+        }
+    }
+```
 
-    composer bin all update
+This makes sure all your bins are installed during `composer install`.
 
-#### Composer global command
+### global
 
-This plugin can also be used to manage your global tools :
+This plugin can also be used to manage your global bins :
 
     composer global bin [namespace] [composer_command]

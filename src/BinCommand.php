@@ -15,8 +15,9 @@ class BinCommand extends BaseCommand
     {
         $this
             ->setName('bin')
+            ->setDescription('Run a command inside a bin namespace')
             ->setDefinition(array(
-                new InputArgument('name', InputArgument::REQUIRED),
+                new InputArgument('namespace', InputArgument::REQUIRED),
                 new InputArgument('args', InputArgument::REQUIRED | InputArgument::IS_ARRAY),
             ))
         ;
@@ -27,31 +28,37 @@ class BinCommand extends BaseCommand
         putenv('COMPOSER_BIN_DIR='.Factory::createConfig()->get('bin-dir'));
 
         $binVendorRoot = 'vendor-bin';
-        $binName = $input->getArgument('name');
-        if ('all' === $binName) {
-            $binRoots = glob($binVendorRoot.'/*', GLOB_ONLYDIR);
-            $this->getApplication()->setAutoExit(false);
-            $originalWorkingDir = getcwd();
-        } else {
-            $binRoots = array($binVendorRoot.'/'.$binName);
-            if (!file_exists($binRoots[0])) {
-                mkdir($binRoots[0], 0777, true);
+        $binNamespace = $input->getArgument('namespace');
+        $input = new StringInput(preg_replace('/bin\s+' . preg_quote($binNamespace, '/') . '/', '', $input->__toString(), 1));
+
+        if ('all' !== $binNamespace) {
+            $binRoot = $binVendorRoot.'/'.$binNamespace;
+            if (!file_exists($binRoot)) {
+                mkdir($binRoot, 0777, true);
             }
+
+            $this->chdir($binRoot);
+
+            return $this->getApplication()->doRun($input, $output);
         }
 
+        $binRoots = glob($binVendorRoot.'/*', GLOB_ONLYDIR);
+        if (empty($binRoots)) {
+            $this->getIO()->writeError('<warning>Couldn\'t find any bin namespace.</warning>');
+
+            return;
+        }
+
+        $originalWorkingDir = getcwd();
         $exitCode = 0;
         foreach ($binRoots as $binRoot) {
-            chdir($binRoot);
+            $this->chdir($binRoot);
 
-            $this->getIO()->writeError('<info>Changed current directory to ' . $binRoot . '</info>');
-
-            $this->resetComposer();
-
-            $input = new StringInput(preg_replace('/bin\s+' . preg_quote($binName, '/') . '/', '', $input->__toString(), 1));
-
-            $exitCode += $this->getApplication()->run($input, $output);
+            $exitCode += $this->getApplication()->doRun($input, $output);
 
             chdir($originalWorkingDir);
+
+            $this->getApplication()->resetComposer();
             foreach ($this->getApplication()->all() as $command) {
                 if ($command instanceof BaseCommand) {
                     $command->resetComposer();
@@ -59,7 +66,7 @@ class BinCommand extends BaseCommand
             }
         }
 
-        return $exitCode;
+        return min($exitCode, 255);
     }
 
     /**
@@ -68,5 +75,11 @@ class BinCommand extends BaseCommand
     public function isProxyCommand()
     {
         return true;
+    }
+
+    private function chdir($dir)
+    {
+        chdir($dir);
+        $this->getIO()->writeError('<info>Changed current directory to ' . $dir . '</info>');
     }
 }
