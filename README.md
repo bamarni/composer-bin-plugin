@@ -74,6 +74,20 @@ Make sure to add the following line in your `.gitignore` :
 
     vendor-bin/*/vendor
 
+### Auto-installation
+
+For convenience, you can add the following script in your `composer.json` :
+
+```json
+    {
+        "scripts": {
+            "post-install-cmd": ["@composer bin all install --no-scripts"]
+        }
+    }
+```
+
+This makes sure all your bins are installed during `composer install`.
+
 ### global
 
 This plugin can also be used to manage your global bins :

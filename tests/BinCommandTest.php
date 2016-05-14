@@ -34,16 +34,28 @@ class BinCommandTest extends \PHPUnit_Framework_TestCase
         $this->myTestCommand->data = array();
     }
 
-    public function testNamespaceCommand()
+    /**
+     * @dataProvider namespaceProvider
+     */
+    public function testNamespaceCommand($input)
     {
-        $input = new StringInput('bin mynamespace mytest');
+        $input = new StringInput($input);
         $output = new NullOutput();
         $this->application->doRun($input, $output);
 
+        $this->assertCount(1, $this->myTestCommand->data);
         $dataSet = array_shift($this->myTestCommand->data);
         $this->assertEquals($dataSet['bin-dir'], $this->rootDir.'/vendor/bin');
         $this->assertEquals($dataSet['cwd'], $this->rootDir.'/vendor-bin/mynamespace');
         $this->assertEquals($dataSet['vendor-dir'], $this->rootDir.'/vendor-bin/mynamespace/vendor');
+    }
+
+    public static function namespaceProvider()
+    {
+        return array(
+            array('bin mynamespace mytest'),
+            array('bin mynamespace mytest --myoption'),
+        );
     }
 
     public function testAllNamespaceWithoutAnyNamespace()
@@ -65,6 +77,8 @@ class BinCommandTest extends \PHPUnit_Framework_TestCase
         $input = new StringInput('bin all mytest');
         $output = new NullOutput();
         $this->application->doRun($input, $output);
+
+        $this->assertCount(count($namespaces), $this->myTestCommand->data);
 
         foreach ($namespaces as $ns) {
             $dataSet = array_shift($this->myTestCommand->data);

@@ -20,11 +20,14 @@ class BinCommand extends BaseCommand
                 new InputArgument('namespace', InputArgument::REQUIRED),
                 new InputArgument('args', InputArgument::REQUIRED | InputArgument::IS_ARRAY),
             ))
+            ->ignoreValidationErrors()
         ;
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->resetComposers();
+
         putenv('COMPOSER_BIN_DIR='.Factory::createConfig()->get('bin-dir'));
 
         $binVendorRoot = 'vendor-bin';
@@ -57,13 +60,7 @@ class BinCommand extends BaseCommand
             $exitCode += $this->getApplication()->doRun($input, $output);
 
             chdir($originalWorkingDir);
-
-            $this->getApplication()->resetComposer();
-            foreach ($this->getApplication()->all() as $command) {
-                if ($command instanceof BaseCommand) {
-                    $command->resetComposer();
-                }
-            }
+            $this->resetComposers();
         }
 
         return min($exitCode, 255);
@@ -75,6 +72,16 @@ class BinCommand extends BaseCommand
     public function isProxyCommand()
     {
         return true;
+    }
+
+    private function resetComposers()
+    {
+        $this->getApplication()->resetComposer();
+        foreach ($this->getApplication()->all() as $command) {
+            if ($command instanceof BaseCommand) {
+                $command->resetComposer();
+            }
+        }
     }
 
     private function chdir($dir)

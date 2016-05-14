@@ -20,7 +20,8 @@
         "symfony/console": "^2.5 || ^3.0"
     },
     "scripts": {
-        "post-install-cmd": ["@composer bin phpunit install"]
+        "post-install-cmd": ["@composer bin phpunit install --no-scripts"],
+        "post-update-cmd": ["@post-install-cmd"]
     },
     "extra": {
         "class": "Bamarni\\Composer\\Bin\\Plugin",

@@ -11,12 +11,10 @@ before_install:
   - composer global require bamarni/composer-bin-plugin:0.*@dev
 
 install:
-  - composer
   - composer install
 
 script:
-#  - ./vendor/bin/phpunit
-  - phpunit
+  - ./vendor/bin/phpunit
 
 notifications:
   email: false
