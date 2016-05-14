@@ -81,7 +81,7 @@ For convenience, you can add the following script in your `composer.json` :
 ```json
     {
         "scripts": {
-            "post-install-cmd": ["@composer bin all install --no-scripts"]
+            "post-install-cmd": ["@composer bin all install"]
         }
     }
 ```
