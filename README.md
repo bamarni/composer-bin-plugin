@@ -22,6 +22,7 @@ This is done by registering a `bin` command, which can be used to run Composer c
 ## Usage
 
     composer bin [namespace] [composer_command]
+    composer global bin [namespace] [composer_command]
 
 ### Example
 
@@ -87,9 +88,3 @@ For convenience, you can add the following script in your `composer.json` :
 ```
 
 This makes sure all your bins are installed during `composer install`.
-
-### global
-
-This plugin can also be used to manage your global bins :
-
-    composer global bin [namespace] [composer_command]
