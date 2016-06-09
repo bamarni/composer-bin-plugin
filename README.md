@@ -17,7 +17,7 @@ This is done by registering a `bin` command, which can be used to run Composer c
 
 ## Installation
 
-    composer global require bamarni/composer-bin-plugin:0.*@dev
+    composer global require bamarni/composer-bin-plugin:0.*
 
 ## Usage
 
