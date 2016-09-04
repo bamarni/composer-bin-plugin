@@ -8,6 +8,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
+use Composer\Json\JsonFile;
 
 class BinCommand extends BaseCommand
 {
@@ -28,7 +29,7 @@ class BinCommand extends BaseCommand
     {
         $this->resetComposers();
 
-        putenv('COMPOSER_BIN_DIR='.Factory::createConfig()->get('bin-dir'));
+        putenv('COMPOSER_BIN_DIR='.$this->createConfig()->get('bin-dir'));
 
         $binVendorRoot = 'vendor-bin';
         $binNamespace = $input->getArgument('namespace');
@@ -88,5 +89,20 @@ class BinCommand extends BaseCommand
     {
         chdir($dir);
         $this->getIO()->writeError('<info>Changed current directory to ' . $dir . '</info>');
+    }
+
+    private function createConfig()
+    {
+        $config = Factory::createConfig();
+
+        $file = new JsonFile(Factory::getComposerFile());
+        if (!$file->exists()) {
+            return $config;
+        }
+        $file->validateSchema(JsonFile::LAX_SCHEMA);
+
+        $config->merge($file->read());
+
+        return $config;
     }
 }

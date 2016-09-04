@@ -45,7 +45,7 @@ This command creates the following directory structure :
             └── vendor
 
 
-You can continue to run `./vendor/bin/phpspec` and `./vendor/bin/phpspec`,
+You can continue to run `./vendor/bin/behat` and `./vendor/bin/phpspec`,
 but they'll use an isolated set of dependencies.
 
 ### The "all" namespace

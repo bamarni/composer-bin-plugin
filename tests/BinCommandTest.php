@@ -7,7 +7,6 @@ use Bamarni\Composer\Bin\BinCommand;
 use Bamarni\Composer\Bin\Tests\Fixtures\MyTestCommand;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Console\Output\ConsoleOutput;
 
 class BinCommandTest extends \PHPUnit_Framework_TestCase
 {
@@ -20,6 +19,8 @@ class BinCommandTest extends \PHPUnit_Framework_TestCase
         $this->rootDir = sys_get_temp_dir().'/'.uniqid('composer_bin_plugin_tests_');
         mkdir($this->rootDir);
         chdir($this->rootDir);
+
+        file_put_contents($this->rootDir.'/composer.json', '{}');
 
         $this->application = new Application();
         $this->application->addCommands(array(
@@ -86,5 +87,24 @@ class BinCommandTest extends \PHPUnit_Framework_TestCase
             $this->assertEquals($dataSet['cwd'], $this->rootDir . '/vendor-bin/'.$ns);
             $this->assertEquals($dataSet['vendor-dir'], $this->rootDir . '/vendor-bin/'.$ns.'/vendor');
         }
+    }
+
+    public function testBinDirFromLocalConfig()
+    {
+        $binDir = 'bin';
+        $composer = array(
+            'config' => array(
+                'bin-dir' => $binDir
+            )
+        );
+        file_put_contents($this->rootDir.'/composer.json', json_encode($composer));
+
+        $input = new StringInput('bin theirspace mytest');
+        $output = new NullOutput();
+        $this->application->doRun($input, $output);
+
+        $this->assertCount(1, $this->myTestCommand->data);
+        $dataSet = array_shift($this->myTestCommand->data);
+        $this->assertEquals($dataSet['bin-dir'], $this->rootDir.'/'.$binDir);
     }
 }

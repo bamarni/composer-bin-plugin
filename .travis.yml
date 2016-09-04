@@ -8,7 +8,8 @@ php:
   - '7.0'
 
 before_install:
-  - composer global require bamarni/composer-bin-plugin:0.*@dev
+  - composer global config repositories.bin path $PWD
+  - composer global require bamarni/composer-bin-plugin:dev-master
 
 install:
   - composer install
