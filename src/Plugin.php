@@ -9,10 +9,16 @@ use Composer\Plugin\Capable;
 
 class Plugin implements PluginInterface, Capable
 {
+    /**
+     * {@inheritDoc}
+     */
     public function activate(Composer $composer, IOInterface $io)
     {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function getCapabilities()
     {
         return array(
