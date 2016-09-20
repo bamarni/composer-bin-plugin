@@ -1,0 +1,29 @@
+<?php
+
+namespace Bamarni\Composer\Bin;
+
+use Composer\Composer;
+
+final class Config
+{
+    private $config;
+
+    public function __construct(Composer $composer)
+    {
+        $extra = $composer->getPackage()->getExtra();
+        $this->config = array_merge(
+            array(
+                'bin-links' => true,
+            ),
+            isset($extra['bamarni-bin']) ? $extra['bamarni-bin'] : array()
+        );
+    }
+
+    /**
+     * @return bool
+     */
+    public function binLinksAreEnabled()
+    {
+        return true === $this->config['bin-links'];
+    }
+}
