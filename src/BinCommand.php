@@ -12,6 +12,9 @@ use Composer\Json\JsonFile;
 
 class BinCommand extends BaseCommand
 {
+    /**
+     * {@inheritDoc}
+     */
     protected function configure()
     {
         $this
@@ -25,6 +28,9 @@ class BinCommand extends BaseCommand
         ;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $this->resetComposers();
