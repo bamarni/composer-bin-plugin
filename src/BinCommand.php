@@ -66,7 +66,7 @@ class BinCommand extends BaseCommand
         if (empty($binRoots)) {
             $this->getIO()->writeError('<warning>Couldn\'t find any bin namespace.</warning>');
 
-            return 1;
+            return 0;   // Is a valid scenario: the user may not have setup any bin namespace yet
         }
 
         $originalWorkingDir = getcwd();
