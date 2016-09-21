@@ -20,15 +20,14 @@ matrix:
   allow_failures:
     - php: nightly
 
-before_install:
-  - composer global config repositories.bin path $PWD
-  - composer global require bamarni/composer-bin-plugin:dev-master
-
 install:
   - composer install
+  - composer global require "bamarni/composer-bin-plugin:dev-master"
+  - composer global bin phpunit require phpunit/phpunit
 
 script:
   - vendor/bin/phpunit
+  - $HOME/.composer/vendor-bin/phpunit/vendor/phpunit/phpunit/phpunit
 
 notifications:
   email: false
