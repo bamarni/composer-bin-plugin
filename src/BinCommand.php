@@ -34,10 +34,13 @@ class BinCommand extends BaseCommand
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $config = new Config($this->getComposer());
         $this->resetComposers($application = $this->getApplication());
         /** @var ComposerApplication $application */
 
-        putenv('COMPOSER_BIN_DIR='.$this->createConfig()->get('bin-dir'));
+        if ($config->binLinksAreEnabled()) {
+            putenv('COMPOSER_BIN_DIR='.$this->createConfig()->get('bin-dir'));
+        }
 
         $vendorRoot = 'vendor-bin';
         $namespace = $input->getArgument('namespace');

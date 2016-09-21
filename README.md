@@ -67,6 +67,21 @@ For instance, the following command would update all your bins :
     Nothing to install or update
     Generating autoload files
 
+## Disable links
+
+By default, binaries of the sub namepsaces are linked to the root one like described in [example](#Example). If you
+wish to disable that behaviour, you can do so by adding a little setting in the extra config:
+
+```json
+    {
+        "extra": {
+            "bamarni-bin": {
+                "bin-links": false
+            }
+        }
+    }
+```
+
 ## Tips
 
 ### .gitignore
