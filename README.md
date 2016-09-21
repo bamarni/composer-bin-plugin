@@ -91,7 +91,7 @@ This makes sure all your bins are installed during `composer install`.
 
 ### Disable links
 
-By default, binaries of the sub namespaces are linked to the root one like described in [example](#Example). If you
+By default, binaries of the sub namespaces are linked to the root one like described in [example](#example). If you
 wish to disable that behaviour, you can do so by adding a little setting in the extra config:
 
 ```json
