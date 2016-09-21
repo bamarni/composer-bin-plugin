@@ -2,6 +2,7 @@
 
 namespace Bamarni\Composer\Bin;
 
+use Composer\Console\Application as ComposerApplication;
 use Composer\Factory;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -33,44 +34,67 @@ class BinCommand extends BaseCommand
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->resetComposers();
+        $this->resetComposers($application = $this->getApplication());
+        /** @var ComposerApplication $application */
 
         putenv('COMPOSER_BIN_DIR='.$this->createConfig()->get('bin-dir'));
 
-        $binVendorRoot = 'vendor-bin';
-        $binNamespace = $input->getArgument('namespace');
-        $input = new StringInput(preg_replace('/bin\s+' . preg_quote($binNamespace, '/') . '/', '', $input->__toString(), 1));
+        $vendorRoot = 'vendor-bin';
+        $namespace = $input->getArgument('namespace');
+        $input = new StringInput(preg_replace('/bin\s+' . preg_quote($namespace, '/') . '/', '', $input->__toString(), 1));
 
-        if ('all' !== $binNamespace) {
-            $binRoot = $binVendorRoot.'/'.$binNamespace;
-            if (!file_exists($binRoot)) {
-                mkdir($binRoot, 0777, true);
-            }
+        return ('all' !== $namespace)
+            ? $this->executeInNamespace($application, $vendorRoot.'/'.$namespace, $input, $output)
+            : $this->executeAllNamespaces($application, 'vendor-bin', $input, $output)
+        ;
+    }
 
-            $this->chdir($binRoot);
-
-            return $this->getApplication()->doRun($input, $output);
-        }
-
+    /**
+     * @param ComposerApplication $application
+     * @param string              $binVendorRoot
+     * @param InputInterface      $input
+     * @param OutputInterface     $output
+     *
+     * @return int Exit code
+     */
+    private function executeAllNamespaces(ComposerApplication $application, $binVendorRoot, InputInterface $input, OutputInterface $output)
+    {
         $binRoots = glob($binVendorRoot.'/*', GLOB_ONLYDIR);
         if (empty($binRoots)) {
             $this->getIO()->writeError('<warning>Couldn\'t find any bin namespace.</warning>');
 
-            return;
+            return 1;
         }
 
         $originalWorkingDir = getcwd();
         $exitCode = 0;
         foreach ($binRoots as $binRoot) {
-            $this->chdir($binRoot);
-
-            $exitCode += $this->getApplication()->doRun($input, $output);
+            $exitCode += $this->executeInNamespace($application, $binRoot, $input, $output);
 
             chdir($originalWorkingDir);
-            $this->resetComposers();
+            $this->resetComposers($application);
         }
 
         return min($exitCode, 255);
+    }
+
+    /**
+     * @param ComposerApplication $application
+     * @param string              $namespace
+     * @param InputInterface      $input
+     * @param OutputInterface     $output
+     *
+     * @return int Exit code
+     */
+    private function executeInNamespace(ComposerApplication $application, $namespace, InputInterface $input, OutputInterface $output)
+    {
+        if (!file_exists($namespace)) {
+            mkdir($namespace, 0777, true);
+        }
+
+        $this->chdir($namespace);
+
+        return $application->doRun($input, $output);
     }
 
     /**
@@ -81,9 +105,14 @@ class BinCommand extends BaseCommand
         return true;
     }
 
-    private function resetComposers()
+    /**
+     * Resets all Composer references in the application.
+     *
+     * @param ComposerApplication $application
+     */
+    private function resetComposers(ComposerApplication $application)
     {
-        $this->getApplication()->resetComposer();
+        $application->resetComposer();
         foreach ($this->getApplication()->all() as $command) {
             if ($command instanceof BaseCommand) {
                 $command->resetComposer();
