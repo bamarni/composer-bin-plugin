@@ -2,11 +2,16 @@
 
 Isolated vendor for your bin dependencies.
 
+
 ## Why?
 
-As you project grows, it is possible that your bin dependencies collide with each other
-or with your project dependencies. This would either force you to use a lower version of
-a given package, or even worse, make your dependencies unsolvable.
+For various reasons, you may want to install dependencies that are completely isolated from
+the rest of your project. For example if you wish to install two static analysis tools such
+as [deptrac](https://github.com/sensiolabs-de/deptrac) and 
+[deprecation-detector](https://packagist.org/packages/sensiolabs-de/deprecation-detector)
+which have dependencies that conflicts with each other and can conflict with your project,
+this tool would allow you to do so.
+
 
 ## How does this plugin work?
 
@@ -15,20 +20,24 @@ to your [bin-dir](https://getcomposer.org/doc/06-config.md#bin-dir).
 
 This is done by registering a `bin` command, which can be used to run Composer commands inside a namespace.
 
+
 ## Installation
 
-    composer global require bamarni/composer-bin-plugin:0.*
+    $ composer global require bamarni/composer-bin-plugin:^1.0.0@dev
+
 
 ## Usage
 
-    composer bin [namespace] [composer_command]
-    composer global bin [namespace] [composer_command]
+    $ composer bin [namespace] [composer_command]
+    $ composer global bin [namespace] [composer_command]
+
 
 ### Example
 
 Let's install Behat and PHPSpec inside a `bdd` namespace :
 
-    composer bin bdd require behat/behat:^3.0 phpspec/phpspec:^2.0
+    $ composer bin deptrac require sensiolabs-de/deptrac
+    $ composer bin deptrac require sensiolabs-de/deprecation-detector
 
 This command creates the following directory structure :
 
@@ -36,17 +45,23 @@ This command creates the following directory structure :
     ├── composer.lock
     ├── vendor
     │   └── bin
-    │       ├── behat -> ../../vendor-bin/bdd/vendor/behat/behat/bin/behat
-    │       └── phpspec -> ../../vendor-bin/bdd/vendor/phpspec/phpspec/bin/phpspec
+    │       ├── deptrac -> ../../vendor-bin/bdd/vendor/sensiolabs-de/deptrac/bin/deptrac
+    │       └── deprecation-detector -> ../../vendor-bin/bdd/vendor/sensiolabs-de/deprecation-detector/bin/deprecation-detector
     └── vendor-bin
-        └── bdd
+        └── deptrac
+        │   ├── composer.json
+        │   ├── composer.lock
+        │   └── vendor
+        └── deprecation-detector
             ├── composer.json
             ├── composer.lock
             └── vendor
 
 
-You can continue to run `./vendor/bin/behat` and `./vendor/bin/phpspec`,
-but they'll use an isolated set of dependencies.
+You can continue to run `./vendor/bin/deptrac` and `./vendor/bin/deprecation-detector`,
+but they'll use an isolated set of dependencies. In case of conflicts of binaries, none
+are symlinked.
+
 
 ### The "all" namespace
 
@@ -67,27 +82,25 @@ For instance, the following command would update all your bins :
     Nothing to install or update
     Generating autoload files
 
+
 ## Tips
 
-### .gitignore
-
-Make sure to add the following line in your `.gitignore` :
-
-    vendor-bin/*/vendor
 
 ### Auto-installation
 
 For convenience, you can add the following script in your `composer.json` :
 
 ```json
-    {
-        "scripts": {
-            "post-install-cmd": ["@composer bin all install"]
-        }
+{
+    "scripts": {
+        "post-install-cmd": ["@composer bin all install --ansi"],
+        "post-update-cmd": ["@composer bin all update --ansi"]
     }
+}
 ```
 
-This makes sure all your bins are installed during `composer install`.
+This makes sure all your bins are installed during `composer install` and updated during `composer update`.
+
 
 ### Disable links
 
@@ -95,11 +108,16 @@ By default, binaries of the sub namespaces are linked to the root one like descr
 wish to disable that behaviour, you can do so by adding a little setting in the extra config:
 
 ```json
-    {
-        "extra": {
-            "bamarni-bin": {
-                "bin-links": false
-            }
+{
+    "extra": {
+        "bamarni-bin": {
+            "bin-links": false
         }
     }
+}
 ```
+
+
+## License
+
+This project has been released under the [MIT License](LICENSE).
