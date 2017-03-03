@@ -44,7 +44,12 @@ class BinCommand extends BaseCommand
 
         $vendorRoot = 'vendor-bin';
         $namespace = $input->getArgument('namespace');
-        $input = new StringInput(preg_replace('/bin\s+' . preg_quote($namespace, '/') . '/', '', $input->__toString(), 1));
+        $input = new StringInput(preg_replace(
+            sprintf('/bin\s+(--ansi\s)?%s(\s.+)/', preg_quote($namespace, '/')),
+            '$1$2',
+            (string) $input,
+            1
+        ));
 
         return ('all' !== $namespace)
             ? $this->executeInNamespace($application, $vendorRoot.'/'.$namespace, $input, $output)
