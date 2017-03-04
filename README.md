@@ -8,16 +8,16 @@
 ## Table of Contents
 
 1. [Why?](#why)
-1. [How does this plugin work?](how-does-this-plugin-work)
-1. [Installation](installation)
-1. [Usage](usage)
+1. [How does this plugin work?](#how-does-this-plugin-work)
+1. [Installation](#installation)
+1. [Usage](#usage)
     1. [Example](#example)
     1. [The `all` bin namespace](#the-all-bin-namespace)
     1. [What happens when symlink conflicts?](#what-happens-when-symlink-conflicts)
 1. [Tips](#tips)
     1. [Auto-installation](#auto-installation)
     1. [Disable links](#disable-links)
-    1. [Related plugins](#related-plugins)
+1. [Related plugins](#related-plugins)
 
 
 ## Why?
