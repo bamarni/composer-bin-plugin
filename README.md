@@ -1,29 +1,49 @@
-# composer-bin-plugin [![Build Status](https://travis-ci.org/bamarni/composer-bin-plugin.svg?branch=master)](https://travis-ci.org/bamarni/composer-bin-plugin)
+# Composer bin plugin — Isolate your dependencies
 
-Isolated vendor for your bin dependencies.
+[![Package version](http://img.shields.io/packagist/v/bamarni/composer-bin-plugin.svg?style=flat-square)](https://packagist.org/packages/bamarni/composer-bin-plugin.svg)
+[![Build Status](https://img.shields.io/travis/bamarni/composer-bin-plugin.svg.svg?branch=master&style=flat-square)](https://travis-ci.org/bamarni/composer-bin-plugin.svg?branch=master)
+[![License](https://img.shields.io/badge/license-MIT-red.svg?style=flat-square)](LICENSE)
+
+
+## Table of Contents
+
+1. [Why?](#why)
+1. [How does this plugin work?](how-does-this-plugin-work)
+1. [Installation](installation)
+1. [Usage](usage)
+    1. [Example](#example)
+    1. [The `all` bin namespace](#the-all-bin-namespace)
+    1. [What happens when symlink conflicts?](#what-happens-when-symlink-conflicts)
+1. [Tips](#tips)
+    1. [Auto-installation](#auto-installation)
+    1. [Disable links](#disable-links)
+    1. [Related plugins](#related-plugins)
 
 
 ## Why?
 
-For various reasons, you may want to install dependencies that are completely isolated from
-the rest of your project. For example if you wish to install two static analysis tools such
-as [deptrac](https://github.com/sensiolabs-de/deptrac) and 
-[deprecation-detector](https://packagist.org/packages/sensiolabs-de/deprecation-detector)
-which have dependencies that conflicts with each other and can conflict with your project,
-this tool would allow you to do so.
+In PHP, with Composer, your dependencies are flattened, which might result in conflicts. Most of the time those
+conflicts are legitimate and should be properly resolved. However you may have dev tools that you want to manage
+via Composer for convenience, but should not influence your project dependencies or for which conflicts don't make
+sense. For example: [EtsyPhan][1] and [PhpMetrics][2]. Installing one of those static analysis tools should not change
+your application dependencies, neither should it be a problem to install both of them at the same time.
 
 
 ## How does this plugin work?
 
-It allows you to install your bin vendors in isolated locations, and still link them
-to your [bin-dir](https://getcomposer.org/doc/06-config.md#bin-dir).
+It allows you to install your *bin vendors* in isolated locations, and still link them to your
+[bin-dir][3] (if you want to).
 
 This is done by registering a `bin` command, which can be used to run Composer commands inside a namespace.
 
 
 ## Installation
 
-    $ composer global require bamarni/composer-bin-plugin:^1.0.0@dev
+    # Globally
+    $ composer global require bamarni/composer-bin-plugin
+
+    # In your project
+    $ composer require --dev bamarni/composer-bin-plugin
 
 
 ## Usage
@@ -34,43 +54,55 @@ This is done by registering a `bin` command, which can be used to run Composer c
 
 ### Example
 
-Let's install Behat and PHPSpec inside a `bdd` namespace :
+Let's install [Behat][4] and [PhpSpec][5] inside a `bdd` bin namespace, [EtsyPhan][1] in `etsy-phan` and [PhpMetrics][2]
+in `phpmetrics`:
 
-    $ composer bin deptrac require sensiolabs-de/deptrac
-    $ composer bin deptrac require sensiolabs-de/deprecation-detector
+    $ composer bin bdd require behat/behat phpspec/phpspec
+    $ composer bin etsy-phan require etsy/phan
+    $ composer bin phpmetrics require phpmetrics/phpmetrics
 
 This command creates the following directory structure :
 
+    .
     ├── composer.json
     ├── composer.lock
-    ├── vendor
+    ├── vendor/
     │   └── bin
-    │       ├── deptrac -> ../../vendor-bin/bdd/vendor/sensiolabs-de/deptrac/bin/deptrac
-    │       └── deprecation-detector -> ../../vendor-bin/bdd/vendor/sensiolabs-de/deprecation-detector/bin/deprecation-detector
-    └── vendor-bin
-        └── deptrac
+    │       ├── behat -> ../../vendor-bin/bdd/vendor/behat/behat/bin/behat
+    │       ├── phpspec -> ../../vendor-bin/bdd/vendor/phpspec/phpspec/bin/phpspec
+    │       ├── phan -> ../../vendor-bin/etsy-phan/vendor/etsy/phan/phan
+    │       └── phpmetrics -> ../../vendor-bin/phpmetrics/vendor/phpmetrics/phpmetrics/bin/phpmetrics
+    └── vendor-bin/
+        └── bdd
         │   ├── composer.json
         │   ├── composer.lock
-        │   └── vendor
-        └── deprecation-detector
+        │   └── vendor/
+        │       ├── behat/
+        │       ├── phpspec/
+        │       └── ...
+        └── etsy-phan
+        │   ├── composer.json
+        │   ├── composer.lock
+        │   └── vendor/
+        │       ├── etsy/
+        │       └── ...
+        └── phpmetrics
             ├── composer.json
             ├── composer.lock
-            └── vendor
+            └── vendor/
+                ├── phpmetrics/
+                └── ...
 
 
-You can continue to run `./vendor/bin/deptrac` and `./vendor/bin/deprecation-detector`,
-but they'll use an isolated set of dependencies. In case of conflicts of binaries, none
-are symlinked.
+You can continue to run `vendor/bin/deptrac`, `vendor/bin/phpspec` and co. as before but they will be properly isolated.
 
 
-### The "all" namespace
+### The `all` bin namespace
 
-The "all" namespace has a special meaning. It runs a command for
-all existing namespaces.
+The `all` bin namespace has a special meaning. It runs a command for all existing bin namespaces. For instance, the
+following command would update all your bins :
 
-For instance, the following command would update all your bins :
-
-    > composer bin all update
+    $ composer bin all update
     Changed current directory to vendor-bin/phpspec
     Loading composer repositories with package information
     Updating dependencies (including require-dev)
@@ -83,8 +115,33 @@ For instance, the following command would update all your bins :
     Generating autoload files
 
 
-## Tips
+### What happens when symlink conflicts?
 
+If we take the case described in the [example section](#example), there might be more binaries linked due to
+the dependencies. For example [PhpMetrics][2] depends on [Nikic PHP-Parser][6] and as such you will also have `php-parse`
+in `.vendor/bin/`:
+
+    .
+    ├── composer.json
+    ├── composer.lock
+    ├── vendor/
+    │   └── bin
+    │       ├── phpmetrics -> ../../vendor-bin/phpmetrics/vendor/phpmetrics/phpmetrics/bin/phpmetrics
+    │       └── php-parse -> ../../vendor-bin/phpmetrics/vendor/nikic/PHP-Parser/bin/php-parsee
+    └── vendor-bin/
+        └── phpmetrics
+            ├── composer.json
+            ├── composer.lock
+            └── vendor/
+                ├── phpmetrics/
+                ├── nikic/
+                └── ...
+
+But what happens if another bin-namespace has a dependency using [Nikic PHP-Parser][6]? In that situation symlinks would
+collides and are not created (only the colliding ones).
+
+
+## Tips
 
 ### Auto-installation
 
@@ -118,6 +175,15 @@ wish to disable that behaviour, you can do so by adding a little setting in the 
 ```
 
 
-## License
+## Related plugins
 
-This project has been released under the [MIT License](LICENSE).
+* [theofidry/composer-inheritance-plugin][7]
+
+
+[1]: https://github.com/etsy/phan
+[2]: https://github.com/phpmetrics/PhpMetrics
+[3]: https://getcomposer.org/doc/06-config.md#bin-dir
+[4]: http://behat.org
+[5]: http://phpspec.net
+[6]: https://github.com/nikic/PHP-Parser
+[7]: https://github.com/theofidry/composer-inheritance-plugin
