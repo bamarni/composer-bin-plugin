@@ -1,7 +1,7 @@
-# Composer bin plugin — Isolate your dependencies
+# Composer bin plugin — Isolate your bin dependencies
 
 [![Package version](http://img.shields.io/packagist/v/bamarni/composer-bin-plugin.svg?style=flat-square)](https://packagist.org/packages/bamarni/composer-bin-plugin.svg)
-[![Build Status](https://img.shields.io/travis/bamarni/composer-bin-plugin.svg.svg?branch=master&style=flat-square)](https://travis-ci.org/bamarni/composer-bin-plugin.svg?branch=master)
+[![Build Status](https://img.shields.io/travis/bamarni/composer-bin-plugin.svg?branch=master&style=flat-square)](https://travis-ci.org/bamarni/composer-bin-plugin.svg?branch=master)
 [![License](https://img.shields.io/badge/license-MIT-red.svg?style=flat-square)](LICENSE)
 
 
