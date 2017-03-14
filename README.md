@@ -177,7 +177,7 @@ wish to disable that behaviour, you can do so by adding a little setting in the 
 
 ## Related plugins
 
-* [theofidry/composer-inheritance-plugin][7]
+* [theofidry/composer-inheritance-plugin][7]: Opinionated version of [Wikimedia composer-merge-plugin][8] to work in pair with this plugin.
 
 
 [1]: https://github.com/etsy/phan
@@ -187,3 +187,4 @@ wish to disable that behaviour, you can do so by adding a little setting in the 
 [5]: http://phpspec.net
 [6]: https://github.com/nikic/PHP-Parser
 [7]: https://github.com/theofidry/composer-inheritance-plugin
+[8]: https://github.com/wikimedia/composer-merge-plugin
