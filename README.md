@@ -94,7 +94,7 @@ This command creates the following directory structure :
                 └── ...
 
 
-You can continue to run `vendor/bin/deptrac`, `vendor/bin/phpspec` and co. as before but they will be properly isolated.
+You can continue to run `vendor/bin/behat`, `vendor/bin/phpspec` and co. as before but they will be properly isolated.
 
 
 ### The `all` bin namespace
