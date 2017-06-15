@@ -175,6 +175,21 @@ wish to disable that behaviour, you can do so by adding a little setting in the 
 ```
 
 
+### Change directory
+
+By default, the packages are looked for in the `vendor-bin` directory. The location can be changed using `target-directory` value in the extra config:
+
+```json
+{
+    "extra": {
+        "bamarni-bin": {
+            "target-directory": "ci/vendor"
+        }
+    }
+}
+```
+
+
 ## Related plugins
 
 * [theofidry/composer-inheritance-plugin][7]: Opinionated version of [Wikimedia composer-merge-plugin][8] to work in pair with this plugin.

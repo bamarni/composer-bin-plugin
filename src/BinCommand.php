@@ -42,7 +42,7 @@ class BinCommand extends BaseCommand
             putenv('COMPOSER_BIN_DIR='.$this->createConfig()->get('bin-dir'));
         }
 
-        $vendorRoot = 'vendor-bin';
+        $vendorRoot = $config->getTargetDirectory();
         $namespace = $input->getArgument('namespace');
         $input = new StringInput(preg_replace(
             sprintf('/bin\s+(--ansi\s)?%s(\s.+)/', preg_quote($namespace, '/')),
@@ -53,7 +53,7 @@ class BinCommand extends BaseCommand
 
         return ('all' !== $namespace)
             ? $this->executeInNamespace($application, $vendorRoot.'/'.$namespace, $input, $output)
-            : $this->executeAllNamespaces($application, 'vendor-bin', $input, $output)
+            : $this->executeAllNamespaces($application, $vendorRoot, $input, $output)
         ;
     }
 
