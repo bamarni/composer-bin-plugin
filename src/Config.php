@@ -14,6 +14,7 @@ final class Config
         $this->config = array_merge(
             array(
                 'bin-links' => true,
+                'target-directory' => 'vendor-bin',
             ),
             isset($extra['bamarni-bin']) ? $extra['bamarni-bin'] : array()
         );
@@ -25,5 +26,13 @@ final class Config
     public function binLinksAreEnabled()
     {
         return true === $this->config['bin-links'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getTargetDirectory()
+    {
+        return $this->config['target-directory'];
     }
 }
