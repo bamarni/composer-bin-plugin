@@ -101,6 +101,7 @@ class BinCommand extends BaseCommand
         }
 
         $this->chdir($namespace);
+        $input = new StringInput((string) $input . ' --working-dir=.');
 
         return $application->doRun($input, $output);
     }
