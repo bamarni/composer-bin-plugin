@@ -4,6 +4,7 @@ namespace Bamarni\Composer\Bin;
 
 use Composer\Console\Application as ComposerApplication;
 use Composer\Factory;
+use Composer\IO\IOInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\StringInput;
@@ -103,6 +104,8 @@ class BinCommand extends BaseCommand
         $this->chdir($namespace);
         $input = new StringInput((string) $input . ' --working-dir=.');
 
+        $this->getIO()->write('<info>Run with <comment>' . $input->__toString() . '</comment></info>', true, IOInterface::VERBOSE);
+        
         return $application->doRun($input, $output);
     }
 
@@ -132,7 +135,7 @@ class BinCommand extends BaseCommand
     private function chdir($dir)
     {
         chdir($dir);
-        $this->getIO()->writeError('<info>Changed current directory to ' . $dir . '</info>');
+        $this->getIO()->write('<info>Changed current directory to ' . $dir . '</info>', true, IOInterface::VERBOSE);
     }
 
     private function createConfig()
