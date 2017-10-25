@@ -15,7 +15,7 @@ php:
 matrix:
   fast_finish: true
   include:
-    - php: '5.3'
+    - php: '5.4'
       env: COMPOSER_FLAGS='--prefer-lowest'
   allow_failures:
     - php: nightly
