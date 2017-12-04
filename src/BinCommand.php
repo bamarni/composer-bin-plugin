@@ -104,7 +104,7 @@ class BinCommand extends BaseCommand
         $this->chdir($namespace);
         $input = new StringInput((string) $input . ' --working-dir=.');
 
-        $this->getIO()->write('<info>Run with <comment>' . $input->__toString() . '</comment></info>', true, IOInterface::VERBOSE);
+        $this->getIO()->writeError('<info>Run with <comment>' . $input->__toString() . '</comment></info>', true, IOInterface::VERBOSE);
         
         return $application->doRun($input, $output);
     }
@@ -135,7 +135,7 @@ class BinCommand extends BaseCommand
     private function chdir($dir)
     {
         chdir($dir);
-        $this->getIO()->write('<info>Changed current directory to ' . $dir . '</info>', true, IOInterface::VERBOSE);
+        $this->getIO()->writeError('<info>Changed current directory to ' . $dir . '</info>', true, IOInterface::VERBOSE);
     }
 
     private function createConfig()
