@@ -102,6 +102,11 @@ class BinCommand extends BaseCommand
         }
 
         $this->chdir($namespace);
+        
+        if (!file_exists(Factory::getComposerFile())) {
+            file_put_contents(Factory::getComposerFile(), '{}');
+        }
+        
         $input = new StringInput((string) $input . ' --working-dir=.');
 
         $this->getIO()->writeError('<info>Run with <comment>' . $input->__toString() . '</comment></info>', true, IOInterface::VERBOSE);
