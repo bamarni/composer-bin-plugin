@@ -17,6 +17,8 @@
 1. [Tips](#tips)
     1. [Auto-installation](#auto-installation)
     1. [Disable links](#disable-links)
+    1. [Change directory](#change-directory)
+    1. [Reduce clutter](#reduce-clutter)
 1. [Related plugins](#related-plugins)
 
 
