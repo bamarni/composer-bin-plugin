@@ -2,7 +2,6 @@
 
 namespace Bamarni\Composer\Bin\Tests\Fixtures;
 
-use Composer\Composer;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,7 +28,7 @@ class MyTestCommand extends BaseCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $this->assert->assertInstanceOf(
-            Composer::class,
+            '\Composer\Composer',
             $this->getComposer(),
             "Some plugins may require access to composer file e.g. Symfony Flex"
         );
