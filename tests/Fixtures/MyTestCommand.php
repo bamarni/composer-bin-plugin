@@ -2,6 +2,7 @@
 
 namespace Bamarni\Composer\Bin\Tests\Fixtures;
 
+use Composer\Composer;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -27,12 +28,11 @@ class MyTestCommand extends BaseCommand
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        // make sure the proxy command didn't instantiate Composer
-        $this->assert->assertNull($this->getComposer(false));
-        $this->assert->assertNull($this->getApplication()->getComposer(false));
-
-        // put a dummy composer.json to be able to create Composer
-        file_put_contents(getcwd().'/composer.json', '{}');
+        $this->assert->assertInstanceOf(
+            Composer::class,
+            $this->getComposer(),
+            "Some plugins may require access to composer file e.g. Symfony Flex"
+        );
 
         $factory = Factory::create(new NullIO());
         $config = $factory->getConfig();

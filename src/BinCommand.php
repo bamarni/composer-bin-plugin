@@ -102,7 +102,8 @@ class BinCommand extends BaseCommand
         }
 
         $this->chdir($namespace);
-        
+
+        // some plugins require access to composer file e.g. Symfony Flex
         if (!file_exists(Factory::getComposerFile())) {
             file_put_contents(Factory::getComposerFile(), '{}');
         }
