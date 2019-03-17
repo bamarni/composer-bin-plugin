@@ -153,6 +153,7 @@ For convenience, you can add the following script in your `composer.json` :
 ```json
 {
     "scripts": {
+        "bin": "echo 'bin not installed'",
         "post-install-cmd": ["@composer bin all install --ansi"],
         "post-update-cmd": ["@composer bin all update --ansi"]
     }
