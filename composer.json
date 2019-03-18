@@ -2,6 +2,15 @@
     "name": "bamarni/composer-bin-plugin",
     "type": "composer-plugin",
     "license": "MIT",
+    "description": "No conflicts for your bin dependencies",
+    "keywords": [
+        "composer",
+        "dependency",
+        "tool",
+        "isolation",
+        "conflict",
+        "executable"
+    ],
     "autoload": {
         "psr-4": {
             "Bamarni\\Composer\\Bin\\": "src"
@@ -28,5 +37,8 @@
         "branch-alias": {
             "dev-master": "1.1-dev"
         }
+    },
+    "config": {
+        "sort-packages": true
     }
 }
