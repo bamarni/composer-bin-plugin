@@ -22,9 +22,6 @@
         "sort-packages": true
     },
     "extra": {
-        "branch-alias": {
-            "dev-master": "1.3-dev"
-        },
         "class": "Bamarni\\Composer\\Bin\\Plugin"
     },
     "autoload": {
