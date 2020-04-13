@@ -25,4 +25,18 @@ class Plugin implements PluginInterface, Capable
             'Composer\Plugin\Capability\CommandProvider' => 'Bamarni\Composer\Bin\CommandProvider',
         ];
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function deactivate(Composer $composer, IOInterface $io)
+    {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function uninstall(Composer $composer, IOInterface $io)
+    {
+    }
 }
