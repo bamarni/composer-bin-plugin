@@ -23,16 +23,16 @@ class BinCommandTest extends \PHPUnit_Framework_TestCase
         file_put_contents($this->rootDir.'/composer.json', '{}');
 
         $this->application = new Application();
-        $this->application->addCommands(array(
+        $this->application->addCommands([
             new BinCommand(),
             $this->myTestCommand = new MyTestCommand($this),
-        ));
+        ]);
     }
 
     public function tearDown()
     {
         putenv('COMPOSER_BIN_DIR');
-        $this->myTestCommand->data = array();
+        $this->myTestCommand->data = [];
     }
 
     /**
@@ -53,10 +53,10 @@ class BinCommandTest extends \PHPUnit_Framework_TestCase
 
     public static function namespaceProvider()
     {
-        return array(
-            array('bin mynamespace mytest'),
-            array('bin mynamespace mytest --myoption'),
-        );
+        return [
+            ['bin mynamespace mytest'],
+            ['bin mynamespace mytest --myoption'],
+        ];
     }
 
     public function testAllNamespaceWithoutAnyNamespace()
@@ -70,7 +70,7 @@ class BinCommandTest extends \PHPUnit_Framework_TestCase
 
     public function testAllNamespaceCommand()
     {
-        $namespaces = array('mynamespace', 'yournamespace');
+        $namespaces = ['mynamespace', 'yournamespace'];
         foreach ($namespaces as $ns) {
             mkdir($this->rootDir.'/vendor-bin/'.$ns, 0777, true);
         }
@@ -92,11 +92,11 @@ class BinCommandTest extends \PHPUnit_Framework_TestCase
     public function testBinDirFromLocalConfig()
     {
         $binDir = 'bin';
-        $composer = array(
-            'config' => array(
+        $composer = [
+            'config' => [
                 'bin-dir' => $binDir
-            )
-        );
+            ]
+        ];
         file_put_contents($this->rootDir.'/composer.json', json_encode($composer));
 
         $input = new StringInput('bin theirspace mytest');

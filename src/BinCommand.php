@@ -22,10 +22,10 @@ class BinCommand extends BaseCommand
         $this
             ->setName('bin')
             ->setDescription('Run a command inside a bin namespace')
-            ->setDefinition(array(
+            ->setDefinition([
                 new InputArgument('namespace', InputArgument::REQUIRED),
                 new InputArgument('args', InputArgument::REQUIRED | InputArgument::IS_ARRAY),
-            ))
+            ])
             ->ignoreValidationErrors()
         ;
     }

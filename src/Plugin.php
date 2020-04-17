@@ -21,8 +21,8 @@ class Plugin implements PluginInterface, Capable
      */
     public function getCapabilities()
     {
-        return array(
+        return [
             'Composer\Plugin\Capability\CommandProvider' => 'Bamarni\Composer\Bin\CommandProvider',
-        );
+        ];
     }
 }

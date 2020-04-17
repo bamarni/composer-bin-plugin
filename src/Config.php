@@ -12,11 +12,11 @@ final class Config
     {
         $extra = $composer->getPackage()->getExtra();
         $this->config = array_merge(
-            array(
+            [
                 'bin-links' => true,
                 'target-directory' => 'vendor-bin',
-            ),
-            isset($extra['bamarni-bin']) ? $extra['bamarni-bin'] : array()
+            ],
+            isset($extra['bamarni-bin']) ? $extra['bamarni-bin'] : []
         );
     }
 

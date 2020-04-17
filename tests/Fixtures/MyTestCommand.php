@@ -11,7 +11,7 @@ use Composer\IO\NullIO;
 
 class MyTestCommand extends BaseCommand
 {
-    public $data = array();
+    public $data = [];
 
     private $assert;
 
@@ -20,9 +20,9 @@ class MyTestCommand extends BaseCommand
         $this->assert = $assert;
 
         parent::__construct('mytest');
-        $this->setDefinition(array(
+        $this->setDefinition([
             new InputOption('myoption', null, InputOption::VALUE_NONE),
-        ));
+        ]);
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
@@ -36,11 +36,11 @@ class MyTestCommand extends BaseCommand
         $factory = Factory::create(new NullIO());
         $config = $factory->getConfig();
 
-        $this->data[] = array(
+        $this->data[] = [
             'bin-dir' => $config->get('bin-dir'),
             'cwd' => getcwd(),
             'vendor-dir' => $config->get('vendor-dir'),
-        );
+        ];
 
         $this->resetComposer();
         $this->getApplication()->resetComposer();
