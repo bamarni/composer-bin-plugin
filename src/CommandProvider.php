@@ -11,6 +11,6 @@ class CommandProvider implements CommandProviderCapability
      */
     public function getCommands()
     {
-        return array(new BinCommand);
+        return [new BinCommand];
     }
 }
