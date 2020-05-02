@@ -4,29 +4,44 @@ cache:
   directories:
     - "$HOME/.composer/cache"
 
-php:
-  - '5.6'
-  - '7.0'
-  - '7.1'
-  - '7.2'
-  - '7.3'
-  - '7.4'
-  - 'nightly'
-
-matrix:
-  fast_finish: true
+jobs:
   include:
-    - php: '5.6'
+    - name: PHP 5.5.9
+      php: 5.5.9
+      dist: trusty
       env: COMPOSER_FLAGS='--prefer-lowest'
-  allow_failures:
-    - php: nightly
+    - name: PHP 5.5
+      php: 5.5
+      dist: trusty
+    - name: PHP 5.6
+      php: 5.6
+      dist: xenial
+    - name: PHP 7.0
+      php: 7.0
+      dist: xenial
+    - name: PHP 7.1
+      php: 7.1
+      dist: bionic
+    - name: PHP 7.2
+      php: 7.2
+      dist: bionic
+    - name: PHP 7.3
+      php: 7.3
+      dist: bionic
+    - name: PHP 7.4
+      php: 7.4
+      dist: bionic
+    - name: PHP 8.0
+      php: nightly
+      dist: bionic
 
 before_install:
   - composer global config repositories.bin path $PWD
   - composer global require bamarni/composer-bin-plugin:dev-master
 
 install:
-  - composer install
+  - if [ "$TRAVIS_PHP_VERSION" != "nightly" ]; then composer update --no-interaction; fi
+  - if [ "$TRAVIS_PHP_VERSION" == "nightly" ]; then composer update --no-interaction --ignore-platform-reqs; fi
 
 script:
   - vendor/bin/phpunit
