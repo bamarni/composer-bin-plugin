@@ -34,14 +34,15 @@ jobs:
     - name: PHP 8.0
       php: nightly
       dist: bionic
+  allow_failures:
+    - php: nightly
 
 before_install:
   - composer global config repositories.bin path $PWD
   - composer global require bamarni/composer-bin-plugin:dev-master
 
 install:
-  - if [ "$TRAVIS_PHP_VERSION" != "nightly" ]; then composer update --no-interaction; fi
-  - if [ "$TRAVIS_PHP_VERSION" == "nightly" ]; then composer update --no-interaction --ignore-platform-reqs; fi
+  - composer update --no-interaction
 
 script:
   - vendor/bin/phpunit
