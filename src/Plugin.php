@@ -10,14 +10,14 @@ use Composer\Plugin\Capable;
 class Plugin implements PluginInterface, Capable
 {
     /**
-     * {@inheritDoc}
+     * @return void
      */
-    public function activate(Composer $composer, IOInterface $io): void
+    public function activate(Composer $composer, IOInterface $io)
     {
     }
 
     /**
-     * {@inheritDoc}
+     * @return array
      */
     public function getCapabilities(): array
     {
@@ -27,14 +27,14 @@ class Plugin implements PluginInterface, Capable
     }
 
     /**
-     * {@inheritDoc}
+     * @return void
      */
     public function deactivate(Composer $composer, IOInterface $io): void
     {
     }
 
     /**
-     * {@inheritDoc}
+     * @return void
      */
     public function uninstall(Composer $composer, IOInterface $io): void
     {
