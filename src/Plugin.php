@@ -12,14 +12,14 @@ class Plugin implements PluginInterface, Capable
     /**
      * {@inheritDoc}
      */
-    public function activate(Composer $composer, IOInterface $io)
+    public function activate(Composer $composer, IOInterface $io): void
     {
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getCapabilities()
+    public function getCapabilities(): array
     {
         return [
             'Composer\Plugin\Capability\CommandProvider' => 'Bamarni\Composer\Bin\CommandProvider',
@@ -29,14 +29,14 @@ class Plugin implements PluginInterface, Capable
     /**
      * {@inheritDoc}
      */
-    public function deactivate(Composer $composer, IOInterface $io)
+    public function deactivate(Composer $composer, IOInterface $io): void
     {
     }
 
     /**
      * {@inheritDoc}
      */
-    public function uninstall(Composer $composer, IOInterface $io)
+    public function uninstall(Composer $composer, IOInterface $io): void
     {
     }
 }
