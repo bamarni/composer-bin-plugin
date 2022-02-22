@@ -18,6 +18,7 @@
     1. [Auto-installation](#auto-installation)
     1. [Disable links](#disable-links)
     1. [Change directory](#change-directory)
+    1. [Forward mode](#forward-mode)
     1. [Reduce clutter](#reduce-clutter)
 1. [Related plugins](#related-plugins)
 
@@ -162,7 +163,6 @@ For convenience, you can add the following script in your `composer.json` :
 
 This makes sure all your bins are installed during `composer install` and updated during `composer update`.
 
-
 ### Disable links
 
 By default, binaries of the sub namespaces are linked to the root one like described in [example](#example). If you
@@ -178,7 +178,6 @@ wish to disable that behaviour, you can do so by adding a little setting in the 
 }
 ```
 
-
 ### Change directory
 
 By default, the packages are looked for in the `vendor-bin` directory. The location can be changed using `target-directory` value in the extra config:
@@ -192,6 +191,23 @@ By default, the packages are looked for in the `vendor-bin` directory. The locat
     }
 }
 ```
+
+### Forward mode
+
+There is a `forward mode` which is disabled by default. This can be activated by using the `forward-command` value in the extra config.
+
+```json
+{
+    "extra": {
+        "bamarni-bin": {
+            "forward-command": true
+        }
+    }
+}
+```
+
+If this mode is activated, all your `composer install` and `composer update` commands are forwared to all bin directories.
+This is an replacement for the tasks shown in section [Auto-installation](#auto-installation).
 
 ### Reduce clutter
 
