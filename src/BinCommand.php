@@ -45,6 +45,7 @@ class BinCommand extends BaseCommand
 
         $vendorRoot = $config->getTargetDirectory();
         $namespace = $input->getArgument('namespace');
+
         $input = new StringInput(preg_replace(
             sprintf('/bin\s+(--ansi\s)?%s(\s.+)/', preg_quote($namespace, '/')),
             '$1$2',
@@ -77,8 +78,12 @@ class BinCommand extends BaseCommand
 
         $originalWorkingDir = getcwd();
         $exitCode = 0;
-        foreach ($binRoots as $binRoot) {
-            $exitCode += $this->executeInNamespace($application, $binRoot, $input, $output);
+        foreach ($binRoots as $namespace) {
+            $output->writeln(
+                sprintf('Run in namespace <comment>%s</comment>', $namespace),
+                OutputInterface::VERBOSITY_VERBOSE
+            );
+            $exitCode += $this->executeInNamespace($application, $namespace, $input, $output);
 
             chdir($originalWorkingDir);
             $this->resetComposers($application);
@@ -107,11 +112,15 @@ class BinCommand extends BaseCommand
         if (!file_exists(Factory::getComposerFile())) {
             file_put_contents(Factory::getComposerFile(), '{}');
         }
-        
+
         $input = new StringInput((string) $input . ' --working-dir=.');
 
-        $this->getIO()->writeError('<info>Run with <comment>' . $input->__toString() . '</comment></info>', true, IOInterface::VERBOSE);
-        
+        $this->getIO()->writeError(
+            sprintf('<info>Run with <comment>%s</comment></info>', $input->__toString()),
+            true,
+            IOInterface::VERBOSE
+        );
+
         return $application->doRun($input, $output);
     }
 
@@ -127,10 +136,12 @@ class BinCommand extends BaseCommand
      * Resets all Composer references in the application.
      *
      * @param ComposerApplication $application
+     * @return void
      */
     private function resetComposers(ComposerApplication $application)
     {
         $application->resetComposer();
+
         foreach ($this->getApplication()->all() as $command) {
             if ($command instanceof BaseCommand) {
                 $command->resetComposer();
@@ -138,12 +149,26 @@ class BinCommand extends BaseCommand
         }
     }
 
+    /**
+     * @param $dir
+     * @return void
+     */
     private function chdir($dir)
     {
         chdir($dir);
-        $this->getIO()->writeError('<info>Changed current directory to ' . $dir . '</info>', true, IOInterface::VERBOSE);
+
+        $this->getIO()->writeError(
+            sprintf('<info>Changed current directory to %s</info>', $dir),
+            true,
+            IOInterface::VERBOSE
+        );
     }
 
+    /**
+     * @return \Composer\Config
+     * @throws \Composer\Json\JsonValidationException
+     * @throws \Seld\JsonLint\ParsingException
+     */
     private function createConfig()
     {
         $config = Factory::createConfig();

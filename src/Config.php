@@ -15,6 +15,7 @@ final class Config
             [
                 'bin-links' => true,
                 'target-directory' => 'vendor-bin',
+                'forward-command' => false,
             ],
             isset($extra['bamarni-bin']) ? $extra['bamarni-bin'] : []
         );
@@ -34,5 +35,13 @@ final class Config
     public function getTargetDirectory()
     {
         return $this->config['target-directory'];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCommandForwarded()
+    {
+        return $this->config['forward-command'];
     }
 }
