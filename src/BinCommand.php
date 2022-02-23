@@ -150,7 +150,7 @@ class BinCommand extends BaseCommand
     }
 
     /**
-     * @param $dir
+     * @param string $dir
      * @return void
      */
     private function chdir($dir)
