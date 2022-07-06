@@ -1,0 +1,46 @@
+name: "CI"
+
+on:
+    push:
+        branches:
+            - "main"
+            - "master"
+    pull_request: null
+
+jobs:
+    tests:
+        runs-on: "ubuntu-latest"
+        name: "Test PHP${{ matrix.php }}"
+        strategy:
+            fail-fast: true
+            matrix:
+                php:
+                    - "7.2"
+                    - "7.3"
+                    - "7.4"
+                    - "8.0"
+                    - "8.1"
+
+        steps:
+            -   name: "Check out repository code"
+                uses: "actions/checkout@v2"
+
+            -   name: "Setup PHP"
+                uses: "shivammathur/setup-php@v2"
+                with:
+                    php-version: "${{ matrix.php }}"
+                    tools: "composer"
+
+            -   name: "Configure Composer bin directory"
+                run: "composer global config repositories.bin path $PWD"
+
+            -   name: "Install Composer bin plugin"
+                run: "composer global require bamarni/composer-bin-plugin:dev-master"
+
+            -   name: "Install Composer dependencies"
+                uses: "ramsey/composer-install@v2"
+                with:
+                    dependency-versions: "highest"
+
+            -   name: "Run tests"
+                run: "vendor/bin/phpunit"
