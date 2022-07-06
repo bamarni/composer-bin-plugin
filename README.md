@@ -206,7 +206,7 @@ There is a `forward mode` which is disabled by default. This can be activated by
 }
 ```
 
-If this mode is activated, all your `composer install` and `composer update` commands are forwared to all bin directories.
+If this mode is activated, all your `composer install` and `composer update` commands are forwarded to all bin directories.
 This is an replacement for the tasks shown in section [Auto-installation](#auto-installation).
 
 ### Reduce clutter
