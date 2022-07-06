@@ -5,16 +5,17 @@ namespace Bamarni\Composer\Bin\Tests;
 use Composer\Console\Application;
 use Bamarni\Composer\Bin\BinCommand;
 use Bamarni\Composer\Bin\Tests\Fixtures\MyTestCommand;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 
-class BinCommandTest extends \PHPUnit_Framework_TestCase
+class BinCommandTest extends TestCase
 {
     private $application;
     private $myTestCommand;
     private $rootDir;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->rootDir = sys_get_temp_dir().'/'.uniqid('composer_bin_plugin_tests_');
         mkdir($this->rootDir);
@@ -29,7 +30,7 @@ class BinCommandTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         putenv('COMPOSER_BIN_DIR');
         $this->myTestCommand->data = [];
