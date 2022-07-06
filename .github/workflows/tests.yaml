@@ -35,7 +35,14 @@ jobs:
                 run: |
                     composer global config repositories.bin path $PWD
                     composer global config allow-plugins.bamarni/composer-bin-plugin true
-                    composer global require bamarni/composer-bin-plugin:dev-${GITHUB_SHA}
+
+            -   name: "Install bin plugin globally (PR)"
+                if: github.event_name == 'pull_request'
+                run: composer global require bamarni/composer-bin-plugin:dev-${GITHUB_SHA}
+
+            -   name: "Install bin plugin globally (master)"
+                if: github.event_name != 'pull_request'
+                run: composer global require bamarni/composer-bin-plugin:dev-master
 
             -   name: "Install Composer dependencies"
                 uses: "ramsey/composer-install@v2"
