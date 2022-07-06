@@ -229,6 +229,17 @@ vendor-bin/**/composer.lock binary
 * [theofidry/composer-inheritance-plugin][7]: Opinionated version of [Wikimedia composer-merge-plugin][8] to work in pair with this plugin.
 
 
+## Contributing
+
+Before getting started, you need to install the plugin globally:
+
+```bash
+$ composer global require --dev bamarni/composer-bin-plugin
+$ composer install  # now works
+$ vendor/bin/phpunit # run the tests
+```
+
+
 [1]: https://github.com/etsy/phan
 [2]: https://github.com/phpmetrics/PhpMetrics
 [3]: https://getcomposer.org/doc/06-config.md#bin-dir
