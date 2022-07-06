@@ -3,9 +3,13 @@
 namespace Bamarni\Composer\Bin;
 
 use Composer\Composer;
+use function array_merge;
 
 final class Config
 {
+    /**
+     * @var array{'bin-links': bool, 'target-directory': string, 'forward-command': bool}
+     */
     private $config;
 
     public function __construct(Composer $composer)
@@ -17,30 +21,21 @@ final class Config
                 'target-directory' => 'vendor-bin',
                 'forward-command' => false,
             ],
-            isset($extra['bamarni-bin']) ? $extra['bamarni-bin'] : []
+            $extra['bamarni-bin'] ?? []
         );
     }
 
-    /**
-     * @return bool
-     */
-    public function binLinksAreEnabled()
+    public function binLinksAreEnabled(): bool
     {
         return true === $this->config['bin-links'];
     }
 
-    /**
-     * @return string
-     */
-    public function getTargetDirectory()
+    public function getTargetDirectory(): string
     {
         return $this->config['target-directory'];
     }
 
-    /**
-     * @return bool
-     */
-    public function isCommandForwarded()
+    public function isCommandForwarded(): bool
     {
         return $this->config['forward-command'];
     }
