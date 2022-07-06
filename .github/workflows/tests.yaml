@@ -1,4 +1,4 @@
-name: "CI"
+name: "Tests"
 
 on:
     push:
@@ -10,9 +10,9 @@ on:
 jobs:
     tests:
         runs-on: "ubuntu-latest"
-        name: "Test PHP${{ matrix.php }}"
+        name: "Test PHP ${{ matrix.php }}"
         strategy:
-            fail-fast: true
+            fail-fast: false
             matrix:
                 php:
                     - "7.2"
@@ -31,16 +31,19 @@ jobs:
                     php-version: "${{ matrix.php }}"
                     tools: "composer"
 
-            -   name: "Configure Composer bin directory"
-                run: "composer global config repositories.bin path $PWD"
-
-            -   name: "Install Composer bin plugin"
-                run: "composer global require bamarni/composer-bin-plugin:dev-master"
+            -   name: "Configure global composer"
+                run: |
+                    composer global config repositories.bin path $PWD
+                    composer global config allow-plugins.bamarni/composer-bin-plugin true
+                    composer global require bamarni/composer-bin-plugin:dev-${GITHUB_SHA}
 
             -   name: "Install Composer dependencies"
                 uses: "ramsey/composer-install@v2"
                 with:
                     dependency-versions: "highest"
+
+            -   name: "Validate composer.json"
+                run: "composer validate --strict --no-check-lock"
 
             -   name: "Run tests"
                 run: "vendor/bin/phpunit"

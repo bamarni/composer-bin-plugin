@@ -21,6 +21,7 @@
     1. [Forward mode](#forward-mode)
     1. [Reduce clutter](#reduce-clutter)
 1. [Related plugins](#related-plugins)
+1. [Contributing](#contributing)
 
 
 ## Why?
@@ -227,6 +228,17 @@ vendor-bin/**/composer.lock binary
 ## Related plugins
 
 * [theofidry/composer-inheritance-plugin][7]: Opinionated version of [Wikimedia composer-merge-plugin][8] to work in pair with this plugin.
+
+
+## Contributing
+
+Before getting started, you need to install the plugin globally:
+
+```bash
+$ composer global require --dev bamarni/composer-bin-plugin
+$ composer install  # now works
+$ vendor/bin/phpunit # run the tests
+```
 
 
 [1]: https://github.com/etsy/phan
