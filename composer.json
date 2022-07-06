@@ -44,7 +44,7 @@
             "@composer bin phpunit install"
         ],
         "post-update-cmd": [
-            "@composer bin phpunit install"
+            "@post-install-cmd"
         ]
     }
 }
