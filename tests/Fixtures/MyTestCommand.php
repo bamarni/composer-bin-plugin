@@ -2,7 +2,9 @@
 
 namespace Bamarni\Composer\Bin\Tests\Fixtures;
 
+use Composer\Composer;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,27 +14,32 @@ use Composer\IO\NullIO;
 
 class MyTestCommand extends BaseCommand
 {
+    /**
+     * @var mixed|Composer
+     */
+    public $composer;
+
+    /**
+     * @var list<array{'bin-dir': string, 'cwd': string, 'vendor-bin': string}>
+     */
     public $data = [];
 
-    private $assert;
-
-    public function __construct(Assert $assert)
+    public function __construct()
     {
-        $this->assert = $assert;
-
         parent::__construct('mytest');
+
         $this->setDefinition([
-            new InputOption('myoption', null, InputOption::VALUE_NONE),
+            new InputOption(
+                'myoption',
+                null,
+                InputOption::VALUE_NONE
+            ),
         ]);
     }
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->assert->assertInstanceOf(
-            '\Composer\Composer',
-            $this->getComposer(),
-            "Some plugins may require access to composer file e.g. Symfony Flex"
-        );
+        $this->composer = $this->getComposer();
 
         $factory = Factory::create(new NullIO());
         $config = $factory->getConfig();
