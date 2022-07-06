@@ -21,6 +21,7 @@
     1. [Forward mode](#forward-mode)
     1. [Reduce clutter](#reduce-clutter)
 1. [Related plugins](#related-plugins)
+1. [Contributing](#contributing)
 
 
 ## Why?
