@@ -1,8 +1,7 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin;
 
-use Composer\Composer;
 use function array_merge;
 
 final class Config
@@ -12,9 +11,8 @@ final class Config
      */
     private $config;
 
-    public function __construct(Composer $composer)
+    public function __construct(array $extra)
     {
-        $extra = $composer->getPackage()->getExtra();
         $this->config = array_merge(
             [
                 'bin-links' => true,

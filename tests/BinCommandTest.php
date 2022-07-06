@@ -1,27 +1,23 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin\Tests;
 
-use Composer\Composer;
-use Composer\Console\Application;
 use Bamarni\Composer\Bin\BinCommand;
 use Bamarni\Composer\Bin\Tests\Fixtures\MyTestCommand;
+use Composer\Composer;
+use Composer\Console\Application;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use function array_shift;
 use function chdir;
-use function count;
 use function file_put_contents;
 use function getcwd;
 use function json_encode;
 use function mkdir;
 use function putenv;
 use function realpath;
-use function sprintf;
 use function sys_get_temp_dir;
-use function uniqid;
-use function var_dump;
 
 class BinCommandTest extends TestCase
 {
