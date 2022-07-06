@@ -2,6 +2,7 @@
 
 namespace Bamarni\Composer\Bin;
 
+use Composer\Config as ComposerConfig;
 use Composer\Console\Application as ComposerApplication;
 use Composer\Factory;
 use Composer\IO\IOInterface;
@@ -11,13 +12,20 @@ use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 use Composer\Json\JsonFile;
+use function chdir;
+use function file_exists;
+use function file_put_contents;
+use function glob;
+use function min;
+use function mkdir;
+use function preg_quote;
+use function preg_replace;
+use function putenv;
+use function sprintf;
 
 class BinCommand extends BaseCommand
 {
-    /**
-     * {@inheritDoc}
-     */
-    protected function configure()
+    protected function configure(): void
     {
         $this
             ->setName('bin')
@@ -30,10 +38,7 @@ class BinCommand extends BaseCommand
         ;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $config = new Config($this->getComposer());
         $this->resetComposers($application = $this->getApplication());
@@ -59,15 +64,12 @@ class BinCommand extends BaseCommand
         ;
     }
 
-    /**
-     * @param ComposerApplication $application
-     * @param string              $binVendorRoot
-     * @param InputInterface      $input
-     * @param OutputInterface     $output
-     *
-     * @return int Exit code
-     */
-    private function executeAllNamespaces(ComposerApplication $application, $binVendorRoot, InputInterface $input, OutputInterface $output)
+    private function executeAllNamespaces(
+        ComposerApplication $application,
+        string $binVendorRoot,
+        InputInterface $input,
+        OutputInterface $output
+    ): int
     {
         $binRoots = glob($binVendorRoot.'/*', GLOB_ONLYDIR);
         if (empty($binRoots)) {
@@ -91,16 +93,12 @@ class BinCommand extends BaseCommand
 
         return min($exitCode, 255);
     }
-
-    /**
-     * @param ComposerApplication $application
-     * @param string              $namespace
-     * @param InputInterface      $input
-     * @param OutputInterface     $output
-     *
-     * @return int Exit code
-     */
-    private function executeInNamespace(ComposerApplication $application, $namespace, InputInterface $input, OutputInterface $output)
+    private function executeInNamespace(
+        ComposerApplication $application,
+        string $namespace,
+        InputInterface $input,
+        OutputInterface $output
+    ): int
     {
         if (!file_exists($namespace)) {
             mkdir($namespace, 0777, true);
@@ -124,21 +122,12 @@ class BinCommand extends BaseCommand
         return $application->doRun($input, $output);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function isProxyCommand()
+    public function isProxyCommand(): bool
     {
         return true;
     }
 
-    /**
-     * Resets all Composer references in the application.
-     *
-     * @param ComposerApplication $application
-     * @return void
-     */
-    private function resetComposers(ComposerApplication $application)
+    private function resetComposers(ComposerApplication $application): void
     {
         $application->resetComposer();
 
@@ -149,11 +138,7 @@ class BinCommand extends BaseCommand
         }
     }
 
-    /**
-     * @param string $dir
-     * @return void
-     */
-    private function chdir($dir)
+    private function chdir(string $dir): void
     {
         chdir($dir);
 
@@ -165,11 +150,12 @@ class BinCommand extends BaseCommand
     }
 
     /**
-     * @return \Composer\Config
      * @throws \Composer\Json\JsonValidationException
      * @throws \Seld\JsonLint\ParsingException
+     *
+     * @return ComposerConfig
      */
-    private function createConfig()
+    private function createConfig(): ComposerConfig
     {
         $config = Factory::createConfig();
 

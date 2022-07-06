@@ -6,10 +6,7 @@ use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;
 
 class CommandProvider implements CommandProviderCapability
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function getCommands()
+    public function getCommands(): array
     {
         return [new BinCommand];
     }

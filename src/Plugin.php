@@ -2,6 +2,7 @@
 
 namespace Bamarni\Composer\Bin;
 
+use Bamarni\Composer\Bin\CommandProvider as BarmaniCommandProvider;
 use Composer\Composer;
 use Composer\Console\Application;
 use Composer\EventDispatcher\EventSubscriberInterface;
@@ -13,6 +14,10 @@ use Composer\Plugin\Capable;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
+use Composer\Plugin\Capability\CommandProvider as ComposerPluginCommandProvider;
+use Throwable;
+use function array_filter;
+use function array_keys;
 
 class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 {
@@ -26,42 +31,27 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
      */
     protected $io;
 
-    /**
-     * @return void
-     */
-    public function activate(Composer $composer, IOInterface $io)
+    public function activate(Composer $composer, IOInterface $io): void
     {
         $this->composer = $composer;
         $this->io = $io;
     }
 
-    /**
-     * @return string[]
-     */
-    public function getCapabilities()
+    public function getCapabilities(): array
     {
         return [
-            'Composer\Plugin\Capability\CommandProvider' => 'Bamarni\Composer\Bin\CommandProvider',
+            ComposerPluginCommandProvider::class => BarmaniCommandProvider::class,
         ];
     }
 
-    /**
-     * @return void
-     */
-    public function deactivate(Composer $composer, IOInterface $io)
+    public function deactivate(Composer $composer, IOInterface $io): void
     {
     }
 
-    /**
-     * @return void
-     */
-    public function uninstall(Composer $composer, IOInterface $io)
+    public function uninstall(Composer $composer, IOInterface $io): void
     {
     }
 
-    /**
-     * @return string[]
-     */
     public static function getSubscribedEvents()
     {
         return [
@@ -69,11 +59,7 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
         ];
     }
 
-    /**
-     * @param CommandEvent $event
-     * @return bool
-     */
-    public function onCommandEvent(CommandEvent $event)
+    public function onCommandEvent(CommandEvent $event): bool
     {
         $config = new Config($this->composer);
 
@@ -88,11 +74,7 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
         return true;
     }
 
-    /**
-     * @param CommandEvent $event
-     * @return bool
-     */
-    protected function onCommandEventInstallUpdate(CommandEvent $event)
+    protected function onCommandEventInstallUpdate(CommandEvent $event): bool
     {
         $command = new BinCommand();
         $command->setComposer($this->composer);
@@ -121,7 +103,7 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 
         try {
             $returnCode = $command->run($input, $event->getOutput());
-        } catch (\Exception $e) {
+        } catch (Throwable $throwable) {
             return false;
         }
 
