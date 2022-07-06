@@ -2,6 +2,7 @@
 
 namespace Bamarni\Composer\Bin\Tests\Fixtures;
 
+use PHPUnit\Framework\Assert;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,7 +16,7 @@ class MyTestCommand extends BaseCommand
 
     private $assert;
 
-    public function __construct(\PHPUnit_Framework_Assert $assert)
+    public function __construct(Assert $assert)
     {
         $this->assert = $assert;
 
