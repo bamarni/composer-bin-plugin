@@ -41,32 +41,15 @@ class BinCommand extends BaseCommand
             ->ignoreValidationErrors();
     }
 
+    public function isProxyCommand(): bool
+    {
+        return true;
+    }
+
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $config = Config::fromComposer($this->requireComposer());
         $currentWorkingDir = getcwd();
-
-        // Ensures Composer is reset – we are setting some environment variables
-        // & co. so a fresh Composer instance is required.
-        $this->resetComposers();
-
-        if ($config->binLinksAreEnabled()) {
-            $binDir = ConfigFactory::createConfig()->get('bin-dir');
-
-            putenv(
-                sprintf(
-                    'COMPOSER_BIN_DIR=%s',
-                    $binDir
-                )
-            );
-
-            $this->log(
-                sprintf(
-                    'Configuring bin directory to <comment>%s</comment>.',
-                    $binDir
-                )
-            );
-        }
 
         $this->log(
             sprintf(
@@ -74,6 +57,12 @@ class BinCommand extends BaseCommand
                 $currentWorkingDir
             )
         );
+
+        // Ensures Composer is reset – we are setting some environment variables
+        // & co. so a fresh Composer instance is required.
+        $this->resetComposers();
+
+        $this->configureBinLinksDir($config);
 
         $vendorRoot = $config->getTargetDirectory();
         $namespace = $input->getArgument(self::NAMESPACE_ARG);
@@ -152,20 +141,18 @@ class BinCommand extends BaseCommand
             )
         );
 
-        if (!file_exists($namespace)) {
-            $mkdirResult = mkdir($namespace, 0777, true);
+        try {
+            self::createNamespaceDirIfDoesNotExist($namespace);
+        } catch (CouldNotCreateNamespaceDir $exception) {
+            $this->log(
+                sprintf(
+                    '<warning>%s</warning>',
+                    $exception->getMessage()
+                ),
+                false
+            );
 
-            if (!$mkdirResult && !is_dir($namespace)) {
-                $this->log(
-                    sprintf(
-                        '<warning>Could not create the directory "%s".</warning>',
-                        $namespace
-                    ),
-                    false
-                );
-
-                return self::FAILURE;
-            }
+            return self::FAILURE;
         }
 
         // It is important to clean up the state either for follow-up plugins
@@ -177,18 +164,7 @@ class BinCommand extends BaseCommand
 
         $this->chdir($namespace);
 
-        // Some plugins require access to the Composer file e.g. Symfony Flex
-        $namespaceComposerFile = Factory::getComposerFile();
-        if (!file_exists($namespaceComposerFile)) {
-            file_put_contents($namespaceComposerFile, '{}');
-
-            $this->log(
-                sprintf(
-                    'Created the file <comment>%s</comment>.',
-                    $namespaceComposerFile
-                )
-            );
-        }
+        $this->ensureComposerFileExists();
 
         $namespaceInput = BinInputFactory::createNamespaceInput($input);
 
@@ -213,9 +189,62 @@ class BinCommand extends BaseCommand
         return $exitCode;
     }
 
-    public function isProxyCommand(): bool
+    /**
+     * @throws CouldNotCreateNamespaceDir
+     */
+    private static function createNamespaceDirIfDoesNotExist(string $namespace): void
     {
-        return true;
+        if (file_exists($namespace)) {
+            return;
+        }
+
+        $mkdirResult = mkdir($namespace, 0777, true);
+
+        if (!$mkdirResult && !is_dir($namespace)) {
+            throw CouldNotCreateNamespaceDir::forNamespace($namespace);
+        }
+    }
+
+    private function configureBinLinksDir(Config $config): void
+    {
+        if (!$config->binLinksAreEnabled()) {
+            return;
+        }
+
+        $binDir = ConfigFactory::createConfig()->get('bin-dir');
+
+        putenv(
+            sprintf(
+                'COMPOSER_BIN_DIR=%s',
+                $binDir
+            )
+        );
+
+        $this->log(
+            sprintf(
+                'Configuring bin directory to <comment>%s</comment>.',
+                $binDir
+            )
+        );
+    }
+
+    private function ensureComposerFileExists(): void
+    {
+        // Some plugins require access to the Composer file e.g. Symfony Flex
+        $namespaceComposerFile = Factory::getComposerFile();
+
+        if (file_exists($namespaceComposerFile)) {
+            return;
+        }
+
+        file_put_contents($namespaceComposerFile, '{}');
+
+        $this->log(
+            sprintf(
+                'Created the file <comment>%s</comment>.',
+                $namespaceComposerFile
+            )
+        );
     }
 
     private function resetComposers(): void
