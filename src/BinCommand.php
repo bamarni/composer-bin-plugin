@@ -5,14 +5,11 @@ declare(strict_types=1);
 namespace Bamarni\Composer\Bin;
 
 use Composer\Command\BaseCommand;
-use Composer\Config as ComposerConfig;
 use Composer\Console\Application as ComposerApplication;
 use Composer\Factory;
 use Composer\IO\IOInterface;
-use Composer\Json\JsonFile;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use function chdir;
 use function count;
@@ -24,7 +21,6 @@ use function min;
 use function mkdir;
 use function putenv;
 use function sprintf;
-use function var_dump;
 use const GLOB_ONLYDIR;
 
 class BinCommand extends BaseCommand

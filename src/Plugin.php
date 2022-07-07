@@ -20,7 +20,6 @@ use Composer\Plugin\Capability\CommandProvider as ComposerPluginCommandProvider;
 use Throwable;
 use function array_filter;
 use function array_keys;
-use function file_put_contents;
 
 class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 {
