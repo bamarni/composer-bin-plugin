@@ -43,7 +43,7 @@ class BinCommand extends BaseCommand
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $config = new Config($this->getComposer());
+        $config = new Config($this->requireComposer());
         $this->resetComposers($application = $this->getApplication());
         /** @var ComposerApplication $application */
 
