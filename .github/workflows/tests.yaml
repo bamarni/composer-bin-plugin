@@ -36,6 +36,9 @@ jobs:
                     composer global config repositories.bin path $PWD
                     composer global config allow-plugins.bamarni/composer-bin-plugin true
 
+            -   name: "Remove PHP-CS-Fixer"
+                run: composer remove --dev --no-update php-cs-fixer/shim
+
             -   name: "Install bin plugin globally (PR)"
                 if: github.event_name == 'pull_request'
                 run: composer global require bamarni/composer-bin-plugin:dev-${GITHUB_SHA}
