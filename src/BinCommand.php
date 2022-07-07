@@ -10,6 +10,7 @@ use Composer\IO\IOInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 use function chdir;
 use function count;
 use function file_exists;
@@ -84,11 +85,13 @@ class BinCommand extends BaseCommand
 
         return (self::ALL_NAMESPACES !== $namespace)
             ? $this->executeInNamespace(
+                $currentWorkingDir,
                 $vendorRoot.'/'.$namespace,
                 $binInput,
                 $output
             )
             : $this->executeAllNamespaces(
+                $currentWorkingDir,
                 $vendorRoot,
                 $binInput,
                 $output
@@ -104,6 +107,7 @@ class BinCommand extends BaseCommand
     }
 
     private function executeAllNamespaces(
+        string $originalWorkingDir,
         string $binVendorRoot,
         InputInterface $input,
         OutputInterface $output
@@ -121,21 +125,22 @@ class BinCommand extends BaseCommand
             return self::SUCCESS;
         }
 
-        $originalWorkingDir = getcwd();
         $exitCode = self::SUCCESS;
 
         foreach ($namespaces as $namespace) {
-            $exitCode += $this->executeInNamespace($namespace, $input, $output);
-
-            // Ensure we have a clean state in-between each namespace execution
-            $this->chdir($originalWorkingDir);
-            $this->resetComposers();
+            $exitCode += $this->executeInNamespace(
+                $originalWorkingDir,
+                $namespace,
+                $input,
+                $output
+            );
         }
 
         return min($exitCode, self::FAILURE);
     }
 
     private function executeInNamespace(
+        string $originalWorkingDir,
         string $namespace,
         InputInterface $input,
         OutputInterface $output
@@ -163,6 +168,13 @@ class BinCommand extends BaseCommand
             }
         }
 
+        // It is important to clean up the state either for follow-up plugins
+        // or for example the execution in the next namespace.
+        $cleanUp = function () use ($originalWorkingDir): void {
+            $this->chdir($originalWorkingDir);
+            $this->resetComposers();
+        };
+
         $this->chdir($namespace);
 
         // Some plugins require access to the Composer file e.g. Symfony Flex
@@ -187,7 +199,18 @@ class BinCommand extends BaseCommand
             )
         );
 
-        return $this->getApplication()->doRun($namespaceInput, $output);
+        try {
+            $exitCode = $this->getApplication()->doRun($namespaceInput, $output);
+        } catch (Throwable $executionFailed) {
+            // Ensure we do the cleanup even in case of failure
+            $cleanUp();
+
+            throw $executionFailed;
+        }
+
+        $cleanUp();
+
+        return $exitCode;
     }
 
     public function isProxyCommand(): bool
