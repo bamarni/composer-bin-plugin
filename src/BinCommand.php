@@ -25,13 +25,17 @@ use function sprintf;
 
 class BinCommand extends BaseCommand
 {
+    private const ALL_NAMESPACES = 'all';
+
+    private const NAMESPACE_ARG = 'namespace';
+
     protected function configure(): void
     {
         $this
             ->setName('bin')
             ->setDescription('Run a command inside a bin namespace')
             ->setDefinition([
-                new InputArgument('namespace', InputArgument::REQUIRED),
+                new InputArgument(self::NAMESPACE_ARG, InputArgument::REQUIRED),
                 new InputArgument('args', InputArgument::REQUIRED | InputArgument::IS_ARRAY),
             ])
             ->ignoreValidationErrors()
@@ -49,14 +53,14 @@ class BinCommand extends BaseCommand
         }
 
         $vendorRoot = $config->getTargetDirectory();
-        $namespace = $input->getArgument('namespace');
+        $namespace = $input->getArgument(self::NAMESPACE_ARG);
 
         $input = BinInputFactory::createInput(
             $namespace,
             $input
         );
 
-        return ('all' !== $namespace)
+        return (self::ALL_NAMESPACES !== $namespace)
             ? $this->executeInNamespace($application, $vendorRoot.'/'.$namespace, $input, $output)
             : $this->executeAllNamespaces($application, $vendorRoot, $input, $output)
         ;
@@ -73,11 +77,11 @@ class BinCommand extends BaseCommand
         if (empty($binRoots)) {
             $this->getIO()->writeError('<warning>Couldn\'t find any bin namespace.</warning>');
 
-            return 0;   // Is a valid scenario: the user may not have setup any bin namespace yet
+            return self::SUCCESS;   // Is a valid scenario: the user may not have setup any bin namespace yet
         }
 
         $originalWorkingDir = getcwd();
-        $exitCode = 0;
+        $exitCode = self::SUCCESS;
         foreach ($binRoots as $namespace) {
             $output->writeln(
                 sprintf('Run in namespace <comment>%s</comment>', $namespace),
@@ -89,7 +93,7 @@ class BinCommand extends BaseCommand
             $this->resetComposers($application);
         }
 
-        return min($exitCode, 255);
+        return min($exitCode, self::FAILURE);
     }
     private function executeInNamespace(
         ComposerApplication $application,
