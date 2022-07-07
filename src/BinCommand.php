@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin;
 
-use Composer\Config as ComposerConfig;
 use Composer\Console\Application as ComposerApplication;
 use Composer\Factory;
 use Composer\IO\IOInterface;
@@ -12,7 +11,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
-use Composer\Json\JsonFile;
 use function chdir;
 use function file_exists;
 use function file_put_contents;
@@ -49,7 +47,7 @@ class BinCommand extends BaseCommand
         /** @var ComposerApplication $application */
 
         if ($config->binLinksAreEnabled()) {
-            putenv('COMPOSER_BIN_DIR='.$this->createConfig()->get('bin-dir'));
+            putenv('COMPOSER_BIN_DIR='.ConfigFactory::createConfig()->get('bin-dir'));
         }
 
         $vendorRoot = $config->getTargetDirectory();
@@ -159,24 +157,5 @@ class BinCommand extends BaseCommand
             true,
             IOInterface::VERBOSE
         );
-    }
-
-    /**
-     * @throws \Composer\Json\JsonValidationException
-     * @throws \Seld\JsonLint\ParsingException
-     */
-    private function createConfig(): ComposerConfig
-    {
-        $config = Factory::createConfig();
-
-        $file = new JsonFile(Factory::getComposerFile());
-        if (!$file->exists()) {
-            return $config;
-        }
-        $file->validateSchema(JsonFile::LAX_SCHEMA);
-
-        $config->merge($file->read());
-
-        return $config;
     }
 }
