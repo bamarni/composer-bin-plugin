@@ -45,6 +45,7 @@ class BinCommand extends BaseCommand
     {
         $config = Config::fromComposer($this->requireComposer());
         $application = $this->getApplication();
+        $currentWorkingDir = getcwd();
 
         // Ensures Composer is reset – we are setting some environment variables
         // & co. so a fresh Composer instance is required.
@@ -67,6 +68,13 @@ class BinCommand extends BaseCommand
                 )
             );
         }
+
+        $this->log(
+            sprintf(
+                'Current working directory: <comment>%s</comment>',
+                $currentWorkingDir
+            )
+        );
 
         $vendorRoot = $config->getTargetDirectory();
         $namespace = $input->getArgument(self::NAMESPACE_ARG);
