@@ -36,6 +36,8 @@ jobs:
                     composer global config repositories.bin path $PWD
                     composer global config allow-plugins.bamarni/composer-bin-plugin true
 
+            # It is not used in the CI and the PHP constraints may not match
+            # the CI.
             -   name: "Remove PHP-CS-Fixer"
                 run: composer remove --dev --no-update php-cs-fixer/shim
 
