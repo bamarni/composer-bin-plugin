@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin\Tests\Fixtures;
 
@@ -54,4 +56,3 @@ class MyTestCommand extends BaseCommand
         $this->getApplication()->resetComposer();
     }
 }
-

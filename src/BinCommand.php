@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin;
 
@@ -71,8 +73,7 @@ class BinCommand extends BaseCommand
         string $binVendorRoot,
         InputInterface $input,
         OutputInterface $output
-    ): int
-    {
+    ): int {
         $binRoots = glob($binVendorRoot.'/*', GLOB_ONLYDIR);
         if (empty($binRoots)) {
             $this->getIO()->writeError('<warning>Couldn\'t find any bin namespace.</warning>');
@@ -100,8 +101,7 @@ class BinCommand extends BaseCommand
         string $namespace,
         InputInterface $input,
         OutputInterface $output
-    ): int
-    {
+    ): int {
         if (!file_exists($namespace)) {
             mkdir($namespace, 0777, true);
         }
@@ -154,8 +154,6 @@ class BinCommand extends BaseCommand
     /**
      * @throws \Composer\Json\JsonValidationException
      * @throws \Seld\JsonLint\ParsingException
-     *
-     * @return ComposerConfig
      */
     private function createConfig(): ComposerConfig
     {
