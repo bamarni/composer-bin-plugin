@@ -109,15 +109,15 @@ class BinCommand extends BaseCommand
             file_put_contents(Factory::getComposerFile(), '{}');
         }
 
-        $input = new StringInput((string) $input . ' --working-dir=.');
+        $namespaceInput = BinInputFactory::createNamespaceInput($input);
 
         $this->getIO()->writeError(
-            sprintf('<info>Run with <comment>%s</comment></info>', $input->__toString()),
+            sprintf('<info>Run with <comment>%s</comment></info>', $namespaceInput),
             true,
             IOInterface::VERBOSE
         );
 
-        return $application->doRun($input, $output);
+        return $application->doRun($namespaceInput, $output);
     }
 
     public function isProxyCommand(): bool

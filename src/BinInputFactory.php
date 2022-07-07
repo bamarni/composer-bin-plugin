@@ -25,6 +25,11 @@ final class BinInputFactory
         );
     }
 
+    public static function createNamespaceInput(InputInterface $previousInput): InputInterface
+    {
+        return new StringInput((string) $previousInput . ' --working-dir=.');
+    }
+
     private function __construct()
     {
     }
