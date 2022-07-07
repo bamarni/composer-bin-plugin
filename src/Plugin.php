@@ -63,7 +63,7 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 
     public function onCommandEvent(CommandEvent $event): bool
     {
-        $config = new Config($this->composer);
+        $config = Config::fromComposer($this->composer);
 
         if ($config->isCommandForwarded()) {
             switch ($event->getCommandName()) {

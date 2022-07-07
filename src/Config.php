@@ -14,9 +14,16 @@ final class Config
      */
     private $config;
 
-    public function __construct(Composer $composer)
+    public static function fromComposer(Composer $composer): self
     {
-        $extra = $composer->getPackage()->getExtra();
+        return new self($composer->getPackage()->getExtra());
+    }
+
+    /**
+     * @param mixed[] $extra
+     */
+    public function __construct(array $extra)
+    {
         $this->config = array_merge(
             [
                 'bin-links' => true,
