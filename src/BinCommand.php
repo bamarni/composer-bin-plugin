@@ -4,22 +4,24 @@ declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin;
 
+use Composer\Command\BaseCommand;
 use Composer\Console\Application as ComposerApplication;
 use Composer\Factory;
 use Composer\IO\IOInterface;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Composer\Command\BaseCommand;
 use function chdir;
+use function count;
 use function file_exists;
 use function file_put_contents;
+use function getcwd;
 use function glob;
-use function is_dir;
 use function min;
 use function mkdir;
 use function putenv;
 use function sprintf;
+use const GLOB_ONLYDIR;
 
 class BinCommand extends BaseCommand
 {
@@ -36,32 +38,54 @@ class BinCommand extends BaseCommand
                 new InputArgument(self::NAMESPACE_ARG, InputArgument::REQUIRED),
                 new InputArgument('args', InputArgument::REQUIRED | InputArgument::IS_ARRAY),
             ])
-            ->ignoreValidationErrors()
-        ;
+            ->ignoreValidationErrors();
     }
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $config = Config::fromComposer($this->requireComposer());
-        $this->resetComposers($application = $this->getApplication());
-        /** @var ComposerApplication $application */
+        $application = $this->getApplication();
+
+        // Ensures Composer is reset – we are setting some environment variables
+        // & co. so a fresh Composer instance is required.
+        $this->resetComposers($application);
 
         if ($config->binLinksAreEnabled()) {
-            putenv('COMPOSER_BIN_DIR='.ConfigFactory::createConfig()->get('bin-dir'));
+            putenv(sprintf(
+                'COMPOSER_BIN_DIR=%s',
+                ConfigFactory::createConfig()->get('bin-dir')
+            ));
         }
 
         $vendorRoot = $config->getTargetDirectory();
         $namespace = $input->getArgument(self::NAMESPACE_ARG);
 
-        $input = BinInputFactory::createInput(
+        $binInput = BinInputFactory::createInput(
             $namespace,
             $input
         );
 
         return (self::ALL_NAMESPACES !== $namespace)
-            ? $this->executeInNamespace($application, $vendorRoot.'/'.$namespace, $input, $output)
-            : $this->executeAllNamespaces($application, $vendorRoot, $input, $output)
-        ;
+            ? $this->executeInNamespace(
+                $application,
+                $vendorRoot.'/'.$namespace,
+                $binInput,
+                $output
+            )
+            : $this->executeAllNamespaces(
+                $application,
+                $vendorRoot,
+                $binInput,
+                $output
+            );
+    }
+
+    /**
+     * @return list<string>
+     */
+    private static function getBinNamespaces(string $binVendorRoot): array
+    {
+        return glob($binVendorRoot.'/*', GLOB_ONLYDIR);
     }
 
     private function executeAllNamespaces(
@@ -70,22 +94,30 @@ class BinCommand extends BaseCommand
         InputInterface $input,
         OutputInterface $output
     ): int {
-        $binRoots = glob($binVendorRoot.'/*', GLOB_ONLYDIR);
-        if (empty($binRoots)) {
-            $this->getIO()->writeError('<warning>Couldn\'t find any bin namespace.</warning>');
+        $namespaces = self::getBinNamespaces($binVendorRoot);
 
-            return self::SUCCESS;   // Is a valid scenario: the user may not have setup any bin namespace yet
+        if (count($namespaces) === 0) {
+            $this
+                ->getIO()
+                ->writeError('<warning>Could not find any bin namespace.</warning>');
+
+            // Is a valid scenario: the user may not have set up any bin
+            // namespace yet
+            return self::SUCCESS;
         }
 
         $originalWorkingDir = getcwd();
         $exitCode = self::SUCCESS;
-        foreach ($binRoots as $namespace) {
+
+        foreach ($namespaces as $namespace) {
             $output->writeln(
                 sprintf('Run in namespace <comment>%s</comment>', $namespace),
                 OutputInterface::VERBOSITY_VERBOSE
             );
+
             $exitCode += $this->executeInNamespace($application, $namespace, $input, $output);
 
+            // Ensure we have a clean state in-between each namespace execution
             chdir($originalWorkingDir);
             $this->resetComposers($application);
         }
@@ -116,15 +148,19 @@ class BinCommand extends BaseCommand
 
         $this->chdir($namespace);
 
-        // some plugins require access to composer file e.g. Symfony Flex
-        if (!file_exists(Factory::getComposerFile())) {
-            file_put_contents(Factory::getComposerFile(), '{}');
+        // Some plugins require access to the Composer file e.g. Symfony Flex
+        $namespaceComposerFile = Factory::getComposerFile();
+        if (!file_exists($namespaceComposerFile)) {
+            file_put_contents($namespaceComposerFile, '{}');
         }
 
         $namespaceInput = BinInputFactory::createNamespaceInput($input);
 
         $this->getIO()->writeError(
-            sprintf('<info>Run with <comment>%s</comment></info>', $namespaceInput),
+            sprintf(
+                '<info>Run with <comment>%s</comment></info>',
+                $namespaceInput
+            ),
             true,
             IOInterface::VERBOSE
         );

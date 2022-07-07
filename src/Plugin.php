@@ -54,7 +54,7 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
     {
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             PluginEvents::COMMAND => 'onCommandEvent',

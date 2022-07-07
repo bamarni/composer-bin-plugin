@@ -39,7 +39,7 @@ class MyTestCommand extends BaseCommand
 
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->composer = $this->getComposer();
+        $this->composer = $this->tryComposer();
 
         $factory = Factory::create(new NullIO());
         $config = $factory->getConfig();
