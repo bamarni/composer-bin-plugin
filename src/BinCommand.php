@@ -10,7 +10,6 @@ use Composer\Factory;
 use Composer\IO\IOInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 use Composer\Json\JsonFile;
@@ -20,8 +19,6 @@ use function file_put_contents;
 use function glob;
 use function min;
 use function mkdir;
-use function preg_quote;
-use function preg_replace;
 use function putenv;
 use function sprintf;
 
@@ -96,6 +93,7 @@ class BinCommand extends BaseCommand
 
         return min($exitCode, self::FAILURE);
     }
+
     private function executeInNamespace(
         ComposerApplication $application,
         string $namespace,
