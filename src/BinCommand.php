@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin;
 
@@ -27,7 +29,9 @@ use const GLOB_ONLYDIR;
 
 class BinCommand extends BaseCommand
 {
-    private const ALL_NAMESPACE = 'all';
+    private const ALL_NAMESPACES = 'all';
+
+    private const NAMESPACE_ARG = 'namespace';
 
     protected function configure(): void
     {
@@ -35,7 +39,7 @@ class BinCommand extends BaseCommand
             ->setName('bin')
             ->setDescription('Run a command inside a bin namespace')
             ->setDefinition([
-                new InputArgument('namespace', InputArgument::REQUIRED),
+                new InputArgument(self::NAMESPACE_ARG, InputArgument::REQUIRED),
                 new InputArgument('args', InputArgument::REQUIRED | InputArgument::IS_ARRAY),
             ])
             ->ignoreValidationErrors();
@@ -43,9 +47,7 @@ class BinCommand extends BaseCommand
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $config = new Config(
-            $this->requireComposer()->getPackage()->getExtra()
-        );
+        $config = Config::fromComposer($this->requireComposer());
         $application = $this->getApplication();
 
         // Ensures Composer is reset – we are setting some environment variables
@@ -55,12 +57,12 @@ class BinCommand extends BaseCommand
         if ($config->binLinksAreEnabled()) {
             putenv(sprintf(
                 'COMPOSER_BIN_DIR=%s',
-                $this->createConfig()->get('bin-dir')
+                ConfigFactory::createConfig()->get('bin-dir')
             ));
         }
 
         $vendorRoot = $config->getTargetDirectory();
-        $namespace = $input->getArgument('namespace');
+        $namespace = $input->getArgument(self::NAMESPACE_ARG);
 
         $binInput = BinInputFactory::createInput(
             $namespace,
@@ -95,8 +97,7 @@ class BinCommand extends BaseCommand
         string $binVendorRoot,
         InputInterface $input,
         OutputInterface $output
-    ): int
-    {
+    ): int {
         $namespaces = self::getBinNamespaces($binVendorRoot);
 
         if (count($namespaces) === 0) {
@@ -133,8 +134,7 @@ class BinCommand extends BaseCommand
         string $namespace,
         InputInterface $input,
         OutputInterface $output
-    ): int
-    {
+    ): int {
         if (!file_exists($namespace)) {
             $mkdirResult = mkdir($namespace, 0777, true);
 
@@ -158,18 +158,18 @@ class BinCommand extends BaseCommand
             file_put_contents($namespaceComposerFile, '{}');
         }
 
-        $input = new StringInput((string) $input . ' --working-dir=.');
+        $namespaceInput = BinInputFactory::createNamespaceInput($input);
 
         $this->getIO()->writeError(
             sprintf(
                 '<info>Run with <comment>%s</comment></info>',
-                $input
+                $namespaceInput
             ),
             true,
             IOInterface::VERBOSE
         );
 
-        return $application->doRun($input, $output);
+        return $application->doRun($namespaceInput, $output);
     }
 
     public function isProxyCommand(): bool
@@ -197,26 +197,5 @@ class BinCommand extends BaseCommand
             true,
             IOInterface::VERBOSE
         );
-    }
-
-    /**
-     * @throws \Composer\Json\JsonValidationException
-     * @throws \Seld\JsonLint\ParsingException
-     *
-     * @return ComposerConfig
-     */
-    private function createConfig(): ComposerConfig
-    {
-        $config = Factory::createConfig();
-
-        $file = new JsonFile(Factory::getComposerFile());
-        if (!$file->exists()) {
-            return $config;
-        }
-        $file->validateSchema(JsonFile::LAX_SCHEMA);
-
-        $config->merge($file->read());
-
-        return $config;
     }
 }

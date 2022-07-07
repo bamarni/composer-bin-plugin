@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+declare(strict_types=1);
+
 namespace Bamarni\Composer\Bin\Tests;
 
 use Bamarni\Composer\Bin\BinCommand;
@@ -86,8 +88,7 @@ class BinCommandTest extends TestCase
         string $expectedRelativeBinDir,
         string $expectedRelativeCwd,
         string $expectedRelativeVendorDir
-    ): void
-    {
+    ): void {
         $input = new StringInput($input);
         $output = new NullOutput();
 
@@ -201,8 +202,7 @@ class BinCommandTest extends TestCase
         string $expectedBinDir,
         string $expectedCwd,
         string $expectedVendorDir
-    ): void
-    {
+    ): void {
         $data = array_shift($this->testCommand->data);
 
         self::assertNotNull(

@@ -1,7 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin;
 
+use Composer\Composer;
 use function array_merge;
 
 final class Config
@@ -11,6 +14,14 @@ final class Config
      */
     private $config;
 
+    public static function fromComposer(Composer $composer): self
+    {
+        return new self($composer->getPackage()->getExtra());
+    }
+
+    /**
+     * @param mixed[] $extra
+     */
     public function __construct(array $extra)
     {
         $this->config = array_merge(

@@ -1,8 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin;
 
-use Bamarni\Composer\Bin\CommandProvider as BarmaniCommandProvider;
+use Bamarni\Composer\Bin\CommandProvider as BamarniCommandProvider;
 use Composer\Composer;
 use Composer\Console\Application;
 use Composer\EventDispatcher\EventSubscriberInterface;
@@ -41,7 +43,7 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
     public function getCapabilities(): array
     {
         return [
-            ComposerPluginCommandProvider::class => BarmaniCommandProvider::class,
+            ComposerPluginCommandProvider::class => BamarniCommandProvider::class,
         ];
     }
 
@@ -62,7 +64,7 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 
     public function onCommandEvent(CommandEvent $event): bool
     {
-        $config = new Config($this->composer->getPackage()->getExtra());
+        $config = Config::fromComposer($this->composer);
 
         if ($config->isCommandForwarded()) {
             switch ($event->getCommandName()) {

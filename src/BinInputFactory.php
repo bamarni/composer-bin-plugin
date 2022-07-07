@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin;
 
@@ -13,8 +15,7 @@ final class BinInputFactory
     public static function createInput(
         string $namespace,
         InputInterface $previousInput
-    ): InputInterface
-    {
+    ): InputInterface {
         return new StringInput(
             preg_replace(
                 sprintf('/bin\s+(--ansi\s)?%s(\s.+)/', preg_quote($namespace, '/')),
@@ -23,6 +24,11 @@ final class BinInputFactory
                 1
             )
         );
+    }
+
+    public static function createNamespaceInput(InputInterface $previousInput): InputInterface
+    {
+        return new StringInput((string) $previousInput . ' --working-dir=.');
     }
 
     private function __construct()
