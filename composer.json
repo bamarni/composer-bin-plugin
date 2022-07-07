@@ -16,6 +16,7 @@
         "composer-plugin-api": "^2.0"
     },
     "require-dev": {
+        "ext-json": "*",
         "composer/composer": "^2.0",
         "phpstan/extension-installer": "^1.1",
         "symfony/console": "^5.4.7 || ^6.0.7"
