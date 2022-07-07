@@ -1,10 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin\Tests\Fixtures;
 
 use Composer\Composer;
-use PHPUnit\Framework\Assert;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -54,4 +54,3 @@ class MyTestCommand extends BaseCommand
         $this->getApplication()->resetComposer();
     }
 }
-

@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin\Tests;
 
@@ -11,17 +13,13 @@ use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use function array_shift;
 use function chdir;
-use function count;
 use function file_put_contents;
 use function getcwd;
 use function json_encode;
 use function mkdir;
 use function putenv;
 use function realpath;
-use function sprintf;
 use function sys_get_temp_dir;
-use function uniqid;
-use function var_dump;
 
 class BinCommandTest extends TestCase
 {
@@ -90,8 +88,7 @@ class BinCommandTest extends TestCase
         string $expectedRelativeBinDir,
         string $expectedRelativeCwd,
         string $expectedRelativeVendorDir
-    ): void
-    {
+    ): void {
         $input = new StringInput($input);
         $output = new NullOutput();
 
@@ -205,8 +202,7 @@ class BinCommandTest extends TestCase
         string $expectedBinDir,
         string $expectedCwd,
         string $expectedVendorDir
-    ): void
-    {
+    ): void {
         $data = array_shift($this->testCommand->data);
 
         self::assertNotNull(

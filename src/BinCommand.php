@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin;
 
@@ -8,7 +10,6 @@ use Composer\Factory;
 use Composer\IO\IOInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 use Composer\Json\JsonFile;
@@ -18,8 +19,6 @@ use function file_put_contents;
 use function glob;
 use function min;
 use function mkdir;
-use function preg_quote;
-use function preg_replace;
 use function putenv;
 use function sprintf;
 
@@ -71,8 +70,7 @@ class BinCommand extends BaseCommand
         string $binVendorRoot,
         InputInterface $input,
         OutputInterface $output
-    ): int
-    {
+    ): int {
         $binRoots = glob($binVendorRoot.'/*', GLOB_ONLYDIR);
         if (empty($binRoots)) {
             $this->getIO()->writeError('<warning>Couldn\'t find any bin namespace.</warning>');
@@ -95,13 +93,13 @@ class BinCommand extends BaseCommand
 
         return min($exitCode, self::FAILURE);
     }
+
     private function executeInNamespace(
         ComposerApplication $application,
         string $namespace,
         InputInterface $input,
         OutputInterface $output
-    ): int
-    {
+    ): int {
         if (!file_exists($namespace)) {
             mkdir($namespace, 0777, true);
         }
@@ -154,8 +152,6 @@ class BinCommand extends BaseCommand
     /**
      * @throws \Composer\Json\JsonValidationException
      * @throws \Seld\JsonLint\ParsingException
-     *
-     * @return ComposerConfig
      */
     private function createConfig(): ComposerConfig
     {

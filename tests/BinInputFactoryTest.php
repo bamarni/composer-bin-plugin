@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin\Tests;
 
@@ -16,8 +18,7 @@ final class BinInputFactoryTest extends TestCase
         string $namespace,
         InputInterface $previousInput,
         InputInterface $expected
-    ): void
-    {
+    ): void {
         $actual = BinInputFactory::createInput($namespace, $previousInput);
 
         self::assertEquals($expected, $actual);
@@ -51,8 +52,7 @@ final class BinInputFactoryTest extends TestCase
     public function test_it_can_create_a_new_input_for_a_namespace(
         InputInterface $previousInput,
         InputInterface $expected
-    ): void
-    {
+    ): void {
         $actual = BinInputFactory::createNamespaceInput($previousInput);
 
         self::assertEquals($expected, $actual);
