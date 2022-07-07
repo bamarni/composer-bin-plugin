@@ -17,6 +17,7 @@ use function chdir;
 use function file_exists;
 use function file_put_contents;
 use function glob;
+use function is_dir;
 use function min;
 use function mkdir;
 use function putenv;
@@ -101,7 +102,18 @@ class BinCommand extends BaseCommand
         OutputInterface $output
     ): int {
         if (!file_exists($namespace)) {
-            mkdir($namespace, 0777, true);
+            $mkdirResult = mkdir($namespace, 0777, true);
+
+            if (!$mkdirResult && !is_dir($namespace)) {
+                $this
+                    ->getIO()
+                    ->writeError(sprintf(
+                        '<warning>Could not create the directory "%s".</warning>',
+                        $namespace
+                    ));
+
+                return self::FAILURE;
+            }
         }
 
         $this->chdir($namespace);
