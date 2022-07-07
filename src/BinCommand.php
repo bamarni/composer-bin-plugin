@@ -45,17 +45,36 @@ class BinCommand extends BaseCommand
     {
         $config = Config::fromComposer($this->requireComposer());
         $application = $this->getApplication();
+        $currentWorkingDir = getcwd();
 
         // Ensures Composer is reset – we are setting some environment variables
         // & co. so a fresh Composer instance is required.
         $this->resetComposers($application);
 
         if ($config->binLinksAreEnabled()) {
-            putenv(sprintf(
-                'COMPOSER_BIN_DIR=%s',
-                ConfigFactory::createConfig()->get('bin-dir')
-            ));
+            $binDir = ConfigFactory::createConfig()->get('bin-dir');
+
+            putenv(
+                sprintf(
+                    'COMPOSER_BIN_DIR=%s',
+                    $binDir
+                )
+            );
+
+            $this->log(
+                sprintf(
+                    'Configuring bin directory to <comment>%s</comment>.',
+                    $binDir
+                )
+            );
         }
+
+        $this->log(
+            sprintf(
+                'Current working directory: <comment>%s</comment>',
+                $currentWorkingDir
+            )
+        );
 
         $vendorRoot = $config->getTargetDirectory();
         $namespace = $input->getArgument(self::NAMESPACE_ARG);
@@ -97,9 +116,10 @@ class BinCommand extends BaseCommand
         $namespaces = self::getBinNamespaces($binVendorRoot);
 
         if (count($namespaces) === 0) {
-            $this
-                ->getIO()
-                ->writeError('<warning>Could not find any bin namespace.</warning>');
+            $this->log(
+                '<warning>Could not find any bin namespace.</warning>',
+                false
+            );
 
             // Is a valid scenario: the user may not have set up any bin
             // namespace yet
@@ -110,15 +130,10 @@ class BinCommand extends BaseCommand
         $exitCode = self::SUCCESS;
 
         foreach ($namespaces as $namespace) {
-            $output->writeln(
-                sprintf('Run in namespace <comment>%s</comment>', $namespace),
-                OutputInterface::VERBOSITY_VERBOSE
-            );
-
             $exitCode += $this->executeInNamespace($application, $namespace, $input, $output);
 
             // Ensure we have a clean state in-between each namespace execution
-            chdir($originalWorkingDir);
+            $this->chdir($originalWorkingDir);
             $this->resetComposers($application);
         }
 
@@ -131,16 +146,24 @@ class BinCommand extends BaseCommand
         InputInterface $input,
         OutputInterface $output
     ): int {
+        $this->log(
+            sprintf(
+                'Checking namespace <comment>%s</comment>',
+                $namespace
+            )
+        );
+
         if (!file_exists($namespace)) {
             $mkdirResult = mkdir($namespace, 0777, true);
 
             if (!$mkdirResult && !is_dir($namespace)) {
-                $this
-                    ->getIO()
-                    ->writeError(sprintf(
+                $this->log(
+                    sprintf(
                         '<warning>Could not create the directory "%s".</warning>',
                         $namespace
-                    ));
+                    ),
+                    false
+                );
 
                 return self::FAILURE;
             }
@@ -152,17 +175,22 @@ class BinCommand extends BaseCommand
         $namespaceComposerFile = Factory::getComposerFile();
         if (!file_exists($namespaceComposerFile)) {
             file_put_contents($namespaceComposerFile, '{}');
+
+            $this->log(
+                sprintf(
+                    'Created the file <comment>%s</comment>.',
+                    $namespaceComposerFile
+                )
+            );
         }
 
         $namespaceInput = BinInputFactory::createNamespaceInput($input);
 
-        $this->getIO()->writeError(
+        $this->log(
             sprintf(
-                '<info>Run with <comment>%s</comment></info>',
+                'Running <info>`@composer %s`</info>.',
                 $namespaceInput
-            ),
-            true,
-            IOInterface::VERBOSE
+            )
         );
 
         return $application->doRun($namespaceInput, $output);
@@ -188,10 +216,20 @@ class BinCommand extends BaseCommand
     {
         chdir($dir);
 
-        $this->getIO()->writeError(
-            sprintf('<info>Changed current directory to %s</info>', $dir),
-            true,
-            IOInterface::VERBOSE
+        $this->log(
+            sprintf(
+                'Changed current directory to <comment>%s</comment>.',
+                $dir
+            )
         );
+    }
+
+    private function log(string $message, bool $debug = true): void
+    {
+        $verbosity = $debug
+            ? IOInterface::VERBOSE
+            : IOInterface::NORMAL;
+
+        $this->getIO()->writeError('[bamarni-bin-plugin] '.$message, true, $verbosity);
     }
 }
