@@ -18,6 +18,7 @@ use Composer\Plugin\Capability\CommandProvider as ComposerPluginCommandProvider;
 use Throwable;
 use function array_filter;
 use function array_keys;
+use function file_put_contents;
 
 class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 {
@@ -52,7 +53,7 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
     {
     }
 
-    public static function getSubscribedEvents()
+    public static function getSubscribedEvents(): array
     {
         return [
             PluginEvents::COMMAND => 'onCommandEvent',
@@ -61,7 +62,7 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 
     public function onCommandEvent(CommandEvent $event): bool
     {
-        $config = new Config($this->composer);
+        $config = new Config($this->composer->getPackage()->getExtra());
 
         if ($config->isCommandForwarded()) {
             switch ($event->getCommandName()) {

@@ -22,6 +22,7 @@ use function min;
 use function mkdir;
 use function putenv;
 use function sprintf;
+use function var_dump;
 use const GLOB_ONLYDIR;
 
 class BinCommand extends BaseCommand
@@ -42,7 +43,9 @@ class BinCommand extends BaseCommand
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $config = new Config($this->requireComposer()->getPackage()->getExtra());
+        $config = new Config(
+            $this->requireComposer()->getPackage()->getExtra()
+        );
         $application = $this->getApplication();
 
         // Ensures Composer is reset – we are setting some environment variables
