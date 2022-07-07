@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-declare(strict_types=1);
-
 namespace Bamarni\Composer\Bin\Tests;
 
 use Bamarni\Composer\Bin\BinCommand;
@@ -15,6 +13,7 @@ use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use function array_shift;
 use function chdir;
+use function file_exists;
 use function file_put_contents;
 use function getcwd;
 use function json_encode;
@@ -50,7 +49,11 @@ class BinCommandTest extends TestCase
         $this->previousCwd = getcwd();
 
         $tmpDir = sys_get_temp_dir().'/composer_bin_plugin_tests';
-        mkdir($tmpDir);
+
+        if (!file_exists($tmpDir)) {
+            mkdir($tmpDir);
+        }
+
         chdir($tmpDir);
         // On OSX sys_get_temp_dir() may return a symlink
         $this->tmpDir = realpath($tmpDir);

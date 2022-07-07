@@ -2,8 +2,6 @@
 
 declare(strict_types=1);
 
-declare(strict_types=1);
-
 namespace Bamarni\Composer\Bin;
 
 use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;

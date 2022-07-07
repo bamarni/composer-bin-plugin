@@ -65,7 +65,7 @@ class BinCommand extends BaseCommand
             $input
         );
 
-        return (self::ALL_NAMESPACE !== $namespace)
+        return (self::ALL_NAMESPACES !== $namespace)
             ? $this->executeInNamespace(
                 $application,
                 $vendorRoot.'/'.$namespace,
