@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Bamarni\Composer\Bin;
 
 use Composer\Command\BaseCommand;
-use Composer\Console\Application as ComposerApplication;
 use Composer\Factory;
 use Composer\IO\IOInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -44,12 +43,11 @@ class BinCommand extends BaseCommand
     public function execute(InputInterface $input, OutputInterface $output): int
     {
         $config = Config::fromComposer($this->requireComposer());
-        $application = $this->getApplication();
         $currentWorkingDir = getcwd();
 
         // Ensures Composer is reset – we are setting some environment variables
         // & co. so a fresh Composer instance is required.
-        $this->resetComposers($application);
+        $this->resetComposers();
 
         if ($config->binLinksAreEnabled()) {
             $binDir = ConfigFactory::createConfig()->get('bin-dir');
@@ -86,13 +84,11 @@ class BinCommand extends BaseCommand
 
         return (self::ALL_NAMESPACES !== $namespace)
             ? $this->executeInNamespace(
-                $application,
                 $vendorRoot.'/'.$namespace,
                 $binInput,
                 $output
             )
             : $this->executeAllNamespaces(
-                $application,
                 $vendorRoot,
                 $binInput,
                 $output
@@ -108,7 +104,6 @@ class BinCommand extends BaseCommand
     }
 
     private function executeAllNamespaces(
-        ComposerApplication $application,
         string $binVendorRoot,
         InputInterface $input,
         OutputInterface $output
@@ -130,18 +125,17 @@ class BinCommand extends BaseCommand
         $exitCode = self::SUCCESS;
 
         foreach ($namespaces as $namespace) {
-            $exitCode += $this->executeInNamespace($application, $namespace, $input, $output);
+            $exitCode += $this->executeInNamespace($namespace, $input, $output);
 
             // Ensure we have a clean state in-between each namespace execution
             $this->chdir($originalWorkingDir);
-            $this->resetComposers($application);
+            $this->resetComposers();
         }
 
         return min($exitCode, self::FAILURE);
     }
 
     private function executeInNamespace(
-        ComposerApplication $application,
         string $namespace,
         InputInterface $input,
         OutputInterface $output
@@ -193,7 +187,7 @@ class BinCommand extends BaseCommand
             )
         );
 
-        return $application->doRun($namespaceInput, $output);
+        return $this->getApplication()->doRun($namespaceInput, $output);
     }
 
     public function isProxyCommand(): bool
@@ -201,9 +195,9 @@ class BinCommand extends BaseCommand
         return true;
     }
 
-    private function resetComposers(ComposerApplication $application): void
+    private function resetComposers(): void
     {
-        $application->resetComposer();
+        $this->getApplication()->resetComposer();
 
         foreach ($this->getApplication()->all() as $command) {
             if ($command instanceof BaseCommand) {
