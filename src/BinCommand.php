@@ -7,6 +7,9 @@ namespace Bamarni\Composer\Bin;
 use Composer\Command\BaseCommand;
 use Composer\Factory;
 use Composer\IO\IOInterface;
+use ReflectionClass;
+use ReflectionProperty;
+use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -72,18 +75,24 @@ class BinCommand extends BaseCommand
             $input
         );
 
+        $applicationReflection = new ReflectionClass(Application::class);
+        $commandsReflection = $applicationReflection->getProperty('commands');
+        $commandsReflection->setAccessible(true);
+
         return (self::ALL_NAMESPACES !== $namespace)
             ? $this->executeInNamespace(
                 $currentWorkingDir,
                 $vendorRoot.'/'.$namespace,
                 $binInput,
-                $output
+                $output,
+                $commandsReflection
             )
             : $this->executeAllNamespaces(
                 $currentWorkingDir,
                 $vendorRoot,
                 $binInput,
-                $output
+                $output,
+                $commandsReflection
             );
     }
 
@@ -99,7 +108,8 @@ class BinCommand extends BaseCommand
         string $originalWorkingDir,
         string $binVendorRoot,
         InputInterface $input,
-        OutputInterface $output
+        OutputInterface $output,
+        ReflectionProperty $commandsReflection
     ): int {
         $namespaces = self::getBinNamespaces($binVendorRoot);
 
@@ -121,7 +131,8 @@ class BinCommand extends BaseCommand
                 $originalWorkingDir,
                 $namespace,
                 $input,
-                $output
+                $output,
+                $commandsReflection
             );
         }
 
@@ -132,7 +143,8 @@ class BinCommand extends BaseCommand
         string $originalWorkingDir,
         string $namespace,
         InputInterface $input,
-        OutputInterface $output
+        OutputInterface $output,
+        ReflectionProperty $commandsReflection
     ): int {
         $this->log(
             sprintf(
@@ -155,11 +167,25 @@ class BinCommand extends BaseCommand
             return self::FAILURE;
         }
 
+        $application = $this->getApplication();
+        $commands = $application->all();
+
         // It is important to clean up the state either for follow-up plugins
         // or for example the execution in the next namespace.
-        $cleanUp = function () use ($originalWorkingDir): void {
+        $cleanUp = function () use (
+            $originalWorkingDir,
+            $commandsReflection,
+            $application,
+            $commands
+        ): void {
             $this->chdir($originalWorkingDir);
             $this->resetComposers();
+
+            // When executing composer in a namespace, some commands may be
+            // registered.
+            // For example when scripts are registered in the composer.json,
+            // Composer adds them as commands to the application.
+            $commandsReflection->setValue($application, $commands);
         };
 
         $this->chdir($namespace);
@@ -176,7 +202,7 @@ class BinCommand extends BaseCommand
         );
 
         try {
-            $exitCode = $this->getApplication()->doRun($namespaceInput, $output);
+            $exitCode = $application->doRun($namespaceInput, $output);
         } catch (Throwable $executionFailed) {
             // Ensure we do the cleanup even in case of failure
             $cleanUp();

@@ -41,14 +41,28 @@ final class EndToEndTest extends TestCase
 
         $scenarioProcess->run();
 
+        $standardOutput = $scenarioProcess->getOutput();
+        $errorOutput = $scenarioProcess->getErrorOutput();
+
+        $originalContent = file_get_contents($scenarioPath.'/actual.txt');
+
         self::assertTrue(
             $scenarioProcess->isSuccessful(),
-            $scenarioProcess->getOutput().'|'.$scenarioProcess->getErrorOutput()
+            <<<TXT
+Standard output:
+${standardOutput}
+––––––––––––––––
+Error output:
+${errorOutput}
+––––––––––––––––
+File content (actual.txt):
+${originalContent}
+TXT
         );
 
         $actual = self::retrieveActualOutput(
             getcwd(),
-            $scenarioPath
+            $originalContent
         );
 
         self::assertSame($expected, $actual);
@@ -81,10 +95,8 @@ final class EndToEndTest extends TestCase
 
     private static function retrieveActualOutput(
         string $cwd,
-        string $scenarioPath
+        string $originalContent
     ): string {
-        $originalContent = file_get_contents($scenarioPath.'/actual.txt');
-
         $normalizedContent = str_replace(
             $cwd,
             '/path/to/project',
