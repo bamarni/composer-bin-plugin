@@ -94,7 +94,7 @@ final class EndToEndTest extends TestCase
 
         // Sometimes in the CI a different log is shown, e.g. in https://github.com/bamarni/composer-bin-plugin/runs/7246889244
         $normalizedContent = preg_replace(
-            '/> command: .+/',
+            '/> command: .+\n/',
             '',
             $normalizedContent
         );
