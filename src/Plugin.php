@@ -20,9 +20,15 @@ use Composer\Plugin\Capability\CommandProvider as ComposerPluginCommandProvider;
 use Throwable;
 use function array_filter;
 use function array_keys;
+use function in_array;
 
+/**
+ * @final Will be made final in 2.0
+ */
 class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 {
+    private const FORWARDED_COMMANDS = ['install', 'update'];
+
     /**
      * @var Composer
      */
@@ -65,17 +71,18 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
     {
         $config = Config::fromComposer($this->composer);
 
-        if ($config->isCommandForwarded()) {
-            switch ($event->getCommandName()) {
-                case 'update':
-                case 'install':
-                    return $this->onCommandEventInstallUpdate($event);
-            }
+        if ($config->isCommandForwarded()
+            && in_array($event->getCommandName(), self::FORWARDED_COMMANDS, true)
+        ) {
+            return $this->onCommandEventInstallUpdate($event);
         }
 
         return true;
     }
 
+    /**
+     * @private
+     */
     protected function onCommandEventInstallUpdate(CommandEvent $event): bool
     {
         $command = new BinCommand();

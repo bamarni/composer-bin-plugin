@@ -19,4 +19,4 @@ rm -rf vendor-bin/*/vendor || true
 composer update
 
 # Actual command to execute the test itself
-composer install 2>&1 | tee > actual.txt
+COMPOSER_DEBUG_EVENTS=1 composer install --verbose 2>&1 | tee > actual.txt

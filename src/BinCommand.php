@@ -26,6 +26,9 @@ use function putenv;
 use function sprintf;
 use const GLOB_ONLYDIR;
 
+/**
+ * @final Will be made final in 2.0.
+ */
 class BinCommand extends BaseCommand
 {
     private const ALL_NAMESPACES = 'all';
