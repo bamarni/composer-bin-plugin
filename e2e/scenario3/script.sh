@@ -16,7 +16,6 @@ rm -rf vendor || true
 rm -rf vendor-bin/*/composer.lock || true
 rm -rf vendor-bin/*/vendor || true
 
-composer update
-
 # Actual command to execute the test itself
-COMPOSER_DEBUG_EVENTS=1 composer install --verbose 2>&1 | tee > actual.txt
+composer update --verbose 2>&1 | tee > actual.txt
+composer update --verbose 2>&1 | tee >> actual.txt

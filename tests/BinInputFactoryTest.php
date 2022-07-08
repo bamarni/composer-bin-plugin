@@ -80,4 +80,29 @@ final class BinInputFactoryTest extends TestCase
             new StringInput('flex:update --prefer-lowest --ansi --working-dir=.'),
         ];
     }
+
+    /**
+     * @dataProvider forwardedCommandInputProvider
+     */
+    public function test_it_can_create_a_new_input_for_forwarded_command(
+        InputInterface $previousInput,
+        InputInterface $expected
+    ): void {
+        $actual = BinInputFactory::createForwardedCommandInput($previousInput);
+
+        self::assertEquals($expected, $actual);
+    }
+
+    public static function forwardedCommandInputProvider(): iterable
+    {
+        yield [
+            new StringInput('install --verbose'),
+            new StringInput('bin all install --verbose'),
+        ];
+
+        yield [
+            new StringInput('flex:update --prefer-lowest --ansi'),
+            new StringInput('bin all flex:update --prefer-lowest --ansi'),
+        ];
+    }
 }
