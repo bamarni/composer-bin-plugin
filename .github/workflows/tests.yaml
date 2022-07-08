@@ -41,15 +41,15 @@ jobs:
             -   name: "Remove PHP-CS-Fixer"
                 run: composer remove --dev --no-update php-cs-fixer/shim
 
-            -   name: "Install bin plugin globally (PR)"
+            -   name: "Install bin plugin globally (PR-only)"
                 if: github.event_name == 'pull_request'
                 run: composer global require bamarni/composer-bin-plugin:dev-${GITHUB_SHA}
 
-            -   name: "Install bin plugin globally (PR)"
+            -   name: "Correct bin plugin version (PR-only)"
                 if: github.event_name == 'pull_request'
-                run: find e2e -maxdepth 1 -type d \( ! -name . \) -exec bash -c "composer require bamarni/composer-bin-plugin:dev-${GITHUB_SHA}" \;
+                run: find e2e -maxdepth 1 -type d \( ! -name . \) -exec bash -c "composer remove bamarni/composer-bin-plugin && composer require bamarni/composer-bin-plugin:dev-${GITHUB_SHA}" \;
 
-            -   name: "Install bin plugin globally (master)"
+            -   name: "Install bin plugin globally (master-only)"
                 if: github.event_name != 'pull_request'
                 run: composer global require bamarni/composer-bin-plugin:dev-master
 
