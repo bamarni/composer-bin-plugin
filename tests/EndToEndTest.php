@@ -145,6 +145,11 @@ TXT
             'Installing bamarni/composer-bin-plugin (dev-hash): Symlinking from ../..',
             $normalizedContent
         );
+        $normalizedContent = preg_replace(
+            '/Dependency resolution completed in \d\.\d{3} seconds/',
+            'Dependency resolution completed in 0.000 seconds',
+            $normalizedContent
+        );
 
         return $normalizedContent;
     }
