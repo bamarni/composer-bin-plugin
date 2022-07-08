@@ -7,6 +7,7 @@ namespace Bamarni\Composer\Bin;
 use Composer\Command\BaseCommand;
 use Composer\Factory;
 use Composer\IO\IOInterface;
+use Composer\IO\NullIO;
 use ReflectionClass;
 use ReflectionProperty;
 use Symfony\Component\Console\Application;
@@ -35,16 +36,43 @@ class BinCommand extends BaseCommand
 
     private const NAMESPACE_ARG = 'namespace';
 
+    /**
+     * @var Logger
+     */
+    private $logger;
+
+    public function __construct(?Logger $logger = null)
+    {
+        parent::__construct('bin');
+
+        $this->logger = $logger ?? new Logger(new NullIO());
+    }
+
     protected function configure(): void
     {
         $this
-            ->setName('bin')
             ->setDescription('Run a command inside a bin namespace')
             ->setDefinition([
                 new InputArgument(self::NAMESPACE_ARG, InputArgument::REQUIRED),
                 new InputArgument('args', InputArgument::REQUIRED | InputArgument::IS_ARRAY),
             ])
             ->ignoreValidationErrors();
+    }
+
+    public function setIO(IOInterface $io): void
+    {
+        parent::setIO($io);
+
+        $this->logger = new Logger($io);
+    }
+
+    public function getIO(): IOInterface
+    {
+        $io = parent::getIO();
+
+        $this->logger = new Logger($io);
+
+        return $io;
     }
 
     public function isProxyCommand(): bool
@@ -57,7 +85,7 @@ class BinCommand extends BaseCommand
         $config = Config::fromComposer($this->requireComposer());
         $currentWorkingDir = getcwd();
 
-        $this->log(
+        $this->logger->logDebug(
             sprintf(
                 'Current working directory: <comment>%s</comment>',
                 $currentWorkingDir
@@ -117,10 +145,7 @@ class BinCommand extends BaseCommand
         $namespaces = self::getBinNamespaces($binVendorRoot);
 
         if (count($namespaces) === 0) {
-            $this->log(
-                '<warning>Could not find any bin namespace.</warning>',
-                false
-            );
+            $this->logger->logStandard('<warning>Could not find any bin namespace.</warning>');
 
             // Is a valid scenario: the user may not have set up any bin
             // namespace yet
@@ -149,7 +174,7 @@ class BinCommand extends BaseCommand
         OutputInterface $output,
         ReflectionProperty $commandsReflection
     ): int {
-        $this->log(
+        $this->logger->logDebug(
             sprintf(
                 'Checking namespace <comment>%s</comment>',
                 $namespace
@@ -159,12 +184,11 @@ class BinCommand extends BaseCommand
         try {
             self::createNamespaceDirIfDoesNotExist($namespace);
         } catch (CouldNotCreateNamespaceDir $exception) {
-            $this->log(
+            $this->logger->logStandard(
                 sprintf(
                     '<warning>%s</warning>',
                     $exception->getMessage()
-                ),
-                false
+                )
             );
 
             return self::FAILURE;
@@ -197,7 +221,7 @@ class BinCommand extends BaseCommand
 
         $namespaceInput = BinInputFactory::createNamespaceInput($input);
 
-        $this->log(
+        $this->logger->logDebug(
             sprintf(
                 'Running <info>`@composer %s`</info>.',
                 $namespaceInput
@@ -249,7 +273,7 @@ class BinCommand extends BaseCommand
             )
         );
 
-        $this->log(
+        $this->logger->logDebug(
             sprintf(
                 'Configuring bin directory to <comment>%s</comment>.',
                 $binDir
@@ -268,7 +292,7 @@ class BinCommand extends BaseCommand
 
         file_put_contents($namespaceComposerFile, '{}');
 
-        $this->log(
+        $this->logger->logDebug(
             sprintf(
                 'Created the file <comment>%s</comment>.',
                 $namespaceComposerFile
@@ -291,20 +315,11 @@ class BinCommand extends BaseCommand
     {
         chdir($dir);
 
-        $this->log(
+        $this->logger->logDebug(
             sprintf(
                 'Changed current directory to <comment>%s</comment>.',
                 $dir
             )
         );
-    }
-
-    private function log(string $message, bool $debug = true): void
-    {
-        $verbosity = $debug
-            ? IOInterface::VERBOSE
-            : IOInterface::NORMAL;
-
-        $this->getIO()->writeError('[bamarni-bin-plugin] '.$message, true, $verbosity);
     }
 }
