@@ -30,7 +30,7 @@ final class EndToEndTest extends TestCase
             $scenarioPath,
             null,
             null,
-            2
+            10
         );
 
         $expected = file_get_contents($scenarioPath.'/expected.txt');
