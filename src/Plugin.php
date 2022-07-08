@@ -98,13 +98,11 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
         // Note that the input & output of $io should be the same as the event
         // input & output.
         $io = $this->io;
-        $logger = new Logger($io);
 
-        $application = new Application();
-
-        $command = new BinCommand($logger);
+        $command = new BinCommand();
         $command->setComposer($this->composer);
-        $command->setApplication($application);
+        $command->setIO($io);
+        $command->setApplication(new Application());
 
         $forwardedCommandInput = BinInputFactory::createForwardedCommandInput(
             $event->getInput()
