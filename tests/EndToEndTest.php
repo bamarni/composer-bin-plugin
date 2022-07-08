@@ -92,6 +92,13 @@ final class EndToEndTest extends TestCase
             $originalContent
         );
 
+        // Sometimes in the CI a different log is shown, e.g. in https://github.com/bamarni/composer-bin-plugin/runs/7246889244
+        $normalizedContent = preg_replace(
+            '/> command: .+/',
+            '',
+            $normalizedContent
+        );
+
         // Those values come from the expected.txt, it actually does matter how
         // many they are at instant t.
         $normalizedContent = preg_replace(
