@@ -1,8 +1,9 @@
 {
-    "repositories": [{
-        "type": "path",
-        "url": "../../"
-    }
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../../"
+        }
     ],
     "require-dev": {
         "bamarni/composer-bin-plugin": "dev-master"

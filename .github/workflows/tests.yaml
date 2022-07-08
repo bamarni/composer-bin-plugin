@@ -45,6 +45,10 @@ jobs:
                 if: github.event_name == 'pull_request'
                 run: composer global require bamarni/composer-bin-plugin:dev-${GITHUB_SHA}
 
+            -   name: "Install bin plugin globally (PR)"
+                if: github.event_name == 'pull_request'
+                run: find e2e -maxdepth 1 -type d \( ! -name . \) -exec bash -c "composer require bamarni/composer-bin-plugin:dev-${GITHUB_SHA}" \;
+
             -   name: "Install bin plugin globally (master)"
                 if: github.event_name != 'pull_request'
                 run: composer global require bamarni/composer-bin-plugin:dev-master
@@ -53,9 +57,6 @@ jobs:
                 uses: "ramsey/composer-install@v2"
                 with:
                     dependency-versions: "highest"
-
-            -   name: "Remove global bin"
-                run: composer global remove bamarni/composer-bin-plugin
 
             -   name: "Validate composer.json"
                 run: "composer validate --strict --no-check-lock"
