@@ -23,7 +23,7 @@ use function array_keys;
 use function in_array;
 
 /**
- * @final Will be made final in 2.0
+ * @final Will be final in 2.x.
  */
 class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 {
@@ -80,9 +80,6 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
         return true;
     }
 
-    /**
-     * @private
-     */
     protected function onCommandEventInstallUpdate(CommandEvent $event): bool
     {
         $command = new BinCommand();

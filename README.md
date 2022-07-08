@@ -235,9 +235,9 @@ vendor-bin/**/composer.lock binary
 Before getting started, you need to install the plugin globally:
 
 ```bash
-$ composer global require --dev bamarni/composer-bin-plugin
-$ composer install  # now works
+$ composer install
 $ vendor/bin/phpunit # run the tests
+$ vendor/bin/php-cs-fixer # run PHP-CS-Fixer
 ```
 
 

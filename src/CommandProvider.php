@@ -7,7 +7,7 @@ namespace Bamarni\Composer\Bin;
 use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;
 
 /**
- * @final Will be made final in 2.0.
+ * @final Will be final in 2.x.
  */
 class CommandProvider implements CommandProviderCapability
 {

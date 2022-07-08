@@ -20,6 +20,7 @@
         "composer/composer": "^2.0",
         "php-cs-fixer/shim": "^3.8",
         "phpstan/extension-installer": "^1.1",
+        "phpunit/phpunit": "^8.5 || ^9.5",
         "symfony/console": "^5.4.7 || ^6.0.7",
         "symfony/finder": "^5.4.7 || ^6.0.7",
         "symfony/process": "^5.4.7 || ^6.0.7"
@@ -42,13 +43,5 @@
         "psr-4": {
             "Bamarni\\Composer\\Bin\\Tests\\": "tests"
         }
-    },
-    "scripts": {
-        "post-install-cmd": [
-            "@composer bin phpunit install"
-        ],
-        "post-update-cmd": [
-            "@post-install-cmd"
-        ]
     }
 }

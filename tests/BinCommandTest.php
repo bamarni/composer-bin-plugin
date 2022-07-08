@@ -22,6 +22,9 @@ use function putenv;
 use function realpath;
 use function sys_get_temp_dir;
 
+/**
+ * @covers \Bamarni\Composer\Bin\BinCommand
+ */
 class BinCommandTest extends TestCase
 {
     /**

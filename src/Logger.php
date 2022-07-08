@@ -18,14 +18,14 @@ final class Logger
         $this->io = $io;
     }
 
-    public function logDebug(string $message): void
-    {
-        $this->log($message, true);
-    }
-
     public function logStandard(string $message): void
     {
         $this->log($message, false);
+    }
+
+    public function logDebug(string $message): void
+    {
+        $this->log($message, true);
     }
 
     private function log(string $message, bool $debug): void

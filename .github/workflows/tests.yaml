@@ -31,23 +31,10 @@ jobs:
                     php-version: "${{ matrix.php }}"
                     tools: "composer"
 
-            -   name: "Configure global composer"
-                run: |
-                    composer global config repositories.bin path $PWD
-                    composer global config allow-plugins.bamarni/composer-bin-plugin true
-
             # It is not used in the CI and the PHP constraints may not match
             # the CI.
             -   name: "Remove PHP-CS-Fixer"
                 run: composer remove --dev --no-update php-cs-fixer/shim
-
-            -   name: "Install bin plugin globally (PR-only)"
-                if: github.event_name == 'pull_request'
-                run: composer global require bamarni/composer-bin-plugin:dev-${GITHUB_SHA}
-
-            -   name: "Install bin plugin globally (master-only)"
-                if: github.event_name != 'pull_request'
-                run: composer global require bamarni/composer-bin-plugin:dev-master
 
             -   name: "Install Composer dependencies"
                 uses: "ramsey/composer-install@v2"
@@ -79,35 +66,19 @@ jobs:
                     php-version: "${{ matrix.php }}"
                     tools: "composer"
 
-            -   name: "Configure global composer"
-                run: |
-                    composer global config repositories.bin path $PWD
-                    composer global config allow-plugins.bamarni/composer-bin-plugin true
-
             # It is not used in the CI and the PHP constraints may not match
             # the CI.
             -   name: "Remove PHP-CS-Fixer"
                 run: composer remove --dev --no-update php-cs-fixer/shim
 
-            -   name: "Install bin plugin globally (PR-only)"
-                if: github.event_name == 'pull_request'
-                run: composer global require bamarni/composer-bin-plugin:dev-${GITHUB_SHA}
-
             -   name: "Correct bin plugin version for e2e scenarios (PR-only)"
                 if: github.event_name == 'pull_request'
                 run: find e2e -maxdepth 1 -mindepth 1 -type d -exec bash -c "cd {} && composer require --dev bamarni/composer-bin-plugin:dev-${GITHUB_SHA} --no-update" \;
-
-            -   name: "Install bin plugin globally (master-only)"
-                if: github.event_name != 'pull_request'
-                run: composer global require bamarni/composer-bin-plugin:dev-master
 
             -   name: "Install Composer dependencies"
                 uses: "ramsey/composer-install@v2"
                 with:
                     dependency-versions: "highest"
-
-            -   name: "Validate composer.json"
-                run: "composer validate --strict --no-check-lock"
 
             -   name: "Run tests"
                 run: "vendor/bin/phpunit --group e2e"

@@ -9,6 +9,9 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\StringInput;
 
+/**
+ * @covers \Bamarni\Composer\Bin\BinInputFactory
+ */
 final class BinInputFactoryTest extends TestCase
 {
     /**
