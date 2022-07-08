@@ -5,13 +5,13 @@ Analyzed 90 packages to resolve dependencies
 Analyzed 90 rules to resolve dependencies
 Dependency resolution completed in 0.000 seconds
 Lock file operations: 1 install, 0 updates, 0 removals
-Installs: bamarni/composer-bin-plugin:dev-master
-  - Locking bamarni/composer-bin-plugin (dev-master)
+Installs: bamarni/composer-bin-plugin:dev-hash
+  - Locking bamarni/composer-bin-plugin (dev-hash)
 Writing lock file
 Installing dependencies from lock file (including require-dev)
 Package operations: 1 install, 0 updates, 0 removals
-Installs: bamarni/composer-bin-plugin:dev-master
-  - Installing bamarni/composer-bin-plugin (dev-master): Symlinking from ../..
+Installs: bamarni/composer-bin-plugin:dev-hash
+  - Installing bamarni/composer-bin-plugin (dev-hash): Symlinking from ../..
 Generating autoload files
 [bamarni-bin] Calling onCommandEvent().
 [bamarni-bin] The command is being forwarded.

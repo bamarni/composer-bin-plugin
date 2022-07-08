@@ -130,6 +130,16 @@ TXT
             'Analyzed 90 rules to resolve dependencies',
             $normalizedContent
         );
+        $normalizedContent = preg_replace(
+            '/Installs: bamarni\/composer-bin-plugin:dev-.+/',
+            'Installs: bamarni/composer-bin-plugin:dev-hash',
+            $normalizedContent
+        );
+        $normalizedContent = preg_replace(
+            '/Locking bamarni\/composer-bin-plugin \(dev-.+\)/',
+            'Locking bamarni/composer-bin-plugin (dev-hash)',
+            $normalizedContent
+        );
 
         return $normalizedContent;
     }
