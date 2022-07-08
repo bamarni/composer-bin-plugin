@@ -39,7 +39,7 @@ final class EndToEndTest extends TestCase
 
         self::assertTrue(
             $scenarioProcess->isSuccessful(),
-            $scenarioProcess->getErrorOutput()
+            $scenarioProcess->getOutput().'|'.$scenarioProcess->getErrorOutput()
         );
 
         $actual = str_replace(
