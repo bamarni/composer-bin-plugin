@@ -1,0 +1,4 @@
+> echo ns1
+ns1
+> echo ns2
+ns2
