@@ -21,6 +21,9 @@ use Throwable;
 use function array_filter;
 use function array_keys;
 
+/**
+ * @final Will be final in 2.x.
+ */
 class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 {
     /**

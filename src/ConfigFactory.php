@@ -7,12 +7,14 @@ namespace Bamarni\Composer\Bin;
 use Composer\Config as ComposerConfig;
 use Composer\Factory;
 use Composer\Json\JsonFile;
+use Composer\Json\JsonValidationException;
+use Seld\JsonLint\ParsingException;
 
 final class ConfigFactory
 {
     /**
-     * @throws \Composer\Json\JsonValidationException
-     * @throws \Seld\JsonLint\ParsingException
+     * @throws JsonValidationException
+     * @throws ParsingException
      */
     public static function createConfig(): ComposerConfig
     {
