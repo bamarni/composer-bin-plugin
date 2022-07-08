@@ -47,7 +47,10 @@ jobs:
 
             -   name: "Correct bin plugin version (PR-only)"
                 if: github.event_name == 'pull_request'
-                run: find e2e -maxdepth 1 -type d \( ! -name . \) -exec bash -c "composer remove bamarni/composer-bin-plugin && composer require bamarni/composer-bin-plugin:dev-${GITHUB_SHA}" \;
+                run: find e2e -maxdepth 1 -type d \( ! -name . \) -exec bash -c "omposer require bamarni/composer-bin-plugin:dev-${GITHUB_SHA}" --working-dir={} \;
+
+            - name: debug
+              run: cat e2e/scenario0/composer.json
 
             -   name: "Install bin plugin globally (master-only)"
                 if: github.event_name != 'pull_request'
