@@ -44,6 +44,13 @@ final class BinInputFactoryTest extends TestCase
             new StringInput('bin --ansi foo-namespace flex:update --prefer-lowest'),
             new StringInput('--ansi flex:update --prefer-lowest'),
         ];
+
+        // See https://github.com/bamarni/composer-bin-plugin/pull/73
+        yield [
+            'irrelevant',
+            new StringInput('update --dry-run --no-plugins roave/security-advisories'),
+            new StringInput('update --dry-run --no-plugins roave/security-advisories'),
+        ];
     }
 
     /**
