@@ -50,7 +50,6 @@ final class EndToEndTest extends TestCase
             getcwd(),
             $scenarioPath
         );
-        ;
 
         self::assertSame($expected, $actual);
     }
