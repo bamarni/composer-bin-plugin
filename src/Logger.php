@@ -34,6 +34,6 @@ final class Logger
             ? IOInterface::VERBOSE
             : IOInterface::NORMAL;
 
-        $this->io->writeError('[bamarni-bin] '.$message, true, $verbosity);
+        $this->io->writeError('[bamarni-bin-plugin] '.$message, true, $verbosity);
     }
 }
