@@ -18,4 +18,5 @@ rm -rf vendor-bin/*/vendor || true
 
 # Actual command to execute the test itself
 composer update --verbose 2>&1 | tee > actual.txt
+echo "–––––––––––––––––––––" >> actual.txt
 composer update --verbose 2>&1 | tee >> actual.txt

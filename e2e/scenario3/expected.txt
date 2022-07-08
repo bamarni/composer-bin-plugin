@@ -13,9 +13,20 @@ Package operations: 1 install, 0 updates, 0 removals
 Installs: bamarni/composer-bin-plugin:dev-hash
   - Installing bamarni/composer-bin-plugin (dev-hash): Symlinking from ../..
 Generating autoload files
+–––––––––––––––––––––
 [bamarni-bin] Calling onCommandEvent().
 [bamarni-bin] The command is being forwarded.
 [bamarni-bin] Original input: update --verbose.
+Loading composer repositories with package information
+Updating dependencies
+Dependency resolution completed in 0.000 seconds
+Analyzed 90 packages to resolve dependencies
+Analyzed 90 rules to resolve dependencies
+Nothing to modify in lock file
+Writing lock file
+Installing dependencies from lock file (including require-dev)
+Nothing to install, update or remove
+Generating autoload files
 Loading composer repositories with package information
 Updating dependencies
 Dependency resolution completed in 0.000 seconds
