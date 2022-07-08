@@ -11,6 +11,7 @@ use function basename;
 use function dirname;
 use function file_get_contents;
 use function getcwd;
+use function preg_replace;
 use function realpath;
 use function sprintf;
 use function str_replace;
@@ -45,11 +46,11 @@ final class EndToEndTest extends TestCase
             $scenarioProcess->getOutput().'|'.$scenarioProcess->getErrorOutput()
         );
 
-        $actual = str_replace(
+        $actual = self::retrieveActualOutput(
             getcwd(),
-            '/path/to/project',
-            file_get_contents($scenarioPath.'/actual.txt')
+            $scenarioPath
         );
+        ;
 
         self::assertSame($expected, $actual);
     }
@@ -77,5 +78,33 @@ final class EndToEndTest extends TestCase
                 realpath($scenarioPath),
             ];
         }
+    }
+
+    private static function retrieveActualOutput(
+        string $cwd,
+        string $scenarioPath
+    ): string {
+        $originalContent = file_get_contents($scenarioPath.'/actual.txt');
+
+        $normalizedContent = str_replace(
+            $cwd,
+            '/path/to/project',
+            $originalContent
+        );
+
+        // Those values come from the expected.txt, it actually does matter how
+        // many they are at instant t.
+        $normalizedContent = preg_replace(
+            '/Analyzed (\d+) packages to resolve dependencies/',
+            'Analyzed 90 packages to resolve dependencies',
+            $normalizedContent
+        );
+        $normalizedContent = preg_replace(
+            '/Analyzed (\d+) rules to resolve dependencies/',
+            'Analyzed 90 rules to resolve dependencies',
+            $normalizedContent
+        );
+
+        return $normalizedContent;
     }
 }
