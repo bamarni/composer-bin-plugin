@@ -19,6 +19,7 @@ use function trim;
 
 /**
  * @group e2e
+ * @coversNothing
  */
 final class EndToEndTest extends TestCase
 {
