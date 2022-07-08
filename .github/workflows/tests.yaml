@@ -47,7 +47,7 @@ jobs:
 
             -   name: "Correct bin plugin version (PR-only)"
                 if: github.event_name == 'pull_request'
-                run: find e2e -maxdepth 1 -mindepth 1 -type d -exec bash -c "cd {} && composer remove --dev bamarni/composer-bin-plugin && composer require --dev bamarni/composer-bin-plugin:dev-${GITHUB_SHA}" --no-update" \;
+                run: find e2e -maxdepth 1 -mindepth 1 -type d -exec bash -c "cd {} && composer remove --dev bamarni/composer-bin-plugin && composer require --dev bamarni/composer-bin-plugin:dev-${GITHUB_SHA} --no-update" \;
 
             - name: debug
               run: cat e2e/scenario0/composer.json
