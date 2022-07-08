@@ -52,7 +52,7 @@ final class LoggerTest extends TestCase
         );
 
         $message = 'Hello world!';
-        $expected = '[bamarni-bin] Hello world!'.PHP_EOL;
+        $expected = '[bamarni-bin-plugin] Hello world!'.PHP_EOL;
 
         foreach ($notLoggedVerbosities as $verbosity) {
             yield [$verbosity, $message, ''];
