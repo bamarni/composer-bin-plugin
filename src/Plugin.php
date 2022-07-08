@@ -115,8 +115,7 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
         string $commandName,
         InputInterface $input,
         OutputInterface $output
-    ): bool
-    {
+    ): bool {
         $config = Config::fromComposer($this->composer);
 
         if ($config->isCommandForwarded()
@@ -131,8 +130,7 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
     protected function onForwardedCommand(
         InputInterface $input,
         OutputInterface $output
-    ): bool
-    {
+    ): bool {
         if ($this->forwarded) {
             $this->logger->logDebug('Command already forwarded within the process: skipping.');
 
