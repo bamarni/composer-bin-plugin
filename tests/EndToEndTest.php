@@ -16,6 +16,9 @@ use function sprintf;
 use function str_replace;
 use function trim;
 
+/**
+ * @group e2e
+ */
 final class EndToEndTest extends TestCase
 {
     private const E2E_DIR = __DIR__.'/../e2e';

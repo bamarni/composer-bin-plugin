@@ -1,4 +1,4 @@
-name: "Tests"
+name: "Unit Tests"
 
 on:
     push:
@@ -8,9 +8,9 @@ on:
     pull_request: null
 
 jobs:
-    tests:
+    unit-tests:
         runs-on: "ubuntu-latest"
-        name: "Test PHP ${{ matrix.php }}"
+        name: "Unit Tests on PHP ${{ matrix.php }}"
         strategy:
             fail-fast: false
             matrix:
@@ -45,12 +45,57 @@ jobs:
                 if: github.event_name == 'pull_request'
                 run: composer global require bamarni/composer-bin-plugin:dev-${GITHUB_SHA}
 
-            -   name: "Correct bin plugin version (PR-only)"
+            -   name: "Install bin plugin globally (master-only)"
+                if: github.event_name != 'pull_request'
+                run: composer global require bamarni/composer-bin-plugin:dev-master
+
+            -   name: "Install Composer dependencies"
+                uses: "ramsey/composer-install@v2"
+                with:
+                    dependency-versions: "highest"
+
+            -   name: "Validate composer.json"
+                run: "composer validate --strict --no-check-lock"
+
+            -   name: "Run tests"
+                run: "vendor/bin/phpunit --group default"
+
+    e2e-tests:
+        runs-on: "ubuntu-latest"
+        name: "E2E Tests on PHP ${{ matrix.php }}"
+        strategy:
+            fail-fast: false
+            matrix:
+                php:
+                    - "8.1"
+
+        steps:
+            -   name: "Check out repository code"
+                uses: "actions/checkout@v2"
+
+            -   name: "Setup PHP"
+                uses: "shivammathur/setup-php@v2"
+                with:
+                    php-version: "${{ matrix.php }}"
+                    tools: "composer"
+
+            -   name: "Configure global composer"
+                run: |
+                    composer global config repositories.bin path $PWD
+                    composer global config allow-plugins.bamarni/composer-bin-plugin true
+
+            # It is not used in the CI and the PHP constraints may not match
+            # the CI.
+            -   name: "Remove PHP-CS-Fixer"
+                run: composer remove --dev --no-update php-cs-fixer/shim
+
+            -   name: "Install bin plugin globally (PR-only)"
+                if: github.event_name == 'pull_request'
+                run: composer global require bamarni/composer-bin-plugin:dev-${GITHUB_SHA}
+
+            -   name: "Correct bin plugin version for e2e scenarios (PR-only)"
                 if: github.event_name == 'pull_request'
                 run: find e2e -maxdepth 1 -mindepth 1 -type d -exec bash -c "cd {} && composer require --dev bamarni/composer-bin-plugin:dev-${GITHUB_SHA} --no-update" \;
-
-            - name: debug
-              run: cat e2e/scenario0/composer.json
 
             -   name: "Install bin plugin globally (master-only)"
                 if: github.event_name != 'pull_request'
@@ -65,4 +110,4 @@ jobs:
                 run: "composer validate --strict --no-check-lock"
 
             -   name: "Run tests"
-                run: "vendor/bin/phpunit"
+                run: "vendor/bin/phpunit --group e2e"
