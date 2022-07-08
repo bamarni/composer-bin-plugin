@@ -9,6 +9,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 use function basename;
 use function dirname;
+use function file_exists;
 use function file_get_contents;
 use function getcwd;
 use function preg_replace;
@@ -45,7 +46,13 @@ final class EndToEndTest extends TestCase
         $standardOutput = $scenarioProcess->getOutput();
         $errorOutput = $scenarioProcess->getErrorOutput();
 
-        $originalContent = file_get_contents($scenarioPath.'/actual.txt');
+        $actualPath = $scenarioPath.'/actual.txt';
+
+        if (file_exists($actualPath)) {
+            $originalContent = file_get_contents($scenarioPath.'/actual.txt');
+        } else {
+            $originalContent = 'File was not created.';
+        }
 
         self::assertTrue(
             $scenarioProcess->isSuccessful(),
@@ -121,6 +128,21 @@ TXT
         $normalizedContent = preg_replace(
             '/Analyzed (\d+) rules to resolve dependencies/',
             'Analyzed 90 rules to resolve dependencies',
+            $normalizedContent
+        );
+        $normalizedContent = preg_replace(
+            '/Installs: bamarni\/composer-bin-plugin:dev-.+/',
+            'Installs: bamarni/composer-bin-plugin:dev-hash',
+            $normalizedContent
+        );
+        $normalizedContent = preg_replace(
+            '/Locking bamarni\/composer-bin-plugin \(dev-.+\)/',
+            'Locking bamarni/composer-bin-plugin (dev-hash)',
+            $normalizedContent
+        );
+        $normalizedContent = preg_replace(
+            '/Installing bamarni\/composer-bin-plugin \(dev-.+\): Symlinking from \.\.\/\.\./',
+            'Installing bamarni/composer-bin-plugin (dev-hash): Symlinking from ../..',
             $normalizedContent
         );
 

@@ -13,19 +13,19 @@ use Composer\Plugin\CommandEvent;
 use Composer\Plugin\PluginEvents;
 use Composer\Plugin\PluginInterface;
 use Composer\Plugin\Capable;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputDefinition;
+use Symfony\Component\Console\Command\Command;
 use Composer\Plugin\Capability\CommandProvider as ComposerPluginCommandProvider;
 use Throwable;
-use function array_filter;
-use function array_keys;
+use function in_array;
+use function sprintf;
 
 /**
  * @final Will be final in 2.x.
  */
 class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 {
+    private const FORWARDED_COMMANDS = ['install', 'update'];
+
     /**
      * @var Composer
      */
@@ -36,10 +36,16 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
      */
     protected $io;
 
+    /**
+     * @var Logger
+     */
+    private $logger;
+
     public function activate(Composer $composer, IOInterface $io): void
     {
         $this->composer = $composer;
         $this->io = $io;
+        $this->logger = new Logger($io);
     }
 
     public function getCapabilities(): array
@@ -66,52 +72,51 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
 
     public function onCommandEvent(CommandEvent $event): bool
     {
+        $this->logger->logDebug('Calling onCommandEvent().');
+
         $config = Config::fromComposer($this->composer);
 
-        if ($config->isCommandForwarded()) {
-            switch ($event->getCommandName()) {
-                case 'update':
-                case 'install':
-                    return $this->onCommandEventInstallUpdate($event);
-            }
+        if ($config->isCommandForwarded()
+            && in_array($event->getCommandName(), self::FORWARDED_COMMANDS, true)
+        ) {
+            return $this->onForwardedCommand($event);
         }
 
         return true;
     }
 
-    protected function onCommandEventInstallUpdate(CommandEvent $event): bool
+    protected function onForwardedCommand(CommandEvent $event): bool
     {
-        $command = new BinCommand();
+        $this->logger->logDebug('The command is being forwarded.');
+        $this->logger->logDebug(
+            sprintf(
+                'Original input: <comment>%s</comment>.',
+                $event->getInput()
+            )
+        );
+
+        // Note that the input & output of $io should be the same as the event
+        // input & output.
+        $io = $this->io;
+        $logger = new Logger($io);
+
+        $application = new Application();
+
+        $command = new BinCommand($logger);
         $command->setComposer($this->composer);
-        $command->setApplication(new Application());
+        $command->setApplication($application);
 
-        $arguments = [
-            'command' => $command->getName(),
-            'namespace' => 'all',
-            'args' => [],
-        ];
-
-        foreach (array_filter($event->getInput()->getArguments()) as $argument) {
-            $arguments['args'][] = $argument;
-        }
-
-        foreach (array_keys(array_filter($event->getInput()->getOptions())) as $option) {
-            $arguments['args'][] = '--' . $option;
-        }
-
-        $definition = new InputDefinition();
-        $definition->addArgument(new InputArgument('command', InputArgument::REQUIRED));
-        $definition->addArguments($command->getDefinition()->getArguments());
-        $definition->addOptions($command->getDefinition()->getOptions());
-
-        $input = new ArrayInput($arguments, $definition);
+        $forwardedCommandInput = BinInputFactory::createForwardedCommandInput(
+            $event->getInput()
+        );
 
         try {
-            $returnCode = $command->run($input, $event->getOutput());
+            return Command::SUCCESS === $command->run(
+                $forwardedCommandInput,
+                $event->getOutput()
+            );
         } catch (Throwable $throwable) {
             return false;
         }
-
-        return $returnCode === 0;
     }
 }

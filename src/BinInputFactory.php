@@ -31,6 +31,16 @@ final class BinInputFactory
         return new StringInput((string) $previousInput . ' --working-dir=.');
     }
 
+    public static function createForwardedCommandInput(InputInterface $input): InputInterface
+    {
+        return new StringInput(
+            sprintf(
+                'bin all %s',
+                (string) $input
+            )
+        );
+    }
+
     private function __construct()
     {
     }
