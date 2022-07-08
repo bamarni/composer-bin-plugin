@@ -140,6 +140,11 @@ TXT
             'Locking bamarni/composer-bin-plugin (dev-hash)',
             $normalizedContent
         );
+        $normalizedContent = preg_replace(
+            '/Installing bamarni\/composer-bin-plugin \(dev-hash\): Symlinking from ..\/../',
+            'Installing bamarni/composer-bin-plugin (dev-hash): Symlinking from ../..',
+            $normalizedContent
+        );
 
         return $normalizedContent;
     }
