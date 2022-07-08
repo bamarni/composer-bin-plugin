@@ -54,6 +54,9 @@ jobs:
                 with:
                     dependency-versions: "highest"
 
+            -   name: "Remove global bin"
+                run: composer global remove bamarni/composer-bin-plugin
+
             -   name: "Validate composer.json"
                 run: "composer validate --strict --no-check-lock"
 
