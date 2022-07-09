@@ -130,6 +130,9 @@ TXT
             'Analyzed 90 rules to resolve dependencies',
             $normalizedContent
         );
+
+        // We are not interested in the exact version installed especially since
+        // in a PR the version will be `dev-commithash` instead of `dev-master`.
         $normalizedContent = preg_replace(
             '/Installs: bamarni\/composer-bin-plugin:dev-.+/',
             'Installs: bamarni/composer-bin-plugin:dev-hash',
@@ -145,9 +148,20 @@ TXT
             'Installing bamarni/composer-bin-plugin (dev-hash): Symlinking from ../..',
             $normalizedContent
         );
+
+        // We are not interested in the time taken which can vary from locally
+        // and on the CI.
         $normalizedContent = preg_replace(
             '/Dependency resolution completed in \d\.\d{3} seconds/',
             'Dependency resolution completed in 0.000 seconds',
+            $normalizedContent
+        );
+
+        // Normalize the find directory: on some versions of OSX it does not come
+        // with ticks but it does on Linux (at least Ubuntu).
+        $normalizedContent = preg_replace(
+            '/find: ‘?(.+?)’?: No such file or directory/u',
+            'find: $1: No such file or directory',
             $normalizedContent
         );
 
