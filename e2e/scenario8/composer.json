@@ -12,5 +12,10 @@
         "allow-plugins": {
             "bamarni/composer-bin-plugin": true
         }
+    },
+    "extra": {
+        "bamarni-bin": {
+            "forward-command": true
+        }
     }
 }

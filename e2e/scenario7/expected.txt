@@ -1,22 +1,9 @@
-Loading composer repositories with package information
-Updating dependencies
-Lock file operations: 1 install, 0 updates, 0 removals
-  - Locking bamarni/composer-bin-plugin (dev-hash)
-Writing lock file
-Installing dependencies from lock file
-Package operations: 1 install, 0 updates, 0 removals
-  - Installing bamarni/composer-bin-plugin (dev-hash): Symlinking from ../..
-Generating autoload files
-[bamarni-bin] The command is being forwarded.
-Loading composer repositories with package information
-Updating dependencies
-Lock file operations: 2 installs, 0 updates, 0 removals
-  - Locking nikic/iter (v1.6.0)
-  - Locking phpstan/phpstan (1.8.0)
-Writing lock file
-Installing dependencies from lock file
-Package operations: 1 install, 0 updates, 0 removals
-  - Installing nikic/iter (v1.6.0): Extracting archive
-Generating autoload files
+[bamarni-bin] Current working directory: /path/to/project/e2e/scenario7
+[bamarni-bin] Configuring bin directory to /path/to/project/e2e/scenario7/vendor/bin.
+[bamarni-bin] Checking namespace vendor-bin/ns1
+[bamarni-bin] Changed current directory to vendor-bin/ns1.
+[bamarni-bin] Running `@composer update --no-dev --verbose --working-dir='.' -- foo`.
+Cannot update only a partial set of packages without a lock file present. Run `composer update` to generate a lock file.
+[bamarni-bin] Changed current directory to /path/to/project/e2e/scenario7.
 –––––––––––––––––––––
-nikic/iter
+No dependencies installed. Try running composer install or update.

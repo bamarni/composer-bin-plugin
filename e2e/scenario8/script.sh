@@ -16,9 +16,7 @@ rm -rf vendor || true
 rm -rf vendor-bin/*/composer.lock || true
 rm -rf vendor-bin/*/vendor || true
 
-composer update
+composer update --no-dev
 
 # Actual command to execute the test itself
-composer bin ns1 update --no-dev --verbose -- foo 2>&1 | tee > actual.txt || true
-echo "–––––––––––––––––––––" >> actual.txt
-composer bin ns1 show --direct --name-only 2>&1 | tee >> actual.txt || true
+composer bin ns1 show --direct --name-only 2>&1 | tee > actual.txt || true
