@@ -179,6 +179,10 @@ wish to disable that behaviour, you can do so by adding a little setting in the 
 }
 ```
 
+Note that otherwise, in case of conflicts (e.g. `phpstan` is present in two namespaces), only the
+first one is linked and the second one is ignored.
+
+
 ### Change directory
 
 By default, the packages are looked for in the `vendor-bin` directory. The location can be changed using `target-directory` value in the extra config:
