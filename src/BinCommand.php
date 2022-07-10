@@ -174,7 +174,7 @@ class BinCommand extends BaseCommand
         OutputInterface $output,
         ReflectionProperty $commandsReflection
     ): int {
-        $this->logger->logDebug(
+        $this->logger->logStandard(
             sprintf(
                 'Checking namespace <comment>%s</comment>',
                 $namespace

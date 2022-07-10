@@ -22,7 +22,12 @@ rm -rf vendor || true
 rm -rf vendor-bin/*/composer.lock || true
 rm -rf vendor-bin/*/vendor || true
 
+# For some reasons using the --no-dev flag in the CI is resulting in the
+# (required) dependency bamarni/composer-bin-plugin to not be installed which
+# obviously messes up the whole test.
+composer update --no-plugins
+
+composer update --no-dev
+
 # Actual command to execute the test itself
-composer update --dev 2>&1 | tee > actual.txt || true
-echo "––––––––––––––" >> actual.txt
 composer bin ns1 show --direct --name-only 2>&1 | tee >> actual.txt || true
