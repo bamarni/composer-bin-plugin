@@ -1,1 +1,22 @@
+Loading composer repositories with package information
+Updating dependencies
+Lock file operations: 1 install, 0 updates, 0 removals
+  - Locking bamarni/composer-bin-plugin (dev-hash)
+Writing lock file
+Installing dependencies from lock file
+Package operations: 1 install, 0 updates, 0 removals
+  - Installing bamarni/composer-bin-plugin (dev-hash): Symlinking from ../..
+Generating autoload files
+[bamarni-bin] The command is being forwarded.
+Loading composer repositories with package information
+Updating dependencies
+Lock file operations: 2 installs, 0 updates, 0 removals
+  - Locking nikic/iter (v1.6.0)
+  - Locking phpstan/phpstan (1.8.0)
+Writing lock file
+Installing dependencies from lock file
+Package operations: 1 install, 0 updates, 0 removals
+  - Installing nikic/iter (v1.6.0): Extracting archive
+Generating autoload files
+––––––––––––––
 nikic/iter
