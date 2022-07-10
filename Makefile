@@ -8,8 +8,6 @@ TOUCH = bash .makefile/touch.sh
 # PHP variables
 COMPOSER=composer
 COVERAGE_DIR = dist/coverage
-COVERS_VALIDATOR_BIN = vendor/bin/covers-validator
-COVERS_VALIDATOR = $(COVERS_VALIDATOR_BIN)
 INFECTION_BIN = tools/infection
 INFECTION = php -d zend.enable_gc=0 $(INFECTION_BIN) --skip-initial-tests --coverage=$(COVERAGE_DIR) --only-covered --threads=4 --min-msi=100 --min-covered-msi=100 --ansi
 PHPUNIT_BIN = vendor/bin/phpunit
@@ -63,19 +61,13 @@ infection: $(INFECTION_BIN) $(COVERAGE_DIR) vendor
 
 .PHONY: test
 test: 	  	  ## Runs all the tests
-test: validate-package covers-validator phpstan $(COVERAGE_DIR) e2e infection
+test: validate-package phpstan $(COVERAGE_DIR) e2e #infection include infection later
 
 
 .PHONY: validate-package
 validate-package: ## Validates the Composer package
 validate-package: vendor
 	$(COMPOSER) validate --strict
-
-
-.PHONY: covers-validator
-covers-validator: ## Validates the PHPUnit @covers annotations
-covers-validator: $(COVERS_VALIDATOR_BIN) vendor
-	$(COVERS_VALIDATOR)
 
 
 .PHONY: coverage
@@ -109,12 +101,12 @@ vendor: composer.json
 $(PHPUNIT_BIN): vendor
 	$(TOUCH) "$@"
 
-$(INFECTION_BIN): ./phive/phars.xml
-	phive install
+$(INFECTION_BIN): ./.phive/phars.xml
+	phive install infection
 	$(TOUCH) "$@"
 
-$(COMPOSER_NORMALIZE_BIN): ./phive/phars.xml
-	phive install
+$(COMPOSER_NORMALIZE_BIN): ./.phive/phars.xml
+	phive install composer-normalize
 	$(TOUCH) "$@"
 
 $(COVERAGE_DIR): $(PHPUNIT_BIN) src tests phpunit.xml.dist
@@ -122,10 +114,6 @@ $(COVERAGE_DIR): $(PHPUNIT_BIN) src tests phpunit.xml.dist
 	$(TOUCH) "$@"
 
 $(PHP_CS_FIXER_BIN): vendor
-	$(TOUCH) "$@"
-
-$(COVERS_VALIDATOR_BIN): vendor
-	$(TOUCH) "$@"
 	$(TOUCH) "$@"
 
 $(PHPSTAN_BIN): vendor

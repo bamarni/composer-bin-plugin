@@ -236,13 +236,14 @@ vendor-bin/**/composer.lock binary
 
 ## Contributing
 
-Before getting started, you need to install the plugin globally:
+A makefile is available to help out:
 
 ```bash
-$ composer install
-$ vendor/bin/phpunit # run the tests
-$ vendor/bin/php-cs-fixer # run PHP-CS-Fixer
+$ make # Runs all checks
+$ make help # List all available commands
 ```
+
+**Note:** you do need to install [phive][phive] first.
 
 
 [1]: https://github.com/etsy/phan
@@ -253,3 +254,4 @@ $ vendor/bin/php-cs-fixer # run PHP-CS-Fixer
 [6]: https://github.com/nikic/PHP-Parser
 [7]: https://github.com/theofidry/composer-inheritance-plugin
 [8]: https://github.com/wikimedia/composer-merge-plugin
+[phive]: https://phar.io/
