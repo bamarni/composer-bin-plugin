@@ -37,7 +37,7 @@ class MyTestCommand extends BaseCommand
         ]);
     }
 
-    public function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->composer = $this->tryComposer();
 
@@ -52,5 +52,7 @@ class MyTestCommand extends BaseCommand
 
         $this->resetComposer();
         $this->getApplication()->resetComposer();
+
+        return self::SUCCESS;
     }
 }

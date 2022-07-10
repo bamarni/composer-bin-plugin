@@ -3,6 +3,5 @@
 /tools/
 /vendor/
 /vendor-bin/*/vendor/
-/.phive/
 /.phpunit.result.cache
 /.php-cs-fixer.cache
