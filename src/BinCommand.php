@@ -9,8 +9,6 @@ use Composer\Console\Application as ComposerApplication;
 use Composer\Factory;
 use Composer\IO\IOInterface;
 use Composer\IO\NullIO;
-use ReflectionClass;
-use ReflectionProperty;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
