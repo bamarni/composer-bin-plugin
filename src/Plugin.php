@@ -118,13 +118,14 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
     ): bool {
         $config = Config::fromComposer($this->composer);
 
-        if ($config->isCommandForwarded()
-            && in_array($commandName, self::FORWARDED_COMMANDS, true)
+        if (
+            !$config->isCommandForwarded()
+            || !in_array($commandName, self::FORWARDED_COMMANDS, true)
         ) {
-            return $this->onForwardedCommand($input, $output);
+            return true;
         }
 
-        return true;
+        return $this->onForwardedCommand($input, $output);
     }
 
     protected function onForwardedCommand(
