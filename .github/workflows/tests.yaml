@@ -31,11 +31,6 @@ jobs:
                     php-version: "${{ matrix.php }}"
                     tools: "composer"
 
-            # It is not used in the CI and the PHP constraints may not match
-            # the CI.
-            -   name: "Remove PHP-CS-Fixer"
-                run: composer remove --dev --no-update php-cs-fixer/shim
-
             -   name: "Install Composer dependencies"
                 uses: "ramsey/composer-install@v2"
                 with:
@@ -65,11 +60,6 @@ jobs:
                 with:
                     php-version: "${{ matrix.php }}"
                     tools: "composer"
-
-            # It is not used in the CI and the PHP constraints may not match
-            # the CI.
-            -   name: "Remove PHP-CS-Fixer"
-                run: composer remove --dev --no-update php-cs-fixer/shim
 
             -   name: "Correct bin plugin version for e2e scenarios (PR-only)"
                 if: github.event_name == 'pull_request'

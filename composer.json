@@ -18,7 +18,6 @@
     "require-dev": {
         "ext-json": "*",
         "composer/composer": "^2.0",
-        "php-cs-fixer/shim": "^3.8",
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^1.8",
         "phpstan/phpstan-phpunit": "^1.1",
