@@ -7,16 +7,20 @@ namespace Bamarni\Composer\Bin\Tests;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
+use function array_map;
 use function basename;
 use function dirname;
+use function explode;
 use function file_exists;
 use function file_get_contents;
 use function getcwd;
+use function implode;
 use function preg_replace;
 use function realpath;
 use function sprintf;
 use function str_replace;
 use function trim;
+use const PHP_EOL;
 
 /**
  * @group e2e
@@ -39,7 +43,9 @@ final class EndToEndTest extends TestCase
             10
         );
 
-        $expected = file_get_contents($scenarioPath.'/expected.txt');
+        $expected = self::normalizeTrailingWhitespacesAndLineReturns(
+            file_get_contents($scenarioPath.'/expected.txt')
+        );
 
         $scenarioProcess->run();
 
@@ -167,6 +173,14 @@ TXT;
             $normalizedContent
         );
 
-        return $normalizedContent;
+        return self::normalizeTrailingWhitespacesAndLineReturns($normalizedContent);
+    }
+
+    private static function normalizeTrailingWhitespacesAndLineReturns(string $value): string
+    {
+        return implode(
+            "\n",
+            array_map('rtrim', explode(PHP_EOL, $value))
+        );
     }
 }
