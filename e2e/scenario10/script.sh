@@ -25,6 +25,7 @@ rm -rf vendor-bin/*/vendor || true
 rm -rf vendor-bin/*/.composer || true
 
 readonly CUSTOM_COMPOSER_DIR=$(pwd)/.composer
+COMPOSER_CACHE_DIR=$CUSTOM_COMPOSER_DIR composer update
 
 # Actual command to execute the test itself
-COMPOSER_CACHE_DIR=$CUSTOM_COMPOSER_DIR composer update 2>&1 | tee > actual.txt || true
+find . ".composer" -name ".composer" -type d 2>&1 | tee > actual.txt || true
