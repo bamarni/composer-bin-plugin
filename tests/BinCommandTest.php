@@ -175,8 +175,7 @@ class BinCommandTest extends TestCase
         $this->assertDataSetRecordedIs(
             $this->tmpDir.'/'.$binDir,
             $this->tmpDir.'/'.'vendor-bin/theirspace',
-            $this->tmpDir.'/'.'vendor-bin/theirspace/vendor',
-            ''
+            $this->tmpDir.'/'.'vendor-bin/theirspace/vendor'
         );
         $this->assertNoMoreDataFound();
     }
