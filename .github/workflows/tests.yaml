@@ -72,3 +72,24 @@ jobs:
 
             -   name: "Run tests"
                 run: "vendor/bin/phpunit --group e2e"
+
+    static-analysis:
+        runs-on: "ubuntu-latest"
+        name: "PHPStan"
+        steps:
+            -   name: "Check out repository code"
+                uses: "actions/checkout@v2"
+
+            -   name: "Setup PHP"
+                uses: "shivammathur/setup-php@v2"
+                with:
+                    php-version: "8.0"
+                    tools: "composer"
+
+            -   name: "Install Composer dependencies"
+                uses: "ramsey/composer-install@v2"
+                with:
+                    dependency-versions: "highest"
+
+            -   name: "Perform static analysis"
+                run: "vendor/bin/phpstan analyze --level=0 src/"
