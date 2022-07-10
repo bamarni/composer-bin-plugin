@@ -2,6 +2,12 @@
 
 set -Eeuo pipefail
 
+# Set env envariables in order to experience a behaviour closer to what happens
+# in the CI locally. It should not hurt to set those in the CI as the CI should
+# contain those values.
+export CI=1
+export COMPOSER_NO_INTERACTION=1
+
 readonly ORIGINAL_WORKING_DIR=$(pwd)
 
 trap "cd ${ORIGINAL_WORKING_DIR}" err exit
@@ -17,6 +23,6 @@ rm -rf vendor-bin/*/composer.lock || true
 rm -rf vendor-bin/*/vendor || true
 
 # Actual command to execute the test itself
-composer update -vvv 2>&1 | tee > actual.txt || true
+composer update --dev 2>&1 | tee > actual.txt || true
 echo "––––––––––––––" >> actual.txt
 composer bin ns1 show --direct --name-only 2>&1 | tee >> actual.txt || true
