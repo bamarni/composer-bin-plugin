@@ -1,5 +1,7 @@
-composer.lock
-vendor
-vendor-bin/*/vendor
-.phpunit.result.cache
-.php-cs-fixer.cache
+/composer.lock
+/dist/
+/tools/
+/vendor/
+/vendor-bin/*/vendor/
+/.phpunit.result.cache
+/.php-cs-fixer.cache
