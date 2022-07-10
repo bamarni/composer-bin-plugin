@@ -3,6 +3,7 @@ Updating dependencies
 Dependency resolution completed in 0.000 seconds
 Analyzed 90 packages to resolve dependencies
 Analyzed 90 rules to resolve dependencies
+Dependency resolution completed in 0.000 seconds
 Lock file operations: 1 install, 0 updates, 0 removals
 Installs: bamarni/composer-bin-plugin:dev-hash
   - Locking bamarni/composer-bin-plugin (dev-hash)
