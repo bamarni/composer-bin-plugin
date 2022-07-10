@@ -26,6 +26,7 @@ Updating dependencies
 Dependency resolution completed in 0.000 seconds
 Analyzed 90 packages to resolve dependencies
 Analyzed 90 rules to resolve dependencies
+Dependency resolution completed in 0.000 seconds
 Nothing to modify in lock file
 Writing lock file
 Installing dependencies from lock file (including require-dev)
