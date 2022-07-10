@@ -15,7 +15,7 @@ PHPUNIT = php -d zend.enable_gc=0 $(PHPUNIT_BIN)
 PHPUNIT_COVERAGE = XDEBUG_MODE=coverage $(PHPUNIT) --group default --coverage-xml=$(COVERAGE_DIR)/coverage-xml --log-junit=$(COVERAGE_DIR)/phpunit.junit.xml
 PHPSTAN_BIN = vendor/bin/phpstan
 PHPSTAN = $(PHPSTAN_BIN) analyse src tests
-PHP_CS_FIXER_BIN = vendor/bin/php-cs-fixer
+PHP_CS_FIXER_BIN = tools/php-cs-fixer
 PHP_CS_FIXER = $(PHP_CS_FIXER_BIN) fix --ansi --verbose --config=.php-cs-fixer.php
 COMPOSER_NORMALIZE_BIN=tools/composer-normalize
 COMPOSER_NORMALIZE = ./$(COMPOSER_NORMALIZE_BIN)
@@ -114,6 +114,7 @@ $(COVERAGE_DIR): $(PHPUNIT_BIN) src tests phpunit.xml.dist
 	$(TOUCH) "$@"
 
 $(PHP_CS_FIXER_BIN): vendor
+	phive install php-cs-fixer
 	$(TOUCH) "$@"
 
 $(PHPSTAN_BIN): vendor
