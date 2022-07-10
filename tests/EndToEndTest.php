@@ -54,9 +54,7 @@ final class EndToEndTest extends TestCase
             $originalContent = 'File was not created.';
         }
 
-        self::assertTrue(
-            $scenarioProcess->isSuccessful(),
-            <<<TXT
+        $errorMessage = <<<TXT
 Standard output:
 ${standardOutput}
 ––––––––––––––––
@@ -65,7 +63,11 @@ ${errorOutput}
 ––––––––––––––––
 File content (actual.txt):
 ${originalContent}
-TXT
+TXT;
+
+        self::assertTrue(
+            $scenarioProcess->isSuccessful(),
+            $errorMessage
         );
 
         $actual = self::retrieveActualOutput(
@@ -73,7 +75,7 @@ TXT
             $originalContent
         );
 
-        self::assertSame($expected, $actual);
+        self::assertSame($expected, $actual, $errorMessage);
     }
 
     public static function scenarioProvider(): iterable

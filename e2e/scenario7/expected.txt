@@ -6,4 +6,5 @@
 Cannot update only a partial set of packages without a lock file present. Run `composer update` to generate a lock file.
 [bamarni-bin] Changed current directory to /path/to/project/e2e/scenario7.
 –––––––––––––––––––––
+[bamarni-bin] Checking namespace vendor-bin/ns1
 No dependencies installed. Try running composer install or update.

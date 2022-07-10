@@ -1,8 +1,1 @@
-{
-    "require": {
-        "nikic/iter": "v1.6.0"
-    },
-    "require-dev": {
-        "phpstan/phpstan": "1.8.0"
-    }
-}
+{}
