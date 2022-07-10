@@ -10,7 +10,7 @@ COMPOSER=composer
 COVERAGE_DIR = dist/coverage
 COVERS_VALIDATOR_BIN = vendor/bin/covers-validator
 COVERS_VALIDATOR = $(COVERS_VALIDATOR_BIN)
-INFECTION_BIN = vendor/bin/infection
+INFECTION_BIN = tools/infection
 INFECTION = php -d zend.enable_gc=0 $(INFECTION_BIN) --skip-initial-tests --coverage=$(COVERAGE_DIR) --only-covered --threads=4 --min-msi=100 --min-covered-msi=100 --ansi
 PHPUNIT_BIN = vendor/bin/phpunit
 PHPUNIT = php -d zend.enable_gc=0 $(PHPUNIT_BIN)
@@ -18,8 +18,9 @@ PHPUNIT_COVERAGE = XDEBUG_MODE=coverage $(PHPUNIT) --group default --coverage-xm
 PHPSTAN_BIN = vendor/bin/phpstan
 PHPSTAN = $(PHPSTAN_BIN) analyse src tests
 PHP_CS_FIXER_BIN = vendor/bin/php-cs-fixer
-# To keep in sync with the command defined in the parent Makefile
 PHP_CS_FIXER = $(PHP_CS_FIXER_BIN) fix --ansi --verbose --config=.php-cs-fixer.php
+COMPOSER_NORMALIZE_BIN=tools/composer-normalize
+COMPOSER_NORMALIZE = ./$(COMPOSER_NORMALIZE_BIN)
 
 
 .DEFAULT_GOAL := default
@@ -43,9 +44,9 @@ default: cs test
 
 .PHONY: cs
 cs:		  ## Runs PHP-CS-Fixer
-cs: $(PHP_CS_FIXER_BIN)
+cs: $(PHP_CS_FIXER_BIN) $(COMPOSER_NORMALIZE_BIN)
 	$(PHP_CS_FIXER)
-	$(COMPOSER) normalize
+	$(COMPOSER_NORMALIZE)
 
 
 .PHONY: phpstan
@@ -108,7 +109,12 @@ vendor: composer.json
 $(PHPUNIT_BIN): vendor
 	$(TOUCH) "$@"
 
-$(INFECTION_BIN): vendor
+$(INFECTION_BIN): ./phive/phars.xml
+	phive install
+	$(TOUCH) "$@"
+
+$(COMPOSER_NORMALIZE_BIN): ./phive/phars.xml
+	phive install
 	$(TOUCH) "$@"
 
 $(COVERAGE_DIR): $(PHPUNIT_BIN) src tests phpunit.xml.dist
