@@ -36,14 +36,22 @@ class BinCommand extends BaseCommand
     private const NAMESPACE_ARG = 'namespace';
 
     /**
+     * @var NamespaceApplicationFactory
+     */
+    private $applicationFactory;
+
+    /**
      * @var Logger
      */
     private $logger;
 
-    public function __construct(?Logger $logger = null)
-    {
+    public function __construct(
+        ?NamespaceApplicationFactory $applicationFactory = null,
+        ?Logger $logger = null
+    ) {
         parent::__construct('bin');
 
+        $this->applicationFactory = $applicationFactory ?? new FreshInstanceApplicationFactory();
         $this->logger = $logger ?? new Logger(new NullIO());
     }
 
@@ -190,7 +198,9 @@ class BinCommand extends BaseCommand
         //   process).
         // - Different plugins may be registered in the namespace in which case
         //   an already executed application will not pick that up.
-        $namespaceApplication = new ComposerApplication();
+        $namespaceApplication = $this->applicationFactory->create(
+            $this->getApplication()
+        );
 
         // It is important to clean up the state either for follow-up plugins
         // or for example the execution in the next namespace.

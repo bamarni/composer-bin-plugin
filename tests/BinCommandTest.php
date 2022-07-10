@@ -6,6 +6,7 @@ namespace Bamarni\Composer\Bin\Tests;
 
 use Bamarni\Composer\Bin\BinCommand;
 use Bamarni\Composer\Bin\Tests\Fixtures\MyTestCommand;
+use Bamarni\Composer\Bin\Tests\Fixtures\ReuseApplicationFactory;
 use Composer\Composer;
 use Composer\Console\Application;
 use PHPUnit\Framework\TestCase;
@@ -70,7 +71,7 @@ class BinCommandTest extends TestCase
 
         $this->application = new Application();
         $this->application->addCommands([
-            new BinCommand(),
+            new BinCommand(new ReuseApplicationFactory()),
             $this->testCommand,
         ]);
     }
