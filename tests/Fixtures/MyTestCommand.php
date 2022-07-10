@@ -20,7 +20,7 @@ class MyTestCommand extends BaseCommand
     public $composer;
 
     /**
-     * @var list<array{'bin-dir': string, 'cwd': string, 'vendor-bin': string}>
+     * @var list<array{'bin-dir': string, 'cwd': string, 'vendor-dir': string}>
      */
     public $data = [];
 
