@@ -1,1 +1,1 @@
-Tests that extra arguments and options are not lost when forwarding the command to a bin namespace.
+Tests that plugins installed in a namespace are loaded when a command is executed in the namespace.
