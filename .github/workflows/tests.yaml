@@ -92,4 +92,4 @@ jobs:
                     dependency-versions: "highest"
 
             -   name: "Perform static analysis"
-                run: "vendor/bin/phpstan analyze --level=0 src/"
+                run: "make phpstan"
