@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Bamarni\Composer\Bin;
 
 use Composer\Command\BaseCommand;
-use Composer\Console\Application as ComposerApplication;
 use Composer\Factory;
 use Composer\IO\IOInterface;
 use Composer\IO\NullIO;
