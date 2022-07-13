@@ -9,10 +9,32 @@ use function array_merge;
 
 final class Config
 {
+    public const EXTRA_CONFIG_KEY = 'bamarni-bin';
+
+    public const BIN_LINKS_ENABLED = 'bin-links';
+    public const TARGET_DIRECTORY = 'target-directory';
+    public const FORWARD_COMMAND = 'forward-command';
+
+    private const DEFAULT_CONFIG = [
+        self::BIN_LINKS_ENABLED => true,
+        self::TARGET_DIRECTORY => 'vendor-bin',
+        self::FORWARD_COMMAND => false,
+    ];
+
     /**
-     * @var array{'bin-links': bool, 'target-directory': string, 'forward-command': bool}
+     * @var bool
      */
-    private $config;
+    private $binLinks;
+
+    /**
+     * @var string
+     */
+    private $targetDirectory;
+
+    /**
+     * @var bool
+     */
+    private $forwardCommand;
 
     public static function fromComposer(Composer $composer): self
     {
@@ -24,28 +46,28 @@ final class Config
      */
     public function __construct(array $extra)
     {
-        $this->config = array_merge(
-            [
-                'bin-links' => true,
-                'target-directory' => 'vendor-bin',
-                'forward-command' => false,
-            ],
-            $extra['bamarni-bin'] ?? []
+        $config = array_merge(
+            self::DEFAULT_CONFIG,
+            $extra[self::EXTRA_CONFIG_KEY] ?? []
         );
+
+        $this->binLinks = $config[self::BIN_LINKS_ENABLED];
+        $this->targetDirectory = $config[self::TARGET_DIRECTORY];
+        $this->forwardCommand = $config[self::FORWARD_COMMAND];
     }
 
     public function binLinksAreEnabled(): bool
     {
-        return true === $this->config['bin-links'];
+        return $this->binLinks;
     }
 
     public function getTargetDirectory(): string
     {
-        return $this->config['target-directory'];
+        return $this->targetDirectory;
     }
 
     public function isCommandForwarded(): bool
     {
-        return $this->config['forward-command'];
+        return $this->forwardCommand;
     }
 }
