@@ -217,7 +217,7 @@ class BinCommand extends BaseCommand
         $this->logger->logDebug(
             sprintf(
                 'Running <info>`@composer %s`</info>.',
-                $namespaceInput
+                $namespaceInput->__toString()
             )
         );
 

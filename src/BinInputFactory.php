@@ -31,7 +31,7 @@ final class BinInputFactory
                 '/^(?<preBinOptions>.+)?bin (?:(?<preBinOptions2>.+?) )?(?:%1$s|\'%1$s\') (?<binCommand>.+?)(?<extraInput> -- .*)?$/',
                 preg_quote($namespace, '/')
             ),
-            (string) $previousInput,
+            $previousInput->__toString(),
             $matches
         );
 
@@ -62,7 +62,7 @@ final class BinInputFactory
     {
         $matchResult = preg_match(
             '/^(.+?\s?)(--(?: .+)?)?$/',
-            (string) $previousInput,
+            $previousInput->__toString(),
             $matches
         );
 
@@ -91,7 +91,7 @@ final class BinInputFactory
         return new StringInput(
             sprintf(
                 'bin all %s',
-                (string) $input
+                $input->__toString()
             )
         );
     }
