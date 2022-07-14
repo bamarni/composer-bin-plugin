@@ -94,7 +94,7 @@ class BinCommand extends BaseCommand
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $config = Config::fromComposer($this->requireComposer());
+        $config = Config::fromComposer($this->getComposer());
         $currentWorkingDir = getcwd();
 
         $this->logger->logDebug(
