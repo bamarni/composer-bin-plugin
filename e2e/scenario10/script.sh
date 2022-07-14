@@ -28,4 +28,4 @@ readonly CUSTOM_COMPOSER_DIR=$(pwd)/.composer
 COMPOSER_CACHE_DIR=$CUSTOM_COMPOSER_DIR composer update
 
 # Actual command to execute the test itself
-find . ".composer" -name ".composer" -type d 2>&1 | tee > actual.txt || true
+find . ".composer" -name ".composer" -type d 2>&1 | sort -n | tee > actual.txt || true
