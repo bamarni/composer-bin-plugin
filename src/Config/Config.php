@@ -2,12 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Bamarni\Composer\Bin;
+namespace Bamarni\Composer\Bin\Config;
 
 use Composer\Composer;
-use UnexpectedValueException;
 use function array_key_exists;
 use function array_merge;
+use function function_exists;
+use function is_bool;
+use function is_string;
+use function sprintf;
 
 final class Config
 {
@@ -43,6 +46,9 @@ final class Config
      */
     private $deprecations = [];
 
+    /**
+     * @throws InvalidBamarniComposerExtraConfig
+     */
     public static function fromComposer(Composer $composer): self
     {
         return new self($composer->getPackage()->getExtra());
@@ -50,6 +56,8 @@ final class Config
 
     /**
      * @param mixed[] $extra
+     *
+     * @throws InvalidBamarniComposerExtraConfig
      */
     public function __construct(array $extra)
     {
@@ -62,7 +70,7 @@ final class Config
         $binLinks = $config[self::BIN_LINKS_ENABLED];
 
         if (!is_bool($binLinks)) {
-            throw new UnexpectedValueException(
+            throw new InvalidBamarniComposerExtraConfig(
                 sprintf(
                     'Expected setting "%s.%s" to be a boolean value. Got "%s".',
                     self::EXTRA_CONFIG_KEY,
@@ -85,7 +93,7 @@ final class Config
         $targetDirectory = $config[self::TARGET_DIRECTORY];
 
         if (!is_string($targetDirectory)) {
-            throw new UnexpectedValueException(
+            throw new InvalidBamarniComposerExtraConfig(
                 sprintf(
                     'Expected setting "%s.%s" to be a string. Got "%s".',
                     self::EXTRA_CONFIG_KEY,
@@ -98,7 +106,7 @@ final class Config
         $forwardCommand = $config[self::FORWARD_COMMAND];
 
         if (!is_bool($forwardCommand)) {
-            throw new UnexpectedValueException(
+            throw new InvalidBamarniComposerExtraConfig(
                 sprintf(
                     'Expected setting "%s.%s" to be a boolean value. Got "%s".',
                     self::EXTRA_CONFIG_KEY,

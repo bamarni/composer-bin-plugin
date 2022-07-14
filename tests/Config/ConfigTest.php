@@ -2,12 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Bamarni\Composer\Bin\Tests;
+namespace Bamarni\Composer\Bin\Tests\Config;
 
-use Bamarni\Composer\Bin\Config;
+use Bamarni\Composer\Bin\Config\Config;
+use Bamarni\Composer\Bin\Config\InvalidBamarniComposerExtraConfig;
 use PHPUnit\Framework\TestCase;
-use UnexpectedValueException;
 
+/**
+ * @covers \Bamarni\Composer\Bin\Config\Config
+ */
 final class ConfigTest extends TestCase
 {
     /**
@@ -92,7 +95,7 @@ final class ConfigTest extends TestCase
         array $extra,
         string $expectedMessage
     ): void {
-        $this->expectException(UnexpectedValueException::class);
+        $this->expectException(InvalidBamarniComposerExtraConfig::class);
         $this->expectExceptionMessage($expectedMessage);
 
         new Config($extra);

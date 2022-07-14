@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Bamarni\Composer\Bin\Tests;
+namespace Bamarni\Composer\Bin\Tests\Input;
 
-use Bamarni\Composer\Bin\BinInputFactory;
+use Bamarni\Composer\Bin\Input\BinInputFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\StringInput;
 use function sprintf;
 
 /**
- * @covers \Bamarni\Composer\Bin\BinInputFactory
+ * @covers \Bamarni\Composer\Bin\Input\BinInputFactory
  */
 final class BinInputFactoryTest extends TestCase
 {

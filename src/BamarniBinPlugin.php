@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin;
 
+use Bamarni\Composer\Bin\Command\BinCommand;
 use Bamarni\Composer\Bin\CommandProvider as BamarniCommandProvider;
+use Bamarni\Composer\Bin\Config\Config;
+use Bamarni\Composer\Bin\Input\BinInputFactory;
 use Composer\Composer;
 use Composer\Console\Application;
 use Composer\EventDispatcher\EventSubscriberInterface;
@@ -28,7 +31,7 @@ use function sprintf;
 /**
  * @final Will be final in 2.x.
  */
-class Plugin implements PluginInterface, Capable, EventSubscriberInterface
+class BamarniBinPlugin implements PluginInterface, Capable, EventSubscriberInterface
 {
     private const FORWARDED_COMMANDS = ['install', 'update'];
 
