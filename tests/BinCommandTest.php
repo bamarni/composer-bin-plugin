@@ -60,7 +60,9 @@ class BinCommandTest extends TestCase
 
         chdir($tmpDir);
         // On OSX sys_get_temp_dir() may return a symlink
-        $this->tmpDir = realpath($tmpDir);
+        $tmpDirRealPath = realpath($tmpDir);
+        self::assertNotFalse($tmpDirRealPath);
+        $this->tmpDir = $tmpDirRealPath;
 
         file_put_contents(
             $this->tmpDir.'/composer.json',
