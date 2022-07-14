@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Bamarni\Composer\Bin\Tests;
+namespace Bamarni\Composer\Bin\Tests\Command;
 
-use Bamarni\Composer\Bin\BinCommand;
+use Bamarni\Composer\Bin\Command\BinCommand;
 use Bamarni\Composer\Bin\Tests\Fixtures\MyTestCommand;
 use Bamarni\Composer\Bin\Tests\Fixtures\ReuseApplicationFactory;
 use Composer\Composer;
@@ -13,6 +13,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
 use function array_shift;
+use function exec;
 use function chdir;
 use function file_exists;
 use function file_put_contents;
@@ -24,7 +25,7 @@ use function realpath;
 use function sys_get_temp_dir;
 
 /**
- * @covers \Bamarni\Composer\Bin\BinCommand
+ * @covers \Bamarni\Composer\Bin\Command\BinCommand
  */
 class BinCommandTest extends TestCase
 {

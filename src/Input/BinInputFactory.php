@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bamarni\Composer\Bin;
+namespace Bamarni\Composer\Bin\Input;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\StringInput;

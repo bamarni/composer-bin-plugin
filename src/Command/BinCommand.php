@@ -2,8 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Bamarni\Composer\Bin;
+namespace Bamarni\Composer\Bin\Command;
 
+use Bamarni\Composer\Bin\Config\Config;
+use Bamarni\Composer\Bin\Config\ConfigFactory;
+use Bamarni\Composer\Bin\ApplicationFactory\FreshInstanceApplicationFactory;
+use Bamarni\Composer\Bin\Input\BinInputFactory;
+use Bamarni\Composer\Bin\Logger;
+use Bamarni\Composer\Bin\ApplicationFactory\NamespaceApplicationFactory;
 use Composer\Command\BaseCommand;
 use Composer\Factory;
 use Composer\IO\IOInterface;

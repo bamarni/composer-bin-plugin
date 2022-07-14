@@ -45,6 +45,6 @@
         "sort-packages": true
     },
     "extra": {
-        "class": "Bamarni\\Composer\\Bin\\Plugin"
+        "class": "Bamarni\\Composer\\Bin\\BamarniBinPlugin"
     }
 }

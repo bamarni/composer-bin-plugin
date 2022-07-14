@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin\Tests\Fixtures;
 
-use Bamarni\Composer\Bin\NamespaceApplicationFactory;
+use Bamarni\Composer\Bin\ApplicationFactory\NamespaceApplicationFactory;
 use Composer\Console\Application;
 
 final class ReuseApplicationFactory implements NamespaceApplicationFactory

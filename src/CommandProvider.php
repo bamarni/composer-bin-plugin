@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin;
 
+use Bamarni\Composer\Bin\Command\BinCommand;
 use Composer\Plugin\Capability\CommandProvider as CommandProviderCapability;
 
 /**

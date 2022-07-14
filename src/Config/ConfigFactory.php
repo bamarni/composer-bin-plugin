@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bamarni\Composer\Bin;
+namespace Bamarni\Composer\Bin\Config;
 
 use Composer\Config as ComposerConfig;
 use Composer\Factory;
