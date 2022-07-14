@@ -16,7 +16,6 @@ Generating autoload files
 [bamarni-bin] The command is being forwarded.
 [bamarni-bin] Original input: update --prefer-lowest --verbose.
 [bamarni-bin] Current working directory: /path/to/project/e2e/scenario8
-[bamarni-bin] Configuring bin directory to /path/to/project/e2e/scenario8/vendor/bin.
 [bamarni-bin] Checking namespace vendor-bin/ns1
 [bamarni-bin] Changed current directory to vendor-bin/ns1.
 [bamarni-bin] Running `@composer update --prefer-lowest --verbose --working-dir='.'`.
