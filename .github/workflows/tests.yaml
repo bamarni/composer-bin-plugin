@@ -20,7 +20,10 @@ jobs:
                     - "7.4"
                     - "8.0"
                     - "8.1"
-                tools: [ "composer:v2.0", "composer" ]
+                tools: [ "composer" ]
+                include:
+                    - php: "7.2"
+                      tools: "composer:v2.0"
 
         steps:
             -   name: "Check out repository code"
