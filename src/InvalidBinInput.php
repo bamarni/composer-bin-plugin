@@ -15,7 +15,7 @@ final class InvalidBinInput extends RuntimeException
         return new self(
             sprintf(
                 'Could not parse the input "%s". Expected the input to be in the format "bin <namespaceName> <commandToExecuteInBinNamespace>", for example "bin all update --prefer-lowest".',
-                $input
+                $input->__toString()
             )
         );
     }
@@ -25,7 +25,7 @@ final class InvalidBinInput extends RuntimeException
         return new self(
             sprintf(
                 'Could not parse the input (executed within the namespace) "%s".',
-                $input
+                $input->__toString()
             )
         );
     }

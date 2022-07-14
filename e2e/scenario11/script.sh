@@ -17,14 +17,12 @@ cd "$(dirname "$0")"
 
 # Ensure we have a clean state
 rm -rf actual.txt || true
+rm -rf .composer || true
 rm -rf composer.lock || true
 rm -rf vendor || true
 rm -rf vendor-bin/*/composer.lock || true
 rm -rf vendor-bin/*/vendor || true
-
-composer update
-composer bin all update
+rm -rf vendor-bin/*/.composer || true
 
 # Actual command to execute the test itself
-find vendor/bin vendor-bin/*/vendor/bin -maxdepth 1 -type f 2>&1 | sort -n | tee > actual.txt || true
-vendor/bin/phpstan --version >> actual.txt
+composer update 2>&1 | tee > actual.txt

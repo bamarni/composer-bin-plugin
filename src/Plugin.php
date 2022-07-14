@@ -152,7 +152,7 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
         $this->logger->logDebug(
             sprintf(
                 'Original input: <comment>%s</comment>.',
-                $input
+                $input->__toString()
             )
         );
 

@@ -21,6 +21,7 @@
     1. [Forward mode](#forward-mode)
     1. [Reduce clutter](#reduce-clutter)
 1. [Related plugins](#related-plugins)
+1. [Backward Compatibility Promise](#backward-compatibility-promise)
 1. [Contributing](#contributing)
 
 
@@ -234,6 +235,18 @@ vendor-bin/**/composer.lock binary
 * [theofidry/composer-inheritance-plugin][7]: Opinionated version of [Wikimedia composer-merge-plugin][8] to work in pair with this plugin.
 
 
+## Backward Compatibility Promise
+
+The backward compatibility promise only applies to the following API:
+
+- The commands registered by the plugin
+- The behaviour of the commands (but not their logging/output)
+- The Composer configuration
+
+The plugin implementation is considered to be strictly internal and its code may
+change at any time in a non back-ward compatible way.
+
+
 ## Contributing
 
 A makefile is available to help out:
@@ -255,3 +268,4 @@ $ make help # List all available commands
 [7]: https://github.com/theofidry/composer-inheritance-plugin
 [8]: https://github.com/wikimedia/composer-merge-plugin
 [phive]: https://phar.io/
+[symfony-bc-policy]: https://symfony.com/doc/current/contributing/code/bc.html

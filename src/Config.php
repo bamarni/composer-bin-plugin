@@ -6,23 +6,19 @@ namespace Bamarni\Composer\Bin;
 
 use Composer\Composer;
 use UnexpectedValueException;
+use function array_key_exists;
 use function array_merge;
-use function function_exists;
-use function gettype;
-use function is_bool;
-use function is_string;
-use function sprintf;
 
 final class Config
 {
-    private const EXTRA_CONFIG_KEY = 'bamarni-bin';
+    public const EXTRA_CONFIG_KEY = 'bamarni-bin';
 
-    private const BIN_LINKS = 'bin-links';
-    private const TARGET_DIRECTORY = 'target-directory';
-    private const FORWARD_COMMAND = 'forward-command';
+    public const BIN_LINKS_ENABLED = 'bin-links';
+    public const TARGET_DIRECTORY = 'target-directory';
+    public const FORWARD_COMMAND = 'forward-command';
 
     private const DEFAULT_CONFIG = [
-        self::BIN_LINKS => true,
+        self::BIN_LINKS_ENABLED => true,
         self::TARGET_DIRECTORY => 'vendor-bin',
         self::FORWARD_COMMAND => false,
     ];
@@ -57,31 +53,32 @@ final class Config
      */
     public function __construct(array $extra)
     {
-        $config = array_merge(
-            self::DEFAULT_CONFIG,
-            $extra[self::EXTRA_CONFIG_KEY] ?? []
-        );
+        $userExtra = $extra[self::EXTRA_CONFIG_KEY] ?? [];
+
+        $config = array_merge(self::DEFAULT_CONFIG, $userExtra);
 
         $getType = function_exists('get_debug_type') ? 'get_debug_type' : 'gettype';
 
-        $binLinks = $config[self::BIN_LINKS];
+        $binLinks = $config[self::BIN_LINKS_ENABLED];
 
         if (!is_bool($binLinks)) {
             throw new UnexpectedValueException(
                 sprintf(
                     'Expected setting "%s.%s" to be a boolean value. Got "%s".',
                     self::EXTRA_CONFIG_KEY,
-                    self::BIN_LINKS,
+                    self::BIN_LINKS_ENABLED,
                     $getType($binLinks)
                 )
             );
         }
 
-        if ($binLinks) {
+        $binLinksSetExplicitly = array_key_exists(self::BIN_LINKS_ENABLED, $userExtra);
+
+        if ($binLinks && !$binLinksSetExplicitly) {
             $this->deprecations[] = sprintf(
                 'The setting "%s.%s" will be set to "false" from 2.x onwards. If you wish to keep it to "true", you need to set it explicitly.',
                 self::EXTRA_CONFIG_KEY,
-                self::BIN_LINKS
+                self::BIN_LINKS_ENABLED
             );
         }
 
@@ -111,11 +108,13 @@ final class Config
             );
         }
 
-        if (!$forwardCommand) {
+        $forwardCommandSetExplicitly = array_key_exists(self::FORWARD_COMMAND, $userExtra);
+
+        if (!$forwardCommand && !$forwardCommandSetExplicitly) {
             $this->deprecations[] = sprintf(
                 'The setting "%s.%s" will be set to "true" from 2.x onwards. If you wish to keep it to "false", you need to set it explicitly.',
                 self::EXTRA_CONFIG_KEY,
-                self::BIN_LINKS
+                self::FORWARD_COMMAND
             );
         }
 
