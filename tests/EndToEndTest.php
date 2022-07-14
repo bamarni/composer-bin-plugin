@@ -159,9 +159,11 @@ TXT;
 
         // We are not interested in the time taken which can vary from locally
         // and on the CI.
+        // Also since the place at which this line may change depending on where
+        // it is run (i.e. is not deterministic), we simply remove it.
         $normalizedContent = preg_replace(
-            '/Dependency resolution completed in \d\.\d{3} seconds/',
-            'Dependency resolution completed in 0.000 seconds',
+            '/Dependency resolution completed in \d\.\d{3} seconds\s/',
+            '',
             $normalizedContent
         );
 

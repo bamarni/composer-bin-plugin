@@ -26,4 +26,4 @@ composer update
 composer bin all update
 
 # Actual command to execute the test itself
-find vendor/bin vendor-bin/*/vendor/bin -maxdepth 1 -type f 2>&1 | tee > actual.txt || true
+find vendor/bin vendor-bin/*/vendor/bin -maxdepth 1 -type f 2>&1 | sort -n | tee > actual.txt || true
