@@ -94,6 +94,7 @@ class BinCommand extends BaseCommand
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
+        // Switch to requireComposer() once Composer 2.3 is set as the minimum
         $config = Config::fromComposer($this->getComposer());
         $currentWorkingDir = getcwd();
 
