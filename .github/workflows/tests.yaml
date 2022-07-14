@@ -10,7 +10,7 @@ on:
 jobs:
     unit-tests:
         runs-on: "ubuntu-latest"
-        name: "Unit Tests on PHP ${{ matrix.php }}"
+        name: "Unit Tests on PHP ${{ matrix.php }} and ${{ matrix.tools }}"
         strategy:
             fail-fast: false
             matrix:
@@ -20,6 +20,7 @@ jobs:
                     - "7.4"
                     - "8.0"
                     - "8.1"
+                tools: [ "composer:v2.0", "composer" ]
 
         steps:
             -   name: "Check out repository code"
@@ -29,7 +30,7 @@ jobs:
                 uses: "shivammathur/setup-php@v2"
                 with:
                     php-version: "${{ matrix.php }}"
-                    tools: "composer"
+                    tools: "${{ matrix.tools }}"
 
             -   name: "Install Composer dependencies"
                 uses: "ramsey/composer-install@v2"
