@@ -6,6 +6,7 @@ namespace Bamarni\Composer\Bin\Tests;
 
 use Bamarni\Composer\Bin\Config;
 use PHPUnit\Framework\TestCase;
+use UnexpectedValueException;
 
 final class ConfigTest extends TestCase
 {
@@ -52,6 +53,49 @@ final class ConfigTest extends TestCase
             false,
             'tools',
             true,
+        ];
+    }
+
+    /**
+     * @dataProvider provideInvalidExtraConfig
+     */
+    public function test_it_cannot_be_instantiated_with_invalid_config(
+        array $extra,
+        string $expectedMessage
+    ): void {
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage($expectedMessage);
+
+        new Config($extra);
+    }
+
+    public static function provideInvalidExtraConfig(): iterable
+    {
+        yield 'non bool bin links' => [
+            [
+                Config::EXTRA_CONFIG_KEY => [
+                    Config::BIN_LINKS_ENABLED => 'foo',
+                ],
+            ],
+            'Expected setting "bamarni-bin.bin-links" to be a boolean value. Got "string".',
+        ];
+
+        yield 'non string target directory' => [
+            [
+                Config::EXTRA_CONFIG_KEY => [
+                    Config::TARGET_DIRECTORY => false,
+                ],
+            ],
+            'Expected setting "bamarni-bin.target-directory" to be a string. Got "bool".',
+        ];
+
+        yield 'non bool forward command' => [
+            [
+                Config::EXTRA_CONFIG_KEY => [
+                    Config::FORWARD_COMMAND => 'foo',
+                ],
+            ],
+            'Expected setting "bamarni-bin.forward-command" to be a boolean value. Got "string".',
         ];
     }
 }

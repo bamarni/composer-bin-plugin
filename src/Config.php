@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bamarni\Composer\Bin;
 
 use Composer\Composer;
+use UnexpectedValueException;
 use function array_merge;
 
 final class Config
@@ -51,9 +52,50 @@ final class Config
             $extra[self::EXTRA_CONFIG_KEY] ?? []
         );
 
-        $this->binLinks = $config[self::BIN_LINKS_ENABLED];
-        $this->targetDirectory = $config[self::TARGET_DIRECTORY];
-        $this->forwardCommand = $config[self::FORWARD_COMMAND];
+        $getType = function_exists('get_debug_type') ? 'get_debug_type' : 'gettype';
+
+        $binLinks = $config[self::BIN_LINKS_ENABLED];
+
+        if (!is_bool($binLinks)) {
+            throw new UnexpectedValueException(
+                sprintf(
+                    'Expected setting "%s.%s" to be a boolean value. Got "%s".',
+                    self::EXTRA_CONFIG_KEY,
+                    self::BIN_LINKS_ENABLED,
+                    $getType($binLinks)
+                )
+            );
+        }
+
+        $targetDirectory = $config[self::TARGET_DIRECTORY];
+
+        if (!is_string($targetDirectory)) {
+            throw new UnexpectedValueException(
+                sprintf(
+                    'Expected setting "%s.%s" to be a string. Got "%s".',
+                    self::EXTRA_CONFIG_KEY,
+                    self::TARGET_DIRECTORY,
+                    $getType($targetDirectory)
+                )
+            );
+        }
+
+        $forwardCommand = $config[self::FORWARD_COMMAND];
+
+        if (!is_bool($forwardCommand)) {
+            throw new UnexpectedValueException(
+                sprintf(
+                    'Expected setting "%s.%s" to be a boolean value. Got "%s".',
+                    self::EXTRA_CONFIG_KEY,
+                    self::FORWARD_COMMAND,
+                    gettype($forwardCommand)
+                )
+            );
+        }
+
+        $this->binLinks = $binLinks;
+        $this->targetDirectory = $targetDirectory;
+        $this->forwardCommand = $forwardCommand;
     }
 
     public function binLinksAreEnabled(): bool
