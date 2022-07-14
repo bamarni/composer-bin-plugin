@@ -11,7 +11,7 @@ Package operations: 1 install, 0 updates, 0 removals
 Installs: bamarni/composer-bin-plugin:dev-hash
   - Installing bamarni/composer-bin-plugin (dev-hash): Symlinking from ../..
 Generating autoload files
-> post-autoload-dump: Bamarni\Composer\Bin\Plugin->onPostAutoloadDump
+> post-autoload-dump: Bamarni\Composer\Bin\BamarniBinPlugin->onPostAutoloadDump
 [bamarni-bin] Calling onPostAutoloadDump().
 [bamarni-bin] The command is being forwarded.
 [bamarni-bin] Original input: update --verbose.
@@ -54,6 +54,6 @@ Nothing to modify in lock file
 Installing dependencies from lock file (including require-dev)
 Nothing to install, update or remove
 Generating autoload files
-> post-autoload-dump: Bamarni\Composer\Bin\Plugin->onPostAutoloadDump
+> post-autoload-dump: Bamarni\Composer\Bin\BamarniBinPlugin->onPostAutoloadDump
 [bamarni-bin] Calling onPostAutoloadDump().
 [bamarni-bin] Command already forwarded within the process: skipping.
