@@ -6,6 +6,7 @@ namespace Bamarni\Composer\Bin;
 
 use Composer\Composer;
 use UnexpectedValueException;
+use function array_key_exists;
 use function array_merge;
 
 final class Config
@@ -37,6 +38,11 @@ final class Config
      */
     private $forwardCommand;
 
+    /**
+     * @var list<string>
+     */
+    private $deprecations = [];
+
     public static function fromComposer(Composer $composer): self
     {
         return new self($composer->getPackage()->getExtra());
@@ -47,10 +53,9 @@ final class Config
      */
     public function __construct(array $extra)
     {
-        $config = array_merge(
-            self::DEFAULT_CONFIG,
-            $extra[self::EXTRA_CONFIG_KEY] ?? []
-        );
+        $userExtra = $extra[self::EXTRA_CONFIG_KEY] ?? [];
+
+        $config = array_merge(self::DEFAULT_CONFIG, $userExtra);
 
         $getType = function_exists('get_debug_type') ? 'get_debug_type' : 'gettype';
 
@@ -64,6 +69,16 @@ final class Config
                     self::BIN_LINKS_ENABLED,
                     $getType($binLinks)
                 )
+            );
+        }
+
+        $binLinksSetExplicitly = array_key_exists(self::BIN_LINKS_ENABLED, $userExtra);
+
+        if ($binLinks && !$binLinksSetExplicitly) {
+            $this->deprecations[] = sprintf(
+                'The setting "%s.%s" will be set to "false" from 2.x onwards. If you wish to keep it to "true", you need to set it explicitly.',
+                self::EXTRA_CONFIG_KEY,
+                self::BIN_LINKS_ENABLED
             );
         }
 
@@ -93,6 +108,16 @@ final class Config
             );
         }
 
+        $forwardCommandSetExplicitly = array_key_exists(self::FORWARD_COMMAND, $userExtra);
+
+        if (!$forwardCommand && !$forwardCommandSetExplicitly) {
+            $this->deprecations[] = sprintf(
+                'The setting "%s.%s" will be set to "true" from 2.x onwards. If you wish to keep it to "false", you need to set it explicitly.',
+                self::EXTRA_CONFIG_KEY,
+                self::FORWARD_COMMAND
+            );
+        }
+
         $this->binLinks = $binLinks;
         $this->targetDirectory = $targetDirectory;
         $this->forwardCommand = $forwardCommand;
@@ -111,5 +136,13 @@ final class Config
     public function isCommandForwarded(): bool
     {
         return $this->forwardCommand;
+    }
+
+    /**
+     * @return list<string>
+     */
+    public function getDeprecations(): array
+    {
+        return $this->deprecations;
     }
 }

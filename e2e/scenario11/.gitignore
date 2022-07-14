@@ -1,0 +1,6 @@
+/actual.txt
+/.composer/
+/composer.lock
+/vendor/
+/vendor-bin/*/composer.lock
+/vendor-bin/*/vendor/

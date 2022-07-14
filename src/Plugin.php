@@ -21,6 +21,7 @@ use Composer\Plugin\Capability\CommandProvider as ComposerPluginCommandProvider;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
+use function count;
 use function in_array;
 use function sprintf;
 
@@ -117,6 +118,14 @@ class Plugin implements PluginInterface, Capable, EventSubscriberInterface
         OutputInterface $output
     ): bool {
         $config = Config::fromComposer($this->composer);
+
+        $deprecations = $config->getDeprecations();
+
+        if (count($deprecations) > 0) {
+            foreach ($deprecations as $deprecation) {
+                $this->logger->logStandard($deprecation);
+            }
+        }
 
         if ($config->isCommandForwarded()
             && in_array($commandName, self::FORWARDED_COMMANDS, true)

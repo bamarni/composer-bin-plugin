@@ -12,27 +12,38 @@ final class ConfigTest extends TestCase
 {
     /**
      * @dataProvider provideExtraConfig
+     *
+     * @param list<string> $expectedDeprecations
      */
     public function test_it_can_be_instantiated(
         array $extra,
         bool $expectedBinLinksEnabled,
         string $expectedTargetDirectory,
-        bool $expectedForwardCommand
+        bool $expectedForwardCommand,
+        array $expectedDeprecations
     ): void {
         $config = new Config($extra);
 
         self::assertSame($expectedBinLinksEnabled, $config->binLinksAreEnabled());
         self::assertSame($expectedTargetDirectory, $config->getTargetDirectory());
         self::assertSame($expectedForwardCommand, $config->isCommandForwarded());
+        self::assertSame($expectedDeprecations, $config->getDeprecations());
     }
 
     public static function provideExtraConfig(): iterable
     {
+        $binLinksEnabledDeprecationMessage = 'The setting "bamarni-bin.bin-links" will be set to "false" from 2.x onwards. If you wish to keep it to "true", you need to set it explicitly.';
+        $forwardCommandDeprecationMessage = 'The setting "bamarni-bin.forward-command" will be set to "true" from 2.x onwards. If you wish to keep it to "false", you need to set it explicitly.';
+
         yield 'default values' => [
             [],
             true,
             'vendor-bin',
             false,
+            [
+                $binLinksEnabledDeprecationMessage,
+                $forwardCommandDeprecationMessage,
+            ],
         ];
 
         yield 'unknown extra entry' => [
@@ -40,6 +51,23 @@ final class ConfigTest extends TestCase
             true,
             'vendor-bin',
             false,
+            [
+                $binLinksEnabledDeprecationMessage,
+                $forwardCommandDeprecationMessage,
+            ],
+        ];
+
+        yield 'same as default but explicit' => [
+            [
+                Config::EXTRA_CONFIG_KEY => [
+                    Config::BIN_LINKS_ENABLED => true,
+                    Config::FORWARD_COMMAND => false,
+                ],
+            ],
+            true,
+            'vendor-bin',
+            false,
+            [],
         ];
 
         yield 'nominal' => [
@@ -53,6 +81,7 @@ final class ConfigTest extends TestCase
             false,
             'tools',
             true,
+            [],
         ];
     }
 
