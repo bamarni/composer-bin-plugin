@@ -7,6 +7,7 @@ namespace Bamarni\Composer\Bin\Tests\Config;
 use Bamarni\Composer\Bin\Config\Config;
 use Bamarni\Composer\Bin\Config\InvalidBamarniComposerExtraConfig;
 use PHPUnit\Framework\TestCase;
+use function function_exists;
 
 /**
  * @covers \Bamarni\Composer\Bin\Config\Config
@@ -118,7 +119,9 @@ final class ConfigTest extends TestCase
                     Config::TARGET_DIRECTORY => false,
                 ],
             ],
-            'Expected setting "bamarni-bin.target-directory" to be a string. Got "bool".',
+            function_exists('get_debug_type')
+                ? 'Expected setting "bamarni-bin.target-directory" to be a string. Got "bool".'
+                : 'Expected setting "bamarni-bin.target-directory" to be a string. Got "boolean".',
         ];
 
         yield 'non bool forward command' => [
