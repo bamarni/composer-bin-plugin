@@ -160,10 +160,10 @@ class BinCommand extends BaseCommand
 
             // Is a valid scenario: the user may not have set up any bin
             // namespace yet
-            return self::SUCCESS;
+            return 0;
         }
 
-        $exitCode = self::SUCCESS;
+        $exitCode = 0;
 
         foreach ($namespaces as $namespace) {
             $exitCode += $this->executeInNamespace(
@@ -200,7 +200,7 @@ class BinCommand extends BaseCommand
                 )
             );
 
-            return self::FAILURE;
+            return 1;
         }
 
         // Use a new application: this avoids a variety of issues:

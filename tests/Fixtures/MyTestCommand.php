@@ -57,6 +57,6 @@ class MyTestCommand extends BaseCommand
         $this->resetComposer();
         $this->getApplication()->resetComposer();
 
-        return self::SUCCESS;
+        return 0;
     }
 }
