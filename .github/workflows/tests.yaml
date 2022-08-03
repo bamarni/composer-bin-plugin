@@ -21,9 +21,11 @@ jobs:
                     - "8.0"
                     - "8.1"
                 tools: [ "composer" ]
+                dependency-versions: [ "highest" ]
                 include:
                     - php: "7.2"
                       tools: "composer:v2.0"
+                      dependency-versions: "lowest"
 
         steps:
             -   name: "Check out repository code"
@@ -38,7 +40,7 @@ jobs:
             -   name: "Install Composer dependencies"
                 uses: "ramsey/composer-install@v2"
                 with:
-                    dependency-versions: "highest"
+                    dependency-versions: "${{ matrix.dependency-versions }}"
 
             -   name: "Validate composer.json"
                 run: "composer validate --strict --no-check-lock"
