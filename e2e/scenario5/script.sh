@@ -2,7 +2,7 @@
 
 set -Eeuo pipefail
 
-# Set env envariables in order to experience a behaviour closer to what happens
+# Set env variables in order to experience a behaviour closer to what happens
 # in the CI locally. It should not hurt to set those in the CI as the CI should
 # contain those values.
 export CI=1

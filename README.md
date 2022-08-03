@@ -144,7 +144,7 @@ in `.vendor/bin/`:
                 └── ...
 
 But what happens if another bin-namespace has a dependency using [Nikic PHP-Parser][6]? In that situation symlinks would
-collides and are not created (only the colliding ones).
+collide and are not created (only the colliding ones).
 
 
 ## Tips
@@ -213,17 +213,17 @@ There is a `forward mode` which is disabled by default. This can be activated by
 ```
 
 If this mode is activated, all your `composer install` and `composer update` commands are forwarded to all bin directories.
-This is an replacement for the tasks shown in section [Auto-installation](#auto-installation).
+This is a replacement for the tasks shown in section [Auto-installation](#auto-installation).
 
 ### Reduce clutter
 
-You can add following line to your `.gitignore` file in order to avoid committing dependencies of your tools.
+You can add the following line to your `.gitignore` file in order to avoid committing dependencies of your tools.
 
 ```.gitignore
 /vendor-bin/**/vendor
 ```
 
-Updating each tool can create many not legible changes in `composer.lock` files. You can use `.gitattributes` file in order 
+Updating each tool can create many not legible changes in `composer.lock` files. You can use a `.gitattributes` file in order 
 to inform git that it shouldn't show diffs of `composer.lock` files.
 
 ```.gitattributes
