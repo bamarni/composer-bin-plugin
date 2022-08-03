@@ -174,7 +174,7 @@ class BinCommand extends BaseCommand
             );
         }
 
-        return min($exitCode, self::FAILURE);
+        return min($exitCode, 255);
     }
 
     private function executeInNamespace(
