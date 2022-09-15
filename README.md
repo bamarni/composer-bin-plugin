@@ -7,18 +7,15 @@
 
 ## Table of Contents
 
-1. [Why?](#why)
-1. [How does this plugin work?](#how-does-this-plugin-work)
+1. [Why? A hard problem with a simple solution.](#why-a-hard-problem-with-a-simple-solution)
+1. [Usage; How does this plugin work?](#usage-how-does-this-plugin-work)
 1. [Installation](#installation)
-1. [Usage](#usage)
-    1. [Example](#example)
-    1. [The `all` bin namespace](#the-all-bin-namespace)
-    1. [What happens when symlink conflicts?](#what-happens-when-symlink-conflicts)
-1. [Tips](#tips)
+1. [Configuration](#configuration)
+   1. [Bin links (`bin-links`)](#bin-links-bin-links)
+   1. [Target directory (`target-directory`)](#target-directory-target-directory)
+   1. [Forward command (`forward-command`)](#forward-command-forward-command)
+1. [Tips & Tricks](#tips--tricks)
     1. [Auto-installation](#auto-installation)
-    1. [Disable links](#disable-links)
-    1. [Change directory](#change-directory)
-    1. [Forward mode](#forward-mode)
     1. [Reduce clutter](#reduce-clutter)
 1. [Related plugins](#related-plugins)
 1. [Backward Compatibility Promise](#backward-compatibility-promise)
@@ -93,7 +90,7 @@ $ composer require --dev bamarni/composer-bin-plugin
 ```
 
 
-### Configuration
+## Configuration
 
 ```json
 {
@@ -191,7 +188,8 @@ diffs of `composer.lock` files.
 
 ## Related plugins
 
-* [theofidry/composer-inheritance-plugin][7]: Opinionated version of [Wikimedia composer-merge-plugin][8] to work in pair with this plugin.
+* [theofidry/composer-inheritance-plugin][theofidry-composer-inheritance-plugin]: Opinionated version
+  of [Wikimedia composer-merge-plugin][wikimedia-composer-merge-plugin] to work in pair with this plugin.
 
 
 ## Backward Compatibility Promise
@@ -226,3 +224,5 @@ $ make help # List all available commands
 [phpunit]: https://github.com/sebastianbergmann/phpunit
 [rector]: https://github.com/rectorphp/rector
 [symfony-bc-policy]: https://symfony.com/doc/current/contributing/code/bc.html
+[theofidry-composer-inheritance-plugin]: https://github.com/theofidry/composer-inheritance-plugin
+[wikimedia-composer-merge-plugin]: https://github.com/wikimedia/composer-merge-plugin
