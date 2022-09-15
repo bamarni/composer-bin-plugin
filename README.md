@@ -17,6 +17,7 @@
 1. [Tips & Tricks](#tips--tricks)
     1. [Auto-installation](#auto-installation)
     1. [Reduce clutter](#reduce-clutter)
+    1. [GitHub Actions integration](#github-actions-integration)
 1. [Related plugins](#related-plugins)
 1. [Backward Compatibility Promise](#backward-compatibility-promise)
 1. [Contributing](#contributing)
@@ -185,6 +186,26 @@ diffs of `composer.lock` files.
 # .gitignore
 /vendor-bin/**/composer.lock binary
 ```
+
+### GitHub Actions integration
+
+There is currently no way to leverage `ramsey/composer-install` to install all
+namespace bins. However it is unlikely you need this in the CI and not locally,
+in which case [forwarding the command](#forward-command-forward-command) should
+be good enough.
+
+If you still need to install specific bin namespaces, you can do it by setting
+the `working-directory`:
+
+```yaml
+#...
+    -   name: "Install PHP-CS-Fixer Composer dependencies"
+        uses: "ramsey/composer-install@v2"
+        with:
+            working-directory: "vendor-bin/php-cs-fixer"
+```
+
+
 
 ## Related plugins
 
