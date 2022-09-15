@@ -7,232 +7,189 @@
 
 ## Table of Contents
 
-1. [Why?](#why)
-1. [How does this plugin work?](#how-does-this-plugin-work)
+1. [Why? A hard problem with a simple solution.](#why-a-hard-problem-with-a-simple-solution)
+1. [Usage; How does this plugin work?](#usage-how-does-this-plugin-work)
 1. [Installation](#installation)
-1. [Usage](#usage)
-    1. [Example](#example)
-    1. [The `all` bin namespace](#the-all-bin-namespace)
-    1. [What happens when symlink conflicts?](#what-happens-when-symlink-conflicts)
-1. [Tips](#tips)
+1. [Configuration](#configuration)
+   1. [Bin links (`bin-links`)](#bin-links-bin-links)
+   1. [Target directory (`target-directory`)](#target-directory-target-directory)
+   1. [Forward command (`forward-command`)](#forward-command-forward-command)
+1. [Tips & Tricks](#tips--tricks)
     1. [Auto-installation](#auto-installation)
-    1. [Disable links](#disable-links)
-    1. [Change directory](#change-directory)
-    1. [Forward mode](#forward-mode)
     1. [Reduce clutter](#reduce-clutter)
 1. [Related plugins](#related-plugins)
 1. [Backward Compatibility Promise](#backward-compatibility-promise)
 1. [Contributing](#contributing)
 
 
-## Why?
+## Why? A hard problem with a simple solution.
 
-In PHP, with Composer, your dependencies are flattened, which might result in conflicts. Most of the time those
-conflicts are legitimate and should be properly resolved. However you may have dev tools that you want to manage
-via Composer for convenience, but should not influence your project dependencies or for which conflicts don't make
-sense. For example: [EtsyPhan][1] and [PhpMetrics][2]. Installing one of those static analysis tools should not change
-your application dependencies, neither should it be a problem to install both of them at the same time.
+When managing your dependencies with [Composer][composer], your dependencies are
+flattened with compatible versions, or when not possible, result in conflict
+errors.
+
+There is cases however when adding a tool as a dependency, for example [PHPStan][phpstan]*
+or [Rector][rector] could have undesired effects due to the dependencies they
+are bringing. For example if phpstan depends on `nikic/php-parser` 4.x and rector
+3.x, you cannot install both tools at the same time (despite the fact that from
+a usage perspective, they do not need to be compatible). Another example, maybe
+you can no longer add a non-dev dependency because a dependency brought by PHPStan
+is not compatible with it.
+
+There is nothing special or exceptional about this problem: this is how dependencies
+work in PHP with Composer. It is however annoying in the case highlighted above,
+because the conflicts should not be: it is a limitation of Composer because it
+cannot infer how you are using each dependency.
+
+One way to solve the problem above, is to install those dependencies in a 
+different `composer.json` file. It comes with its caveats, for example if you
+were to do that with [PHPUnit][phpunit], you may find yourself in the scenario
+where PHPUnit will not be able to execute your tests because your code is not
+compatible with it and Composer is not able to tell since the PHPUnit dependency
+sits alone in its own `composer.json`. It is the very problem Composer aim to
+solve. As a rule of thumb, **you should limit this approach to tools which do not
+autoload your code.**
+
+However, managing several `composer.json` kind be a bit annoying. This plugin
+aims at helping you doing this.
 
 
-## How does this plugin work?
+*: You will in practice not have this problem with PHPStan as the Composer package
+`phpstan/phpstan` is shipping a scoped PHAR (scoped via [PHP-Scoper][php-scoper])
+which provides not only a package with no dependencies but as well that has no
+risk of conflicting/crash when autoloading your code.
 
-It allows you to install your *bin vendors* in isolated locations, and still link them to your
-[bin-dir][3] (if you want to).
 
-This is done by registering a `bin` command, which can be used to run Composer commands inside a namespace.
+## Usage; How does this plugin work?
+
+This plugin registers a `bin <bin-namespace-name>` command that allows you to
+interact with the `vendor-bin/<bin-namespace-name>/composer.json`* file.
+
+For example:
+
+```bash
+$ composer bin php-cs-fixer require --dev friendsofphp/php-cs-fixer
+
+# Equivalent to manually doing:
+$ mkdir vendor-bin/php-cs-fixer
+$ cd vendor-bin/php-cs-fixer && composer require --dev friendsofphp/php-cs-fixer
+```
+
+You also have a special `all` namespace to interact with all the bin namespaces:
+
+```bash
+# Runs "composer update" for each bin namespace
+$ composer bin all update
+```
 
 
 ## Installation
 
-    # Globally
-    $ composer global require bamarni/composer-bin-plugin
-
-    # In your project
-    $ composer require --dev bamarni/composer-bin-plugin
-
-
-## Usage
-
-    $ composer bin [namespace] [composer_command]
-    $ composer global bin [namespace] [composer_command]
-
-
-### Example
-
-Let's install [Behat][4] and [PhpSpec][5] inside a `bdd` bin namespace, [EtsyPhan][1] in `etsy-phan` and [PhpMetrics][2]
-in `phpmetrics`:
-
-    $ composer bin bdd require behat/behat phpspec/phpspec
-    $ composer bin etsy-phan require etsy/phan
-    $ composer bin phpmetrics require phpmetrics/phpmetrics
-
-This command creates the following directory structure :
-
-    .
-    ├── composer.json
-    ├── composer.lock
-    ├── vendor/
-    │   └── bin
-    │       ├── behat -> ../../vendor-bin/bdd/vendor/behat/behat/bin/behat
-    │       ├── phpspec -> ../../vendor-bin/bdd/vendor/phpspec/phpspec/bin/phpspec
-    │       ├── phan -> ../../vendor-bin/etsy-phan/vendor/etsy/phan/phan
-    │       └── phpmetrics -> ../../vendor-bin/phpmetrics/vendor/phpmetrics/phpmetrics/bin/phpmetrics
-    └── vendor-bin/
-        └── bdd
-        │   ├── composer.json
-        │   ├── composer.lock
-        │   └── vendor/
-        │       ├── behat/
-        │       ├── phpspec/
-        │       └── ...
-        └── etsy-phan
-        │   ├── composer.json
-        │   ├── composer.lock
-        │   └── vendor/
-        │       ├── etsy/
-        │       └── ...
-        └── phpmetrics
-            ├── composer.json
-            ├── composer.lock
-            └── vendor/
-                ├── phpmetrics/
-                └── ...
-
-
-You can continue to run `vendor/bin/behat`, `vendor/bin/phpspec` and co. as before but they will be properly isolated.
-Also, `composer.json` and `composer.lock` files in each namespace will allow you to take advantage of automated dependency 
-management as normally provided by Composer.
-
-### The `all` bin namespace
-
-The `all` bin namespace has a special meaning. It runs a command for all existing bin namespaces. For instance, the
-following command would update all your bins :
-
-    $ composer bin all update
-    Changed current directory to vendor-bin/phpspec
-    Loading composer repositories with package information
-    Updating dependencies (including require-dev)
-    Nothing to install or update
-    Generating autoload files
-    Changed current directory to vendor-bin/phpunit
-    Loading composer repositories with package information
-    Updating dependencies (including require-dev)
-    Nothing to install or update
-    Generating autoload files
-
-
-### What happens when symlink conflicts?
-
-If we take the case described in the [example section](#example), there might be more binaries linked due to
-the dependencies. For example [PhpMetrics][2] depends on [Nikic PHP-Parser][6] and as such you will also have `php-parse`
-in `.vendor/bin/`:
-
-    .
-    ├── composer.json
-    ├── composer.lock
-    ├── vendor/
-    │   └── bin
-    │       ├── phpmetrics -> ../../vendor-bin/phpmetrics/vendor/phpmetrics/phpmetrics/bin/phpmetrics
-    │       └── php-parse -> ../../vendor-bin/phpmetrics/vendor/nikic/PHP-Parser/bin/php-parsee
-    └── vendor-bin/
-        └── phpmetrics
-            ├── composer.json
-            ├── composer.lock
-            └── vendor/
-                ├── phpmetrics/
-                ├── nikic/
-                └── ...
-
-But what happens if another bin-namespace has a dependency using [Nikic PHP-Parser][6]? In that situation symlinks would
-collide and are not created (only the colliding ones).
-
-
-## Tips
-
-### Auto-installation
-
-For convenience, you can add the following script in your `composer.json` :
-
-```json
-{
-    "scripts": {
-        "bin": "echo 'bin not installed'",
-        "post-install-cmd": ["@composer bin all install --ansi"],
-        "post-update-cmd": ["@composer bin all update --ansi"]
-    }
-}
+```bash
+$ composer require --dev bamarni/composer-bin-plugin
 ```
 
-This makes sure all your bins are installed during `composer install` and updated during `composer update`.
 
-### Disable links
-
-By default, binaries of the sub namespaces are linked to the root one like described in [example](#example). If you
-wish to disable that behaviour, you can do so by adding a little setting in the extra config:
+## Configuration
 
 ```json
 {
+    ...
     "extra": {
         "bamarni-bin": {
-            "bin-links": false
-        }
-    }
-}
-```
-
-Note that otherwise, in case of conflicts (e.g. `phpstan` is present in two namespaces), only the
-first one is linked and the second one is ignored.
-
-
-### Change directory
-
-By default, the packages are looked for in the `vendor-bin` directory. The location can be changed using `target-directory` value in the extra config:
-
-```json
-{
-    "extra": {
-        "bamarni-bin": {
-            "target-directory": "ci/vendor"
-        }
-    }
-}
-```
-
-### Forward mode
-
-There is a `forward mode` which is disabled by default. This can be activated by using the `forward-command` value in the extra config.
-
-```json
-{
-    "extra": {
-        "bamarni-bin": {
+            "bin-links": false,
+            "target-directory": "vendor-bin",
             "forward-command": true
         }
     }
 }
 ```
 
-If this mode is activated, all your `composer install` and `composer update` commands are forwarded to all bin directories.
+
+### Bin links (`bin-links`)
+
+In 1.x: enabled by default.
+In 2.x: disabled by default.
+
+When installing a Composer package, Composer may add "bin links" to a bin
+directory. For example, by default when installing `phpunit/phpunit`, it will
+add a symlink `vendor/bin/phpunit` pointing to the PHPUnit script somewhere in
+`vendor/phpunit/phpunit`.
+
+In 1.x, BamarniBinPlugin behaves the same way for "bin dependencies", i.e. when
+executing `composer bin php-cs-fixer require --dev friendsofphp/php-cs-fixer`,
+it will add a bin link `vendor/bin/php-cs-fixer -> vendor-bin/php-cs-fixer/vendor/friendsofphp/php-cs-fixer`.
+
+This is however a bit tricky and cannot provide consistent behaviour. For example
+when installing several packages with the same bin, (e.g. with the case above installing
+another tool that uses PHP-CS-Fixer as a dependency in another bin namespace),
+the symlink may or may not be overridden, or not created at all. Since it is not
+possible to control this behaviour, neither provide an intuitive or deterministic
+approach, it is recommended to set this setting to `false` which will be the
+default in 2.x.
+
+It does mean that instead of using `vendor/bin/php-cs-fixer` you will have to
+use `vendor-bin/php-cs-fixer/vendor/friendsofphp/php-cs-fixer/path/tophp-cs-fixer`
+(in which case setting an alias via a Composer script or something is recommended).
+
+
+### Target directory (`target-directory`)
+
+Defaults to `vendor-bin`, can be overridden to anything you wish.
+
+
+### Forward command (`forward-command`)
+
+Disabled by default in 1.x, will be enabled by default in 2.x. If this mode is
+enabled, all your `composer install` and `composer update` commands are forwarded
+to _all_ bin directories.
+
 This is a replacement for the tasks shown in section [Auto-installation](#auto-installation).
+
+
+## Tips & Tricks
+
+### Auto-installation
+
+You can easily forward a command upon a `composer install` to forward the install
+to all (in which case having `extra.bamarni-bin.forward_command = true` is more
+adapted) or a specific of bin namespace:
+
+```json
+{
+    "scripts": {
+        "bin": "echo 'bin not installed'",
+        "post-install-cmd": ["@composer bin php-cs-fixer install --ansi"]
+    }
+}
+```
+
+You can customise this as you wish leveraging the [Composer script events][composer-script-events]).
+
 
 ### Reduce clutter
 
-You can add the following line to your `.gitignore` file in order to avoid committing dependencies of your tools.
+You can add the following line to your `.gitignore` file in order to avoid
+committing dependencies of your tools.
 
 ```.gitignore
-/vendor-bin/**/vendor
+# .gitignore
+/vendor-bin/**/vendor/
 ```
 
-Updating each tool can create many not legible changes in `composer.lock` files. You can use a `.gitattributes` file in order 
-to inform git that it shouldn't show diffs of `composer.lock` files.
+Updating each tool can create many not legible changes in `composer.lock` files.
+You can use a `.gitattributes` file in order to inform git that it shouldn't show
+diffs of `composer.lock` files.
 
 ```.gitattributes
-vendor-bin/**/composer.lock binary
+# .gitignore
+/vendor-bin/**/composer.lock binary
 ```
 
 ## Related plugins
 
-* [theofidry/composer-inheritance-plugin][7]: Opinionated version of [Wikimedia composer-merge-plugin][8] to work in pair with this plugin.
+* [theofidry/composer-inheritance-plugin][theofidry-composer-inheritance-plugin]: Opinionated version
+  of [Wikimedia composer-merge-plugin][wikimedia-composer-merge-plugin] to work in pair with this plugin.
 
 
 ## Backward Compatibility Promise
@@ -259,13 +216,13 @@ $ make help # List all available commands
 **Note:** you do need to install [phive][phive] first.
 
 
-[1]: https://github.com/etsy/phan
-[2]: https://github.com/phpmetrics/PhpMetrics
-[3]: https://getcomposer.org/doc/06-config.md#bin-dir
-[4]: http://behat.org
-[5]: http://phpspec.net
-[6]: https://github.com/nikic/PHP-Parser
-[7]: https://github.com/theofidry/composer-inheritance-plugin
-[8]: https://github.com/wikimedia/composer-merge-plugin
+[composer]: https://getcomposer.org
+[composer-script-events]: https://getcomposer.org/doc/articles/scripts.md#command-events
 [phive]: https://phar.io/
+[php-scoper]: https://github.com/humbug/php-scoper
+[phpstan]: https://phpstan.org/
+[phpunit]: https://github.com/sebastianbergmann/phpunit
+[rector]: https://github.com/rectorphp/rector
 [symfony-bc-policy]: https://symfony.com/doc/current/contributing/code/bc.html
+[theofidry-composer-inheritance-plugin]: https://github.com/theofidry/composer-inheritance-plugin
+[wikimedia-composer-merge-plugin]: https://github.com/wikimedia/composer-merge-plugin
