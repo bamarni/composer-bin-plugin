@@ -6,6 +6,7 @@ Writing lock file
 Installing dependencies from lock file (including require-dev)
 Nothing to install, update or remove
 Generating autoload files
+No installed packages - skipping audit.
 [bamarni-bin] Checking namespace vendor-bin/ns2
 Loading composer repositories with package information
 Updating dependencies
@@ -14,3 +15,4 @@ Writing lock file
 Installing dependencies from lock file (including require-dev)
 Nothing to install, update or remove
 Generating autoload files
+No installed packages - skipping audit.
