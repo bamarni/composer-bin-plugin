@@ -28,7 +28,9 @@ Writing lock file
 Installing dependencies from lock file (including require-dev)
 Nothing to install, update or remove
 Generating autoload files
+No installed packages - skipping audit.
 [bamarni-bin] Changed current directory to /path/to/project/e2e/scenario3.
+No security vulnerability advisories found
 –––––––––––––––––––––
 [bamarni-bin] Calling onCommandEvent().
 [bamarni-bin] The command is being forwarded.
@@ -45,6 +47,7 @@ Nothing to modify in lock file
 Installing dependencies from lock file (including require-dev)
 Nothing to install, update or remove
 Generating autoload files
+No installed packages - skipping audit.
 [bamarni-bin] Changed current directory to /path/to/project/e2e/scenario3.
 Loading composer repositories with package information
 Updating dependencies
@@ -57,3 +60,4 @@ Generating autoload files
 > post-autoload-dump: Bamarni\Composer\Bin\BamarniBinPlugin->onPostAutoloadDump
 [bamarni-bin] Calling onPostAutoloadDump().
 [bamarni-bin] Command already forwarded within the process: skipping.
+No security vulnerability advisories found
