@@ -182,7 +182,7 @@ You can use a `.gitattributes` file in order to inform git that it shouldn't sho
 diffs of `composer.lock` files.
 
 ```.gitattributes
-# .gitignore
+# .gitattributes
 /vendor-bin/**/composer.lock binary
 ```
 
