@@ -14,7 +14,7 @@ PHPUNIT_BIN = vendor/bin/phpunit
 PHPUNIT = php -d zend.enable_gc=0 $(PHPUNIT_BIN)
 PHPUNIT_COVERAGE = XDEBUG_MODE=coverage $(PHPUNIT) --group default --coverage-xml=$(COVERAGE_DIR)/coverage-xml --log-junit=$(COVERAGE_DIR)/phpunit.junit.xml
 PHPSTAN_BIN = vendor/bin/phpstan
-PHPSTAN = $(PHPSTAN_BIN) analyse --level=5 src tests
+PHPSTAN = $(PHPSTAN_BIN) analyse --configuration=phpstan.rules.neon
 PHP_CS_FIXER_BIN = tools/php-cs-fixer
 PHP_CS_FIXER = $(PHP_CS_FIXER_BIN) fix --ansi --verbose --config=.php-cs-fixer.php
 COMPOSER_NORMALIZE_BIN=tools/composer-normalize
