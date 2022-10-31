@@ -7,7 +7,7 @@ Installing dependencies from lock file (including require-dev)
 Package operations: 1 install, 0 updates, 0 removals
   - Installing bamarni/composer-bin-plugin (dev-hash): Symlinking from ../..
 Generating autoload files
-[bamarni-bin] The setting "bamarni-bin.bin-links" will be set to "false" from 2.x onwards. If you wish to keep it to "true", you need to set it explicitly.
+[bamarni-bin] The setting "extra.bamarni-bin.bin-links" will be set to "false" from 2.x onwards. If you wish to keep it to "true", you need to set it explicitly.
 [bamarni-bin] The command is being forwarded.
 [bamarni-bin] Checking namespace vendor-bin/ns1
 Loading composer repositories with package information
