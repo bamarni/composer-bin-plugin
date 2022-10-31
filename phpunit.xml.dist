@@ -11,6 +11,10 @@
          stopOnFailure="false"
          bootstrap="vendor/autoload.php"
 >
+    <php>
+        <env name="COMPOSER_NO_AUDIT" value="1"/>
+    </php>
+
     <testsuites>
         <testsuite name="Composer Bin Plugin Test Suite">
             <directory>tests</directory>
