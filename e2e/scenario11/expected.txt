@@ -17,5 +17,3 @@ Writing lock file
 Installing dependencies from lock file (including require-dev)
 Nothing to install, update or remove
 Generating autoload files
-No installed packages - skipping audit.
-No security vulnerability advisories found

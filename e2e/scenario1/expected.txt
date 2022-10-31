@@ -12,7 +12,6 @@ Writing lock file
 Installing dependencies from lock file (including require-dev)
 Nothing to install, update or remove
 Generating autoload files
-No installed packages - skipping audit.
 [bamarni-bin] Changed current directory to /path/to/project/e2e/scenario1.
 [bamarni-bin] Checking namespace vendor-bin/ns2
 [bamarni-bin] Changed current directory to vendor-bin/ns2.
@@ -26,5 +25,4 @@ Writing lock file
 Installing dependencies from lock file (including require-dev)
 Nothing to install, update or remove
 Generating autoload files
-No installed packages - skipping audit.
 [bamarni-bin] Changed current directory to /path/to/project/e2e/scenario1.
