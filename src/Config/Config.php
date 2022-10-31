@@ -72,7 +72,7 @@ final class Config
         if (!is_bool($binLinks)) {
             throw new InvalidBamarniComposerExtraConfig(
                 sprintf(
-                    'Expected setting "%s.%s" to be a boolean value. Got "%s".',
+                    'Expected setting "extra.%s.%s" to be a boolean value. Got "%s".',
                     self::EXTRA_CONFIG_KEY,
                     self::BIN_LINKS_ENABLED,
                     $getType($binLinks)
@@ -84,7 +84,7 @@ final class Config
 
         if ($binLinks && !$binLinksSetExplicitly) {
             $this->deprecations[] = sprintf(
-                'The setting "%s.%s" will be set to "false" from 2.x onwards. If you wish to keep it to "true", you need to set it explicitly.',
+                'The setting "extra.%s.%s" will be set to "false" from 2.x onwards. If you wish to keep it to "true", you need to set it explicitly.',
                 self::EXTRA_CONFIG_KEY,
                 self::BIN_LINKS_ENABLED
             );
@@ -95,7 +95,7 @@ final class Config
         if (!is_string($targetDirectory)) {
             throw new InvalidBamarniComposerExtraConfig(
                 sprintf(
-                    'Expected setting "%s.%s" to be a string. Got "%s".',
+                    'Expected setting "extra.%s.%s" to be a string. Got "%s".',
                     self::EXTRA_CONFIG_KEY,
                     self::TARGET_DIRECTORY,
                     $getType($targetDirectory)
@@ -108,7 +108,7 @@ final class Config
         if (!is_bool($forwardCommand)) {
             throw new InvalidBamarniComposerExtraConfig(
                 sprintf(
-                    'Expected setting "%s.%s" to be a boolean value. Got "%s".',
+                    'Expected setting "extra.%s.%s" to be a boolean value. Got "%s".',
                     self::EXTRA_CONFIG_KEY,
                     self::FORWARD_COMMAND,
                     gettype($forwardCommand)
@@ -120,7 +120,7 @@ final class Config
 
         if (!$forwardCommand && !$forwardCommandSetExplicitly) {
             $this->deprecations[] = sprintf(
-                'The setting "%s.%s" will be set to "true" from 2.x onwards. If you wish to keep it to "false", you need to set it explicitly.',
+                'The setting "extra.%s.%s" will be set to "true" from 2.x onwards. If you wish to keep it to "false", you need to set it explicitly.',
                 self::EXTRA_CONFIG_KEY,
                 self::FORWARD_COMMAND
             );

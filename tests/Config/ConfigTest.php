@@ -36,8 +36,8 @@ final class ConfigTest extends TestCase
 
     public static function provideExtraConfig(): iterable
     {
-        $binLinksEnabledDeprecationMessage = 'The setting "bamarni-bin.bin-links" will be set to "false" from 2.x onwards. If you wish to keep it to "true", you need to set it explicitly.';
-        $forwardCommandDeprecationMessage = 'The setting "bamarni-bin.forward-command" will be set to "true" from 2.x onwards. If you wish to keep it to "false", you need to set it explicitly.';
+        $binLinksEnabledDeprecationMessage = 'The setting "extra.bamarni-bin.bin-links" will be set to "false" from 2.x onwards. If you wish to keep it to "true", you need to set it explicitly.';
+        $forwardCommandDeprecationMessage = 'The setting "extra.bamarni-bin.forward-command" will be set to "true" from 2.x onwards. If you wish to keep it to "false", you need to set it explicitly.';
 
         yield 'default values' => [
             [],
@@ -110,7 +110,7 @@ final class ConfigTest extends TestCase
                     Config::BIN_LINKS_ENABLED => 'foo',
                 ],
             ],
-            'Expected setting "bamarni-bin.bin-links" to be a boolean value. Got "string".',
+            'Expected setting "extra.bamarni-bin.bin-links" to be a boolean value. Got "string".',
         ];
 
         yield 'non string target directory' => [
@@ -120,8 +120,8 @@ final class ConfigTest extends TestCase
                 ],
             ],
             function_exists('get_debug_type')
-                ? 'Expected setting "bamarni-bin.target-directory" to be a string. Got "bool".'
-                : 'Expected setting "bamarni-bin.target-directory" to be a string. Got "boolean".',
+                ? 'Expected setting "extra.bamarni-bin.target-directory" to be a string. Got "bool".'
+                : 'Expected setting "extra.bamarni-bin.target-directory" to be a string. Got "boolean".',
         ];
 
         yield 'non bool forward command' => [
@@ -130,7 +130,7 @@ final class ConfigTest extends TestCase
                     Config::FORWARD_COMMAND => 'foo',
                 ],
             ],
-            'Expected setting "bamarni-bin.forward-command" to be a boolean value. Got "string".',
+            'Expected setting "extra.bamarni-bin.forward-command" to be a boolean value. Got "string".',
         ];
     }
 }
