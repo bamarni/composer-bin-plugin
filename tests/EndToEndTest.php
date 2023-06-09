@@ -62,13 +62,13 @@ final class EndToEndTest extends TestCase
 
         $errorMessage = <<<TXT
 Standard output:
-${standardOutput}
+{$standardOutput}
 ––––––––––––––––
 Error output:
-${errorOutput}
+{$errorOutput}
 ––––––––––––––––
 File content (actual.txt):
-${originalContent}
+{$originalContent}
 TXT;
 
         self::assertTrue(
