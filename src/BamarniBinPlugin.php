@@ -33,8 +33,6 @@ use function sprintf;
  */
 class BamarniBinPlugin implements PluginInterface, Capable, EventSubscriberInterface
 {
-    private const FORWARDED_COMMANDS = ['install', 'update'];
-
     /**
      * @var Composer
      */
@@ -130,9 +128,7 @@ class BamarniBinPlugin implements PluginInterface, Capable, EventSubscriberInter
             }
         }
 
-        if ($config->isCommandForwarded()
-            && in_array($commandName, self::FORWARDED_COMMANDS, true)
-        ) {
+        if ($config->isCommandForwarded($commandName)) {
             return $this->onForwardedCommand($input, $output);
         }
 
