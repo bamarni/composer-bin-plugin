@@ -6,6 +6,7 @@ namespace Bamarni\Composer\Bin\Input;
 
 use RuntimeException;
 use Symfony\Component\Console\Input\InputInterface;
+
 use function sprintf;
 
 final class InvalidBinInput extends RuntimeException

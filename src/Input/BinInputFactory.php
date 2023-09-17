@@ -6,6 +6,7 @@ namespace Bamarni\Composer\Bin\Input;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\StringInput;
+
 use function array_filter;
 use function array_map;
 use function implode;

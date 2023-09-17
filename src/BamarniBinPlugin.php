@@ -24,6 +24,7 @@ use Composer\Plugin\Capability\CommandProvider as ComposerPluginCommandProvider;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
+
 use function count;
 use function in_array;
 use function sprintf;

@@ -12,6 +12,7 @@ use Composer\Console\Application;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\NullOutput;
+
 use function array_shift;
 use function exec;
 use function chdir;

@@ -19,6 +19,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
+
 use function chdir;
 use function count;
 use function file_exists;
@@ -30,6 +31,7 @@ use function min;
 use function mkdir;
 use function putenv;
 use function sprintf;
+
 use const GLOB_ONLYDIR;
 
 /**
