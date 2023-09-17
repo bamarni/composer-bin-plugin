@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bamarni\Composer\Bin\Command;
 
 use RuntimeException;
+
 use function sprintf;
 
 final class CouldNotCreateNamespaceDir extends RuntimeException

@@ -11,6 +11,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Composer\Command\BaseCommand;
 use Composer\Factory;
 use Composer\IO\NullIO;
+
 use function method_exists;
 
 class MyTestCommand extends BaseCommand

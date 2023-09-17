@@ -8,7 +8,9 @@ use Bamarni\Composer\Bin\Logger;
 use Composer\IO\BufferIO;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Output\OutputInterface;
+
 use function array_diff;
+
 use const PHP_EOL;
 
 /**

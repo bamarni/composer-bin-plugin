@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bamarni\Composer\Bin\Config;
 
 use Composer\Composer;
+
 use function array_key_exists;
 use function array_merge;
 use function function_exists;

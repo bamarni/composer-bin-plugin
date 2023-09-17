@@ -7,6 +7,7 @@ namespace Bamarni\Composer\Bin\Tests\Config;
 use Bamarni\Composer\Bin\Config\Config;
 use Bamarni\Composer\Bin\Config\InvalidBamarniComposerExtraConfig;
 use PHPUnit\Framework\TestCase;
+
 use function function_exists;
 
 /**

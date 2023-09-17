@@ -8,6 +8,7 @@ use Bamarni\Composer\Bin\Input\BinInputFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\StringInput;
+
 use function sprintf;
 
 /**
