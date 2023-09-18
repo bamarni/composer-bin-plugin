@@ -20,11 +20,13 @@ final class Config
     public const BIN_LINKS_ENABLED = 'bin-links';
     public const TARGET_DIRECTORY = 'target-directory';
     public const FORWARD_COMMAND = 'forward-command';
+    public const FORWARDED_COMMANDS = 'forwarded-commands';
 
     private const DEFAULT_CONFIG = [
         self::BIN_LINKS_ENABLED => true,
         self::TARGET_DIRECTORY => 'vendor-bin',
         self::FORWARD_COMMAND => false,
+        self::FORWARDED_COMMANDS => ['install', 'update'],
     ];
 
     /**
@@ -38,9 +40,9 @@ final class Config
     private $targetDirectory;
 
     /**
-     * @var bool
+     * @var list<string>
      */
-    private $forwardCommand;
+    private $forwardedCommands;
 
     /**
      * @var list<string>
@@ -127,9 +129,24 @@ final class Config
             );
         }
 
+        $forwardedCommands = $config[self::FORWARDED_COMMANDS];
+
+        if (!is_array($forwardedCommands)) {
+            throw new InvalidBamarniComposerExtraConfig(
+                sprintf(
+                    'Expected setting "extra.%s.%s" to be an array value. Got "%s".',
+                    self::EXTRA_CONFIG_KEY,
+                    self::FORWARDED_COMMANDS,
+                    gettype($forwardCommand)
+                )
+            );
+        }
+
+        $forwardedCommandsSetExplicitly = array_key_exists(self::FORWARDED_COMMANDS, $userExtra);
+
         $this->binLinks = $binLinks;
         $this->targetDirectory = $targetDirectory;
-        $this->forwardCommand = $forwardCommand;
+        $this->forwardedCommands = $forwardCommand ? $forwardedCommands : [];
     }
 
     public function binLinksAreEnabled(): bool
@@ -142,9 +159,14 @@ final class Config
         return $this->targetDirectory;
     }
 
-    public function isCommandForwarded(): bool
+    public function isCommandForwarded(?string $name = null): bool
     {
-        return $this->forwardCommand;
+        // Trigger deprecation.
+        if ($name === null) {
+            return false;
+        }
+
+        return in_array($name, $this->forwardedCommands, true);
     }
 
     /**
