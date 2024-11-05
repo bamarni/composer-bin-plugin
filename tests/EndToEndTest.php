@@ -58,6 +58,16 @@ final class EndToEndTest extends TestCase
 
         if (file_exists($actualPath)) {
             $originalContent = file_get_contents($scenarioPath.'/actual.txt');
+            $originalContent = str_replace(
+                "Symfony recipes are disabled: \"symfony/flex\" not found in the root composer.json\n\n",
+                '',
+                $originalContent
+            );
+            $originalContent = preg_replace(
+                '/.+Symfony\\\\Flex.+\n/',
+                '',
+                $originalContent
+            );
         } else {
             $originalContent = 'File was not created.';
         }
