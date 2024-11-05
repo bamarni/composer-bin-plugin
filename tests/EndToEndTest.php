@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin\Tests;
 
+use Composer\Semver\Semver;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
-
 use function array_map;
 use function basename;
 use function dirname;
@@ -21,7 +21,6 @@ use function realpath;
 use function sprintf;
 use function str_replace;
 use function trim;
-
 use const PHP_EOL;
 
 /**
@@ -31,6 +30,17 @@ use const PHP_EOL;
 final class EndToEndTest extends TestCase
 {
     private const E2E_DIR = __DIR__.'/../e2e';
+
+    private const COMPOSER_VERSION_CONSTRAINT = '^2.8.2';
+
+    public function test_it_has_the_required_composer_version(): void
+    {
+        $composerVersion = ComposerVersionProvider::getComposerVersion();
+
+        self::assertTrue(
+            Semver::satisfies($composerVersion, self::COMPOSER_VERSION_CONSTRAINT)
+        );
+    }
 
     /**
      * @dataProvider scenarioProvider
