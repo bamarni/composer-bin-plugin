@@ -56,11 +56,11 @@ final class EndToEndTest extends TestCase
 
         $actualPath = $scenarioPath.'/actual.txt';
 
-        if (file_exists($actualPath)) {
-            $originalContent = file_get_contents($scenarioPath.'/actual.txt');
-        } else {
-            $originalContent = 'File was not created.';
-        }
+        $originalContent = file_exists($actualPath)
+            ? self::removeFlexMessages(
+                file_get_contents($scenarioPath . '/actual.txt')
+            )
+            : 'File was not created.';
 
         $errorMessage = <<<TXT
 Standard output:
@@ -185,6 +185,19 @@ TXT;
         return implode(
             "\n",
             array_map('rtrim', explode(PHP_EOL, $value))
+        );
+    }
+
+    private static function removeFlexMessages(string $value): string
+    {
+        return preg_replace(
+            '/.+Symfony\\\\Flex.+\n/',
+            '',
+            str_replace(
+                "Symfony recipes are disabled: \"symfony/flex\" not found in the root composer.json\n\n",
+                '',
+                $value
+            )
         );
     }
 }
