@@ -2,7 +2,7 @@
 [bamarni-bin] Configuring bin directory to /path/to/project/e2e/scenario1/vendor/bin.
 [bamarni-bin] Checking namespace vendor-bin/ns1
 [bamarni-bin] Changed current directory to vendor-bin/ns1.
-[bamarni-bin] Running `@composer update --verbose --working-dir='.'`.
+[bamarni-bin] Running `@composer update --working-dir='.' --verbose`.
 Loading composer repositories with package information
 Updating dependencies
 Analyzed 90 packages to resolve dependencies
@@ -15,7 +15,7 @@ Generating autoload files
 [bamarni-bin] Changed current directory to /path/to/project/e2e/scenario1.
 [bamarni-bin] Checking namespace vendor-bin/ns2
 [bamarni-bin] Changed current directory to vendor-bin/ns2.
-[bamarni-bin] Running `@composer update --verbose --working-dir='.'`.
+[bamarni-bin] Running `@composer update --working-dir='.' --verbose`.
 Loading composer repositories with package information
 Updating dependencies
 Analyzed 90 packages to resolve dependencies

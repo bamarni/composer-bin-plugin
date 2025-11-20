@@ -62,7 +62,7 @@ final class BinInputFactory
     public static function createNamespaceInput(InputInterface $previousInput): InputInterface
     {
         $matchResult = preg_match(
-            '/^([^\s]+)(.+?\s?)(--(?: .+)?)?$/',
+            '/^([^\s]+)(.*?\s?)(--(?: .+)?)?$/',
             $previousInput->__toString(),
             $matches
         );
