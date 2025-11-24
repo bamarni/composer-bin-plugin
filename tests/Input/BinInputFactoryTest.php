@@ -166,27 +166,27 @@ final class BinInputFactoryTest extends TestCase
 
         yield 'command with options' => [
             new StringInput('flex:update --prefer-lowest -i'),
-            new StringInput('flex:update --prefer-lowest -i --working-dir=.'),
+            new StringInput('flex:update --working-dir=. --prefer-lowest -i'),
         ];
 
         yield 'command with annoyingly placed options' => [
             new StringInput('-o --quiet flex:update --prefer-lowest -i'),
-            new StringInput('-o --quiet flex:update --prefer-lowest -i --working-dir=.'),
+            new StringInput('-o --working-dir=. --quiet flex:update --prefer-lowest -i'),
         ];
 
         yield 'command with options with option separator' => [
             new StringInput('flex:update --prefer-lowest -i --'),
-            new StringInput('flex:update --prefer-lowest -i --working-dir=. --'),
+            new StringInput('flex:update --working-dir=. --prefer-lowest -i --'),
         ];
 
         yield 'command with options with option separator and follow up argument' => [
             new StringInput('flex:update --prefer-lowest -i -- foo'),
-            new StringInput('flex:update --prefer-lowest -i --working-dir=. -- foo'),
+            new StringInput('flex:update --working-dir=. --prefer-lowest -i -- foo'),
         ];
 
         yield 'command with annoyingly placed options and option separator and follow up option' => [
             new StringInput('-o --quiet flex:update --prefer-lowest -i -- --foo'),
-            new StringInput('-o --quiet flex:update --prefer-lowest -i --working-dir=. -- --foo'),
+            new StringInput('-o --working-dir=. --quiet flex:update --prefer-lowest -i -- --foo'),
         ];
     }
 

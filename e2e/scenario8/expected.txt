@@ -18,7 +18,7 @@ Generating autoload files
 [bamarni-bin] Current working directory: /path/to/project/e2e/scenario8
 [bamarni-bin] Checking namespace vendor-bin/ns1
 [bamarni-bin] Changed current directory to vendor-bin/ns1.
-[bamarni-bin] Running `@composer update --prefer-lowest --verbose --working-dir='.'`.
+[bamarni-bin] Running `@composer update --working-dir='.' --prefer-lowest --verbose`.
 Loading composer repositories with package information
 Updating dependencies
 Analyzed 90 packages to resolve dependencies
