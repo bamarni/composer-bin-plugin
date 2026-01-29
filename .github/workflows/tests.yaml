@@ -24,6 +24,8 @@ jobs:
                     - "8.1"
                     - "8.2"
                     - "8.3"
+                    - "8.4"
+                    - "8.5"
                 tools: [ "composer" ]
                 dependency-versions: [ "highest" ]
                 include:
@@ -61,6 +63,8 @@ jobs:
                 php:
                     - "8.2"
                     - "8.3"
+                    - "8.4"
+                    - "8.5"
 
         steps:
             -   name: "Check out repository code"

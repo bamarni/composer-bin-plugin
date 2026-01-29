@@ -17,7 +17,7 @@ jobs:
             fail-fast: false
             matrix:
                 php:
-                    - "8.3"
+                    - "8.5"
         steps:
             -   name: "Check out repository code"
                 uses: "actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744" # v3.6.0
