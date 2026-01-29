@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bamarni\Composer\Bin\Tests;
 
 use PHPUnit\Framework\TestCase;
+
 use function preg_match;
 use function sprintf;
 

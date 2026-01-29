@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bamarni\Composer\Bin\Tests;
 
 use Symfony\Component\Process\Process;
+
 use function preg_match;
 
 final class ComposerVersionProvider
