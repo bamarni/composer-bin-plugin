@@ -12,8 +12,6 @@ use Composer\Command\BaseCommand;
 use Composer\Factory;
 use Composer\IO\NullIO;
 
-use function method_exists;
-
 class MyTestCommand extends BaseCommand
 {
     /**
@@ -41,10 +39,7 @@ class MyTestCommand extends BaseCommand
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        // Switch to tryComposer() once Composer 2.3 is set as the minimum
-        $this->composer = method_exists($this, 'tryComposer')
-            ? $this->tryComposer()
-            : $this->getComposer(false);
+        $this->composer = $this->tryComposer();
 
         $factory = Factory::create(new NullIO());
         $config = $factory->getConfig();
