@@ -77,7 +77,7 @@ final class BinInputFactory
                 [
                     $matches[1],
                     '--working-dir=.',
-                    $matches[2] ?? '',
+                    $matches[2],
                     $matches[3] ?? '',
                 ]
             )
