@@ -8,6 +8,7 @@ use Composer\Semver\Semver;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
+
 use function array_map;
 use function basename;
 use function dirname;
@@ -21,6 +22,7 @@ use function realpath;
 use function sprintf;
 use function str_replace;
 use function trim;
+
 use const PHP_EOL;
 
 /**
