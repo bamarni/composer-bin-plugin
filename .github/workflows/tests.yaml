@@ -28,7 +28,7 @@ jobs:
                 dependency-versions: [ "highest" ]
                 include:
                     - php: "7.2"
-                      tools: "composer:v2.0"
+                      tools: "composer:v2.8"    # to keep in sync with the lowest `composer-plugin-api` version
                       dependency-versions: "lowest"
 
         steps:

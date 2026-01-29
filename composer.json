@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": "^7.2.5 || ^8.0",
-        "composer-plugin-api": "^2.0"
+        "composer-plugin-api": "^2.8"
     },
     "require-dev": {
         "ext-json": "*",
