@@ -26,7 +26,6 @@ use function file_exists;
 use function file_put_contents;
 use function getcwd;
 use function glob;
-use function method_exists;
 use function min;
 use function mkdir;
 use function putenv;
