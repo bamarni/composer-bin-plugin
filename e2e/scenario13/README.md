@@ -1,0 +1,1 @@
+Test explicitly configured forwarded commands are forwarded.
