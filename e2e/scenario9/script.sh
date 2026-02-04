@@ -26,3 +26,6 @@ composer update
 
 # Actual command to execute the test itself
 composer bin composer-unused unused --no-progress 2>&1 | tee > actual.txt || true
+
+# Normalize paths for reproducible tests
+sed -i '' "s|$(pwd)|/path/to/project|g" actual.txt
