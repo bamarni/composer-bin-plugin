@@ -1,4 +1,6 @@
 [bamarni-bin] Checking namespace vendor-bin/composer-unused
+Deprecation Notice: Icanhazstring\Composer\Unused\Di\ServiceContainer::build(): Implicitly marking parameter $options as nullable is deprecated, the explicit nullable type must be used instead in /path/to/project/e2e/scenario9/vendor-bin/composer-unused/vendor/icanhazstring/composer-unused/src/Di/ServiceContainer.php:46
+More deprecation notices were hidden, run again with `-v` to show them.
 
 Loading packages
 ----------------
