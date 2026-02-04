@@ -46,7 +46,6 @@ class MyTestCommand extends BaseCommand
         $this->composer = method_exists($this, 'tryComposer')
             ? $this->tryComposer()
             : $this->getComposer(false);
-        $this->composer = $this->tryComposer();
 
         $factory = Factory::create(new NullIO());
         $config = $factory->getConfig();
