@@ -26,6 +26,7 @@ use function file_exists;
 use function file_put_contents;
 use function getcwd;
 use function glob;
+use function method_exists;
 use function min;
 use function mkdir;
 use function putenv;
@@ -96,7 +97,11 @@ class BinCommand extends BaseCommand
 
     public function execute(InputInterface $input, OutputInterface $output): int
     {
-        $composer = $this->requireComposer();
+        // Switch to requireComposer() once Composer 2.3 is set as the minimum
+        // @phpstan-ignore function.alreadyNarrowedType
+        $composer = method_exists($this, 'requireComposer')
+            ? $this->requireComposer()
+            : $this->getComposer();
 
         $config = Config::fromComposer($composer);
         $currentWorkingDir = getcwd();

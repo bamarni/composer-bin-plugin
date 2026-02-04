@@ -30,7 +30,7 @@ jobs:
                 dependency-versions: [ "highest" ]
                 include:
                     - php: "7.2"
-                      tools: "composer:v2.6"
+                      tools: "composer:v2.2"
                       dependency-versions: "lowest"
 
         steps:
