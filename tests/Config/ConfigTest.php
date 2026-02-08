@@ -24,14 +24,16 @@ final class ConfigTest extends TestCase
         array $extra,
         bool $expectedBinLinksEnabled,
         string $expectedTargetDirectory,
-        bool $expectedForwardCommand,
+        bool $expectedForwardInstallCommand,
+        bool $expectedForwardUpdateCommand,
         array $expectedDeprecations
     ): void {
         $config = new Config($extra);
 
         self::assertSame($expectedBinLinksEnabled, $config->binLinksAreEnabled());
         self::assertSame($expectedTargetDirectory, $config->getTargetDirectory());
-        self::assertSame($expectedForwardCommand, $config->isCommandForwarded());
+        self::assertSame($expectedForwardInstallCommand, $config->isCommandForwarded('install'));
+        self::assertSame($expectedForwardUpdateCommand, $config->isCommandForwarded('update'));
         self::assertSame($expectedDeprecations, $config->getDeprecations());
     }
 
@@ -45,6 +47,7 @@ final class ConfigTest extends TestCase
             true,
             'vendor-bin',
             false,
+            false,
             [
                 $binLinksEnabledDeprecationMessage,
                 $forwardCommandDeprecationMessage,
@@ -55,6 +58,7 @@ final class ConfigTest extends TestCase
             ['unknown' => 'foo'],
             true,
             'vendor-bin',
+            false,
             false,
             [
                 $binLinksEnabledDeprecationMessage,
@@ -72,6 +76,7 @@ final class ConfigTest extends TestCase
             true,
             'vendor-bin',
             false,
+            false,
             [],
         ];
 
@@ -85,6 +90,37 @@ final class ConfigTest extends TestCase
             ],
             false,
             'tools',
+            true,
+            true,
+            [],
+        ];
+
+        yield 'only forward install command' => [
+            [
+                Config::EXTRA_CONFIG_KEY => [
+                    Config::BIN_LINKS_ENABLED => false,
+                    Config::FORWARD_COMMAND => true,
+                    Config::FORWARDED_COMMANDS => ['install'],
+                ],
+            ],
+            false,
+            'vendor-bin',
+            true,
+            false,
+            [],
+        ];
+
+        yield 'do not forward install command' => [
+            [
+                Config::EXTRA_CONFIG_KEY => [
+                    Config::BIN_LINKS_ENABLED => false,
+                    Config::FORWARD_COMMAND => true,
+                    Config::FORWARDED_COMMANDS => ['about', 'update'],
+                ],
+            ],
+            false,
+            'vendor-bin',
+            false,
             true,
             [],
         ];
