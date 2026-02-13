@@ -1,0 +1,8 @@
+[bamarni-bin] Checking namespace /path/to/project/e2e/scenario14
+Loading composer repositories with package information
+Updating dependencies
+Nothing to modify in lock file
+Writing lock file
+Installing dependencies from lock file (including require-dev)
+Nothing to install, update or remove
+Generating autoload files

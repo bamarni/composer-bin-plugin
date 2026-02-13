@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bamarni\Composer\Bin\Tests\Command;
 
+use Bamarni\Composer\Bin\CommandForwardingContext;
 use Bamarni\Composer\Bin\Command\BinCommand;
 use Bamarni\Composer\Bin\Tests\Fixtures\MyTestCommand;
 use Bamarni\Composer\Bin\Tests\Fixtures\ReuseApplicationFactory;
@@ -124,6 +125,25 @@ class BinCommandTest extends TestCase
         $this->application->doRun($input, $output);
 
         $this->assertNoMoreDataFound();
+    }
+
+    public function test_the_root_namespace_can_be_called(): void
+    {
+        self::assertFalse(CommandForwardingContext::isCommandForwardingDisabled());
+
+        $input = new StringInput('bin root mytest');
+        $output = new NullOutput();
+
+        $this->application->doRun($input, $output);
+
+        $this->assertHasAccessToComposer();
+        $this->assertDataSetRecordedIs(
+            $this->tmpDir.'/vendor/bin',
+            $this->tmpDir,
+            $this->tmpDir.'/vendor'
+        );
+        $this->assertNoMoreDataFound();
+        self::assertFalse(CommandForwardingContext::isCommandForwardingDisabled());
     }
 
     public function test_a_command_can_be_executed_in_each_namespace_via_the_all_namespace(): void
