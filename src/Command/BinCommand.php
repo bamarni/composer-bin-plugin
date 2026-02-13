@@ -8,6 +8,7 @@ use Bamarni\Composer\Bin\Config\Config;
 use Bamarni\Composer\Bin\Config\ConfigFactory;
 use Bamarni\Composer\Bin\ApplicationFactory\FreshInstanceApplicationFactory;
 use Bamarni\Composer\Bin\Input\BinInputFactory;
+use Bamarni\Composer\Bin\CommandForwardingContext;
 use Bamarni\Composer\Bin\Logger;
 use Bamarni\Composer\Bin\ApplicationFactory\NamespaceApplicationFactory;
 use Composer\Command\BaseCommand;
@@ -40,6 +41,7 @@ use const GLOB_ONLYDIR;
 class BinCommand extends BaseCommand
 {
     private const ALL_NAMESPACES = 'all';
+    private const ROOT_NAMESPACE = 'root';
 
     private const NAMESPACE_ARG = 'namespace';
 
@@ -127,14 +129,23 @@ class BinCommand extends BaseCommand
             $input
         );
 
+        if (self::ROOT_NAMESPACE === $namespace) {
+            return $this->executeInNamespace(
+                $currentWorkingDir,
+                $currentWorkingDir,
+                $binInput,
+                $output,
+                true
+            );
+        }
+
         return (self::ALL_NAMESPACES !== $namespace)
             ? $this->executeInNamespace(
                 $currentWorkingDir,
                 $vendorRoot.'/'.$namespace,
                 $binInput,
                 $output
-            )
-            : $this->executeAllNamespaces(
+            ) : $this->executeAllNamespaces(
                 $currentWorkingDir,
                 $vendorRoot,
                 $binInput,
@@ -184,7 +195,8 @@ class BinCommand extends BaseCommand
         string $originalWorkingDir,
         string $namespace,
         InputInterface $input,
-        OutputInterface $output
+        OutputInterface $output,
+        bool $disableCommandForwarding = false
     ): int {
         $this->logger->logStandard(
             sprintf(
@@ -216,9 +228,25 @@ class BinCommand extends BaseCommand
             $this->getApplication()
         );
 
+        $previousCommandForwardingDisabled = CommandForwardingContext::isCommandForwardingDisabled();
+
+        if ($disableCommandForwarding) {
+            CommandForwardingContext::setCommandForwardingDisabled(true);
+        }
+
         // It is important to clean up the state either for follow-up plugins
         // or for example the execution in the next namespace.
-        $cleanUp = function () use ($originalWorkingDir): void {
+        $cleanUp = function () use (
+            $originalWorkingDir,
+            $disableCommandForwarding,
+            $previousCommandForwardingDisabled
+        ): void {
+            if ($disableCommandForwarding) {
+                CommandForwardingContext::setCommandForwardingDisabled(
+                    $previousCommandForwardingDisabled
+                );
+            }
+
             $this->chdir($originalWorkingDir);
             $this->resetComposers();
         };

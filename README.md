@@ -82,6 +82,13 @@ You also have a special `all` namespace to interact with all the bin namespaces:
 $ composer bin all update
 ```
 
+You can use the `root` namespace to run a command from the project root
+without forwarding it to bin namespaces:
+
+```bash
+$ composer bin root update
+```
+
 
 ## Installation
 
@@ -145,6 +152,10 @@ enabled, all your `composer install` and `composer update` commands are forwarde
 to _all_ bin directories.
 
 This is a replacement for the tasks shown in section [Auto-installation](#auto-installation).
+
+If you need to skip forwarding for a single command invocation, run the command
+via `composer bin root ...` to force
+execution in the root project without forwarding.
 
 
 ## Tips & Tricks

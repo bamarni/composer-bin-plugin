@@ -131,9 +131,17 @@ class BamarniBinPlugin implements PluginInterface, Capable, EventSubscriberInter
             }
         }
 
-        if ($config->isCommandForwarded()
-            && in_array($commandName, self::FORWARDED_COMMANDS, true)
-        ) {
+        if (!in_array($commandName, self::FORWARDED_COMMANDS, true)) {
+            return true;
+        }
+
+        if (CommandForwardingContext::isCommandForwardingDisabled()) {
+            $this->logger->logDebug('Command forwarding is disabled in this process context.');
+
+            return true;
+        }
+
+        if ($config->isCommandForwarded()) {
             return $this->onForwardedCommand($input, $output);
         }
 
